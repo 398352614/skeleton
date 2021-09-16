@@ -105,7 +105,7 @@ class Bill extends BaseModel
 
     public function getRestAmountAttribute()
     {
-        return number_format($this->expect_amount-$this->actual—actual_amount,2);
+        return number_format($this->expect_amount - $this->actual—actual_amount, 2);
     }
 
     public function getStatusNameAttribute()
@@ -150,12 +150,12 @@ class Bill extends BaseModel
 
     public function getTypeNameAttribute()
     {
-        if(empty($this->type)){
+        if (empty($this->type)) {
             return null;
-        }else{
-            if($this->type<3){
+        } else {
+            if ($this->type < 3) {
                 return ConstTranslateTrait::billTypeList($this->type);
-            }else{
+            } else {
                 return null;
             }
         }

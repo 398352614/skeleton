@@ -78,6 +78,11 @@ class Merchant extends Authenticatable implements JWTSubject
         'status',
         'created_at',
         'updated_at',
+        'auto_settlement',
+        'settlement_time',
+        'settlement_week',
+        'settlement_date',
+        'last_settlement_date',
     ];
 
     /**
@@ -107,12 +112,15 @@ class Merchant extends Authenticatable implements JWTSubject
         'delay_time',
         'pickup_count',
         'auto_settlement',
-        'settlement_time',
-        'settlement_week',
-        'settlement_date',
+        'settlement_type_name',
+        'auto_settlement_name',
         'pie_count',
     ];
 
+    public function getAutoSettlementNameAttribute()
+    {
+        return empty($this->auto_settlement) ? null : ConstTranslateTrait::statusList($this->auto_settlement);
+    }
 
     public function getSettlementTypeNameAttribute()
     {
