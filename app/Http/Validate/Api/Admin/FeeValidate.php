@@ -26,12 +26,12 @@ class FeeValidate extends BaseValidate
         'amount' => 'required|numeric|gte:0',
         'status' => 'required|integer|in:1,2',
         'is_valuable' => 'nullable|integer|in:1,2',
-        'payer' => 'required|integer|in:1,2',
+        'payer_type' => 'required|integer|in:4,5,6',
 
     ];
 
     public $scene = [
-        'store' => ['name', 'code', 'amount', 'status', 'is_valuable'],
+        'store' => ['name', 'code', 'amount', 'status', 'is_valuable','payer_type'],
         'update' => ['name', 'code', 'amount', 'status', 'payer'],
     ];
 
