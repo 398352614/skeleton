@@ -109,7 +109,15 @@ class Fee extends BaseModel
 
     public function getPayerTypeNameAttribute()
     {
-        return empty($this->payer_type) ? null : ConstTranslateTrait::feePayerTypeList($this->payer_type);
+        if (empty($this->pay_type)) {
+            return null;
+        } else {
+            if ($this->pay_type > 3) {
+                return ConstTranslateTrait::billTypeList($this->pay_type);
+            } else {
+                return null;
+            }
+        }
     }
 
     public function getPayeeTypeNameAttribute()
