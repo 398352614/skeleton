@@ -52,7 +52,7 @@ class Minute extends Command
             if (
                 ($v['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_2
                     && !empty($v['settlement_time'])
-                    && $v['settlement_time'] == now()->format('H-m')) or
+                    && $v['settlement_time'] == now()->format('H-i')) or
                 ($v['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_3
                     && !empty($v['settlement_week'])
                     && $v['settlement_week'] == now()->dayOfWeek) or
