@@ -12,6 +12,7 @@ use App\Exceptions\BusinessLogicException;
 
 use App\Models\BillVerify;
 use App\Models\Ledger;
+use App\Models\Merchant;
 use App\Services\BaseConstService;
 use Illuminate\Support\Arr;
 
@@ -220,7 +221,33 @@ class BillVerifyService extends BaseService
 
     public function detailExport()
     {
-        $list=self::getPageList();
+        $list = self::getPageList();
+    }
+
+    /**
+     * @param $merchantId
+     * @throws BusinessLogicException
+     */
+    public function autoStore($merchantId)
+    {
+        $merchant = $this->getMerchantService()->getInfo(['id' => $merchantId, 'status' => BaseConstService::YES], ['*'], false);
+        if ($merchant['last_settlement_date'] !== today()->format('Y-m-d')) {
+            if ($merchant['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_2 && !empty($merchant['settlement_time'])) {
+                $time = explode('-', $merchant['settlement_time']);
+                $dateTime = today()->addHours($time[0])->addMinutes($time[1]);
+                $billList = $this->getBillService()->getList(['verify_status' => BaseConstService::BILL_VERIFY_STATUS_1, 'created_at' => ['<', $dateTime]], ['*'], false);
+            } elseif ($merchant['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_3 && !empty($merchant['settlement_week'])) {
+                $billList = $this->getBillService()->getList(['verify_status' => BaseConstService::BILL_VERIFY_STATUS_1, 'create_date' => ['<', today()->format('Y-m-d')]], ['*'], false);
+            } elseif ($merchant['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_4 && !empty($merchant['settlement_date'])) {
+                $billList = $this->getBillService()->getList(['verify_status' => BaseConstService::BILL_VERIFY_STATUS_1, 'create_date' => ['<', today()->format('Y-m-d')]], ['*'], false);
+            }
+            if (!empty($billList)) {
+                $this->store([
+                    'bill_list' => $billList->pluck('bill_no')->toArray()
+                ]);
+            }
+        }
+        $this->getMerchantService()->update(['id'=>$merchantId],['last_settlement', today()->format('Y-m-d')]);
     }
 
 }
