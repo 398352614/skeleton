@@ -52,8 +52,12 @@ class LedgerLogService extends BaseService
     public function log(array $data)
     {
         $data['ledger_id'] = $data['id'];
+        $ledger=$this->getLedgerService()->getInfo(['id'=>$data['id']],['*'],false);
+        if(empty($ledger)){
+            throw new BusinessLogicException('数据不存在');
+        }
         unset($data['created_at'], $data['updated_at'], $data['id']);
-        $user = UserTrait::get($data['user_id'], $data['user_type']);
+        $user = UserTrait::get($ledger['user_id'], $ledger['user_type']);
         $data['user_name'] = $user['name'];
         $data['user_code'] = $user['code'];
         $data['operator_id'] = auth()->user()->id;
