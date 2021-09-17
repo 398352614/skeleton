@@ -131,10 +131,11 @@ class BaseLineService extends BaseService
             throw new BusinessLogicException('网点不存在');
         }
         $countryList = $this->getCountryService()->getList([], ['*'], false)->pluck('short')->toArray();
-        foreach ($params['item_list'] as $k => $v) {
-            if (!in_array($v['country'], $countryList)) {
-                dd($v['country'],$countryList);
-                throw new BusinessLogicException('国家不存在');
+        if(!empty($params['item_list'])){
+            foreach ($params['item_list'] as $k => $v) {
+                if (!in_array($v['country'], $countryList)) {
+                    throw new BusinessLogicException('国家不存在');
+                }
             }
         }
         $params['warehouse_id'] = $rootWarehouse->toArray()['id'];

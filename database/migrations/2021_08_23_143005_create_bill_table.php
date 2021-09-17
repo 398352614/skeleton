@@ -36,13 +36,13 @@ class CreateBillTable extends Migration
             $table->string('fee_name')->default(null)->nullable()->comment('费用名称');
 
             $table->integer('payer_id')->default(null)->nullable()->comment('付款方ID');
-            $table->tinyInteger('payer_type')->default(null)->nullable()->comment('付款方类型1-公司2-后台3-货主4-司机5-发件人6-收件人');
+            $table->tinyInteger('payer_type')->default(null)->nullable()->comment('付款方类型1-公司2-后台3-司机4-货主5-发件人6-收件人');
             $table->string('payer_name')->default(null)->nullable()->comment('付款方名称');
             $table->integer('payee_id')->default(null)->nullable()->comment('收款方ID');
-            $table->tinyInteger('payee_type')->default(null)->nullable()->comment('收款方类型1-公司2-后台3-货主4-司机5-发件人6-收件人');
+            $table->tinyInteger('payee_type')->default(null)->nullable()->comment('收款方类型1-公司2-后台3-司机4-货主5-发件人6-收件人');
             $table->string('payee_name')->default(null)->nullable()->comment('收款方名称');
             $table->integer('operator_id')->default(null)->nullable()->comment('操作人ID');
-            $table->tinyInteger('operator_type')->default(null)->nullable()->comment('操作人类型1-公司2-后台3-货主4-司机5-发件人6-收件人');
+            $table->tinyInteger('operator_type')->default(null)->nullable()->comment('操作人类型1-公司2-后台3-司机4-货主5-发件人6-收件人');
             $table->string('operator_name')->default('')->nullable()->comment('操作人名称');
 
             $table->tinyInteger('create_timing')->default(null)->nullable()->comment('产生时机1-手动2-下单时3-取货完成时4-派送完成时');

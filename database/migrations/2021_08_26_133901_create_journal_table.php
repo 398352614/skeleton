@@ -29,13 +29,13 @@ class CreateJournalTable extends Migration
             $table->date('create_date')->default(null)->nullable()->comment('创建日期');
             $table->decimal('actual_amount')->default(0)->nullable()->comment('实付金额');
             $table->integer('payer_id')->default(null)->nullable()->comment('付款方ID');
-            $table->tinyInteger('payer_type')->default(null)->nullable()->comment('付款方类型1-公司2-后台3-货主4-司机5-客户');
+            $table->tinyInteger('payer_type')->default(null)->nullable()->comment('付款方类型1-公司2-后台3-司机4-货主5-客户');
             $table->string('payer_name')->default(null)->nullable()->comment('付款方名称');
             $table->integer('payee_id')->default(null)->nullable()->comment('收款方ID');
-            $table->tinyInteger('payee_type')->default(null)->nullable()->comment('收款方类型1-公司2-后台3-货主4-司机5-客户');
+            $table->tinyInteger('payee_type')->default(null)->nullable()->comment('收款方类型1-公司2-后台3-司机4-货主5-客户');
             $table->string('payee_name')->default(null)->nullable()->comment('收款方名称');
             $table->integer('operator_id')->default(null)->nullable()->comment('操作人ID');
-            $table->tinyInteger('operator_type')->default(null)->nullable()->comment('操作人类型1-公司2-后台3-货主4-司机5-客户');
+            $table->tinyInteger('operator_type')->default(null)->nullable()->comment('操作人类型1-公司2-后台3-司机4-货主5-客户');
             $table->string('operator_name')->default('')->nullable()->comment('操作人名称');
 
             $table->index('company_id', 'company_id');

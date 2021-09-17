@@ -19,7 +19,7 @@ class CreateLedgerLogTable extends Migration
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
             $table->integer('ledger_id')->default(null)->nullable()->comment('财务账户ID');
             $table->integer('user_id')->default(null)->nullable()->comment('用户ID');
-            $table->tinyInteger('user_type')->default(3)->nullable()->comment('用户类型1-公司2-后台3-货主4-司机5-客户');
+            $table->tinyInteger('user_type')->default(3)->nullable()->comment('用户类型1-公司2-后台3-司机4-货主5-客户');
             $table->string('user_name')->default(null)->nullable()->comment('用户名称');
             $table->string('user_code')->default(null)->nullable()->comment('用户编号');
 
@@ -28,7 +28,7 @@ class CreateLedgerLogTable extends Migration
             $table->tinyInteger('verify_type')->default(1)->nullable()->comment('审核方式1-自动审核2-手动审核');
             $table->tinyInteger('status')->default(1)->nullable()->comment('状态1-无限透支2-有限透支');
 
-            $table->string('operator_type')->default(null)->nullable()->comment('操作人类型1-公司2-后台3-货主4-司机5-客户');
+            $table->string('operator_type')->default(null)->nullable()->comment('操作人类型1-公司2-后台3-司机4-货主5-客户');
             $table->string('operator_id')->default(null)->nullable()->comment('操作人ID');
             $table->string('operator_name')->default('')->nullable()->comment('操作人名称');
 

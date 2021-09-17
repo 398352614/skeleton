@@ -105,7 +105,7 @@ class Bill extends BaseModel
 
     public function getRestAmountAttribute()
     {
-        return number_format_simple($this->expect_amount - $this->actual_actual_amount, 2);
+        return number_format_simple($this->expect_amount - $this->actual_amount, 2);
     }
 
     public function getStatusNameAttribute()

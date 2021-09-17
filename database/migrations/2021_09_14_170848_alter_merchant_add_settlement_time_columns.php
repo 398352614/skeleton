@@ -18,6 +18,7 @@ class AlterMerchantAddSettlementTimeColumns extends Migration
             $table->tinyInteger('settlement_time')->default(1)->nullable()->comment('每日结算时间')->after('auto_settlement');
             $table->tinyInteger('settlement_week')->default(1)->nullable()->comment('每周结算星期')->after('settlement_time');
             $table->tinyInteger('settlement_date')->default(1)->nullable()->comment('每月结算日期')->after('settlement_week');
+            $table->date('last_settlement_time')->default(null)->nullable()->comment('上次结算时间')->after('settlement_date');
             $table->index('status');
         });
     }
