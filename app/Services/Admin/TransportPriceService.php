@@ -29,7 +29,9 @@ use Illuminate\Support\Facades\Log;
 class TransportPriceService extends BaseService
 {
     public $filterRules = [
-        'name' => ['like', 'name']];
+        'name' => ['like', 'name'],
+        'payer_type' => ['=', 'payer_type']
+    ];
 
     public function __construct(
         TransportPrice $transportPrice,
@@ -447,13 +449,13 @@ class TransportPriceService extends BaseService
                 }
             }
             $data['starting_price'] = $transportPrice['starting_price'];
-            $data['package_settlement_amount'] = number_format_simple($data['count_settlement_amount'], 2,'.','');
-            $data['count_settlement_amount'] = number_format_simple(round($data['count_settlement_amount'] + $data['starting_price'], 2),2,'.','');
+            $data['package_settlement_amount'] = number_format_simple($data['count_settlement_amount'], 2, '.', '');
+            $data['count_settlement_amount'] = number_format_simple(round($data['count_settlement_amount'] + $data['starting_price'], 2), 2, '.', '');
         }
         if (!empty($data['package_list'])) {
             foreach ($data['package_list'] as $k => $v) {
-                $data['package_list'][$k]['settlement_amount'] = number_format_simple($data['package_list'][$k]['settlement_amount'], 2,'.','');
-                $data['package_list'][$k]['count_settlement_amount'] = number_format_simple($data['package_list'][$k]['count_settlement_amount'], 2,'.','');
+                $data['package_list'][$k]['settlement_amount'] = number_format_simple($data['package_list'][$k]['settlement_amount'], 2, '.', '');
+                $data['package_list'][$k]['count_settlement_amount'] = number_format_simple($data['package_list'][$k]['count_settlement_amount'], 2, '.', '');
             }
         }
         return $data;
