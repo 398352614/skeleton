@@ -21,13 +21,15 @@ class TransportPriceResource extends JsonResource
             'starting_price' => $this->starting_price,
             'remark' => $this->remark,
             'status' => $this->status,
-            'part'=>$this->part,
-            'type'=>$this->type,
-            'type_name'=>$this->type_name,
+            'part' => $this->part,
+            'type' => $this->type,
+            'type_name' => $this->type_name,
             'km_list' => $this->km_list,
             'weight_list' => $this->weight_list,
             'special_time_list' => $this->special_time_list,
             'created_at' => (string)$this->created_at,
+            'payer_type' => $this->payer_type,
+            'payer_type_name' => $this->payer_type_name,
         ];
     }
 
