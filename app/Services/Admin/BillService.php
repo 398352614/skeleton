@@ -32,7 +32,8 @@ class BillService extends BaseService
         'object_no' => ['like', 'object_no'],
         'bill_no' => ['like', 'bill_no'],
         'verify_no' => ['like', 'verify_no'],
-        'status' => ['=', 'status']
+        'status' => ['=', 'status'],
+        'payer_name' => ['=', 'payer_name']
     ];
 
 
@@ -140,11 +141,13 @@ class BillService extends BaseService
         $data['actual_amount'] = 0;
         $data['create_timing'] = BaseConstService::BILL_CREATE_TIMING_1;
         $data['pay_timing'] = $fee['pay_timing'];
+        //填充付款方
         $data['payer_type'] = $fee['payer_type'] ?? BaseConstService::USER_MERCHANT;
         if ($data['payer_type'] == BaseConstService::USER_MERCHANT) {
             $data['payer_id'] = $order['merchant_id'];
             $data['payer_name'] = UserTrait::get($data['payer_id'], BaseConstService::USER_MERCHANT)['name'];
         }
+        //填充收款方
         $data['payee_type'] = $fee['payee_type'] ?? BaseConstService::USER_COMPANY;
         if ($data['payee_type'] == BaseConstService::USER_COMPANY) {
             $data['payee_id'] = auth()->user()->company_id;
