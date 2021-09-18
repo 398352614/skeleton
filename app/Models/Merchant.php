@@ -78,10 +78,6 @@ class Merchant extends Authenticatable implements JWTSubject
         'status',
         'created_at',
         'updated_at',
-        'auto_settlement',
-        'settlement_time',
-        'settlement_week',
-        'settlement_date',
         'last_settlement_date',
     ];
 
