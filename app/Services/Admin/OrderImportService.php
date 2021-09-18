@@ -49,8 +49,6 @@ class OrderImportService extends BaseService
             "base", "", "", "", "",
             "sender", "", "", "", "", "", "", "",
             "receiver", "", "", "", "", "", "", "",
-            "amount", "", "", "", "", "", "", "", "", "", "",
-            "settlement", "",
             "other", "", "", "", "",
             "package_1", "", "", "", "", "", "",
             "package_2", "", "", "", "", "", "",
@@ -62,13 +60,12 @@ class OrderImportService extends BaseService
             "material_3", "", "", "", "", "", "", "", "", "",
             "material_4", "", "", "", "", "", "", "", "", "",
             "material_5", "", "", "", "", "", "", "", "", "",
+            "amount", "", "", "", "", "", "", "", "", "", "", ""
         ],
         [
             "create_date", "type", "merchant", "out_user_id", "out_order_no",
             "place_fullname", "place_phone", "place_country_name", "place_post_code", "place_house_number", "place_city", "place_street", "execution_date",
             "second_place_fullname", "second_place_phone", "second_place_country_name", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date",
-            "amount_1", "amount_2", "amount_3", "amount_4", "amount_5", "amount_6", "amount_7", "amount_8", "amount_9", "amount_10", "amount_11",
-            "settlement_amount", "settlement_type",
             "control_mode", "receipt_type", "receipt_count", "special_remark", "mask_code",
             "package_no_1", "package_name_1", "package_weight_1", "package_feature_1", "package_remark_1", "package_expiration_date_1", "package_out_order_no_1",
             "package_no_2", "package_name_2", "package_weight_2", "package_feature_2", "package_remark_2", "package_expiration_date_2", "package_out_order_no_2",
@@ -79,7 +76,7 @@ class OrderImportService extends BaseService
             "material_code_2", "material_name_2", "material_count_2", "material_weight_2", "material_size_2", "material_type_2", "material_pack_type_2", "material_price_2", "material_remark_2", "material_out_order_no_2",
             "material_code_3", "material_name_3", "material_count_3", "material_weight_3", "material_size_3", "material_type_3", "material_pack_type_3", "material_price_3", "material_remark_3", "material_out_order_no_3",
             "material_code_4", "material_name_4", "material_count_4", "material_weight_4", "material_size_4", "material_type_4", "material_pack_type_4", "material_price_4", "material_remark_4", "material_out_order_no_4",
-            "material_code_5", "material_name_5", "material_count_5", "material_weight_5", "material_size_5", "material_type_5", "material_pack_type_5", "material_price_5", "material_remark_5", "material_out_order_no_5"
+            "material_code_5", "material_name_5", "material_count_5", "material_weight_5", "material_size_5", "material_type_5", "material_pack_type_5", "material_price_5", "material_remark_5", "material_out_order_no_5",
         ]
     ];
 
@@ -91,7 +88,10 @@ class OrderImportService extends BaseService
     public function templateExport()
     {
         $cellData[0] = [];
-        return $this->excelExport('template', self::$headings, $cellData, 'order');
+        $headings = self::$headings;
+        $feeList = $this->getFeeService()->getList(['status' => BaseConstService::YES, 'level' => BaseConstService::FEE_LEVEL_2], ['*'], false)->pluck('name')->toArray();
+        $headings[1] = array_merge($headings[1], $feeList);
+        return $this->excelExport('template', $headings, $cellData, 'order');
     }
 
     /**
@@ -110,8 +110,12 @@ class OrderImportService extends BaseService
         //表头验证
         $firstHeadings = array_values(__('excel.order.0'));
         $secondHeadings = array_values(__('excel.order.1'));
+        $newSecondRow = [];
         foreach ($row[1] as $k => $v) {
             $row[1][$k] = preg_replace('/\(.*\)/', '', $v);
+            if ($v !== null) {
+                $newSecondRow[] = $row[1][$k];
+            }
         }
         $newRow = [];
         foreach ($row[0] as $k => $v) {
@@ -119,7 +123,9 @@ class OrderImportService extends BaseService
                 $newRow[] = $v;
             }
         }
-        if ($newRow !== $firstHeadings || array_diff($row[1], $secondHeadings) !== []) {
+        $feeList = $this->getFeeService()->getList(['status' => BaseConstService::YES, 'level' => BaseConstService::FEE_LEVEL_2], ['*'], false)->pluck('name')->toArray();
+        $secondHeadings = array_merge($secondHeadings, $feeList);
+        if ($newRow !== $firstHeadings || array_diff($newSecondRow, $secondHeadings) !== []) {
             throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
         }
         if (count($row) < 3) {
@@ -268,6 +274,8 @@ class OrderImportService extends BaseService
                 }
             }
             $data['expect_total_amount'] = $totalAmount + $data['count_settlement_amount'];
+
+            
         } catch (BusinessLogicException $e) {
             $error['log'] = __($e->getMessage(), $e->replace);
         }
@@ -405,10 +413,20 @@ class OrderImportService extends BaseService
     {
         //将表头和每条数据组合
         $headings = OrderImportService::$headings[1];
-        $data = [];
-        for ($i = 2; $i < count($row); $i++) {
-            $data[$i - 2] = collect($headings)->combine($row[$i])->toArray();
+        $data[] = __('excel.order.1');
+        $feeList = $this->getFeeService()->getList(['status' => BaseConstService::YES, 'level' => BaseConstService::FEE_LEVEL_2], ['*'], false);
+        if (!empty($feeList)) {
+            foreach ($feeList as $k => $v) {
+                $data[0][$v['id']] = $v['name'];
+            }
         }
+        $keyList = array_keys($data[0]);
+        for ($i = 2; $i < count($row); $i++) {
+            foreach ($keyList as $k => $v) {
+                $data[$i][$v] = $row[$i][$k];
+            }
+        }
+        $data = array_values($data);
         //数据处理
         $orderTypeList = array_flip(ConstTranslateTrait::orderTypeList());
         $orderSettlementList = array_flip(ConstTranslateTrait::orderSettlementTypeList());
@@ -417,7 +435,7 @@ class OrderImportService extends BaseService
         $packageFeatureList = array_flip(ConstTranslateTrait::packageFeatureList());
         $materialTypeList = array_flip(ConstTranslateTrait::materialTypeList());
         $materialPackTypeList = array_flip(ConstTranslateTrait::materialPackTypeList());
-        for ($i = 0; $i < count($data); $i++) {
+        for ($i = 1; $i < count($data); $i++) {
             //反向翻译
             $data[$i]['merchant_id'] = Merchant::query()->where('name', $data[$i]['merchant'])->first()['id'] ?? $data[$i]['merchant'];
             $data[$i]['place_country'] = CountryTrait::getShort($data[$i]['place_country_name']) ?? $data[$i]['place_country_name'];

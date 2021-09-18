@@ -77,19 +77,19 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
                 $event->sheet->getDelegate()->mergeCells('A1:E1');
                 $event->sheet->getDelegate()->mergeCells('F1:M1');
                 $event->sheet->getDelegate()->mergeCells('N1:U1');
-                $event->sheet->getDelegate()->mergeCells('V1:AF1');
-                $event->sheet->getDelegate()->mergeCells('AG1:AH1');
-                $event->sheet->getDelegate()->mergeCells('AI1:AM1');
-                $event->sheet->getDelegate()->mergeCells('AN1:AT1');
-                $event->sheet->getDelegate()->mergeCells('AU1:BA1');
-                $event->sheet->getDelegate()->mergeCells('BB1:BH1');
-                $event->sheet->getDelegate()->mergeCells('BI1:BO1');
-                $event->sheet->getDelegate()->mergeCells('BP1:BV1');
-                $event->sheet->getDelegate()->mergeCells('BW1:CF1');
-                $event->sheet->getDelegate()->mergeCells('CG1:CP1');
-                $event->sheet->getDelegate()->mergeCells('CQ1:CZ1');
-                $event->sheet->getDelegate()->mergeCells('DA1:DJ1');
-                $event->sheet->getDelegate()->mergeCells('DK1:DT1');
+                $event->sheet->getDelegate()->mergeCells('V1:Z1');
+                $event->sheet->getDelegate()->mergeCells('AA1:AG1');
+                $event->sheet->getDelegate()->mergeCells('AH1:AN1');
+                $event->sheet->getDelegate()->mergeCells('AO1:AU1');
+                $event->sheet->getDelegate()->mergeCells('AV1:BB1');
+                $event->sheet->getDelegate()->mergeCells('BC1:BI1');
+                $event->sheet->getDelegate()->mergeCells('BJ1:BS1');
+                $event->sheet->getDelegate()->mergeCells('BT1:CC1');
+                $event->sheet->getDelegate()->mergeCells('CD1:CM1');
+                $event->sheet->getDelegate()->mergeCells('CN1:CW1');
+                $event->sheet->getDelegate()->mergeCells('CX1:DG1');
+                $event->sheet->getDelegate()->mergeCells('DH1:DS1');
+
 
                 $endColumn = $event->sheet->getDelegate()->getHighestColumn();
                 $endRow = $event->sheet->getDelegate()->getHighestRow();
@@ -119,13 +119,7 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
                         ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_YYYYMMDD);
                 }
                 //设置金额格式
-                $decimal = ['V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG',
-                    'AP', 'AW', 'BD', 'BK', 'BR',
-                    'BZ', 'CA', 'CD',
-                    'CI', 'CJ', 'CN',
-                    'CT', 'CW', 'CX',
-                    'DD', 'DE', 'DH',
-                    'DN', 'DO', 'DR'];
+                $decimal = [];
                 foreach ($decimal as $k => $v) {
                     $event->sheet->getDelegate()->getStyle($v . '3:' . $v . '200')->getNumberFormat()
                         ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
@@ -134,8 +128,8 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
                 //设置字体颜色
                 $event->sheet->getDelegate()->getStyle('A2:C2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
                 $event->sheet->getDelegate()->getStyle('F2:U2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
-                $event->sheet->getDelegate()->getStyle('AN2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
-                $event->sheet->getDelegate()->getStyle('BW2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                $event->sheet->getDelegate()->getStyle('AA2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                $event->sheet->getDelegate()->getStyle('BJ2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
                 //下拉
                 $arrayList = [
                     'B' => implode(',', array_values(ConstTranslateTrait::orderTypeList())),
@@ -147,23 +141,23 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
                     'AH' => implode(',', array_values(ConstTranslateTrait::orderReceiptTypeList())),
                     'AF' => implode(',', array_values(ConstTranslateTrait::orderSettlementTypeList())),
 
-                    'AO' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
-                    'AV' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
-                    'BC' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
-                    'BJ' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
-                    'BQ' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
+                    'AD' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
+                    'AK' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
+                    'AR' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
+                    'AY' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
+                    'BF' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
 
-                    'BZ' => implode(',', array_values(ConstTranslateTrait::materialTypeList())),
-                    'CJ' => implode(',', array_values(ConstTranslateTrait::materialTypeList())),
-                    'BT' => implode(',', array_values(ConstTranslateTrait::materialTypeList())),
-                    'DD' => implode(',', array_values(ConstTranslateTrait::materialTypeList())),
-                    'DN' => implode(',', array_values(ConstTranslateTrait::materialTypeList())),
+                    'BO' => implode(',', array_values(ConstTranslateTrait::materialTypeList())),
+                    'BY' => implode(',', array_values(ConstTranslateTrait::materialTypeList())),
+                    'CI' => implode(',', array_values(ConstTranslateTrait::materialTypeList())),
+                    'CS' => implode(',', array_values(ConstTranslateTrait::materialTypeList())),
+                    'DC' => implode(',', array_values(ConstTranslateTrait::materialTypeList())),
 
-                    'CA' => implode(',', array_values(ConstTranslateTrait::materialPackTypeList())),
-                    'CK' => implode(',', array_values(ConstTranslateTrait::materialPackTypeList())),
-                    'CU' => implode(',', array_values(ConstTranslateTrait::materialPackTypeList())),
-                    'DE' => implode(',', array_values(ConstTranslateTrait::materialPackTypeList())),
-                    'DO' => implode(',', array_values(ConstTranslateTrait::materialPackTypeList())),
+                    'BP' => implode(',', array_values(ConstTranslateTrait::materialPackTypeList())),
+                    'BZ' => implode(',', array_values(ConstTranslateTrait::materialPackTypeList())),
+                    'CJ' => implode(',', array_values(ConstTranslateTrait::materialPackTypeList())),
+                    'CT' => implode(',', array_values(ConstTranslateTrait::materialPackTypeList())),
+                    'DD' => implode(',', array_values(ConstTranslateTrait::materialPackTypeList())),
 
                 ];
                 foreach ($arrayList as $k => $v) {

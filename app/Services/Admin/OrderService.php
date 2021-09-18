@@ -204,6 +204,7 @@ class OrderService extends BaseService
         $dbOrder['package_list'] = $this->getPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], true);
         $dbOrder['material_list'] = $this->getMaterialService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         $dbOrder['amount_list'] = $this->getOrderAmountService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
+        $dbOrder['bill_list'] = $this->getBillService()->getList(['object_no' => $dbOrder['order_no'], 'object_type' => BaseConstService::BILL_OBJECT_TYPE_1], ['*'], false);
         $merchant = $this->getMerchantService()->getInfo(['id' => $dbOrder['merchant_id']], ['*'], false);
         if (!empty($merchant)) {
             $dbOrder['merchant_id_name'] = $merchant['name'];
@@ -701,7 +702,12 @@ class OrderService extends BaseService
         }
         //运价计算
         $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
-
+        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
+            $params['distance'] = 1000;
+        } else {
+            $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
+        }
+        $params = $this->getTransportPriceService()->priceCount($params);        //若存在包裹列表,则新增包裹列表
 
         //验证取件网点及派件网点是否承接取件/派件
 //        if ($merchant['below_warehouse'] == BaseConstService::YES) {
@@ -815,12 +821,7 @@ class OrderService extends BaseService
      */
     private function addAmountList($params)
     {
-        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
-            $params['distance'] = 1000;
-        } else {
-            $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
-        }
-        $params = $this->getTransportPriceService()->priceCount($params);        //若存在包裹列表,则新增包裹列表
+
 //        if (!empty($params['amount_list'])) {
 //            foreach ($params['amount_list'] as $k => $v) {
 //                $dataList[$k]['order_no'] = $params['order_no'];
@@ -921,7 +922,7 @@ class OrderService extends BaseService
         //新增包裹列表和材料列表
         $this->addAllItemList($data);
         //删除费用
-        $rowCount = $this->getOrderAmountService()->delete(['order_no' => $dbOrder['order_no']]);
+        $rowCount = $this->getBillService()->delete(['object_no' => $dbOrder['order_no'], 'object_type' => BaseConstService::BILL_OBJECT_TYPE_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }
@@ -1053,6 +1054,10 @@ class OrderService extends BaseService
         $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_5]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        $rowCount = $this->getBillService()->update(['object_no' => $dbOrder['order_no'], 'object_type' => BaseConstService::BILL_OBJECT_TYPE_1], ['object_no' => '']);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
         return 'true';
     }

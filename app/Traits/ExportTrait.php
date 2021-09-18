@@ -36,10 +36,16 @@ trait ExportTrait
                             $headings[$i][$k] = __('excel.' . $dir . '.' . $v);
                         }
                     } else {
-                        $headings[$i][$k] = __('excel.' . $dir . '.' . $i . '.' . $v);
-                    }
-                    if ($dir == 'order') {
-                        $headings[$i][$k] = $headings[$i][$k] . $this->getUnit($v);
+                        $a = __('excel.' . $dir . '.' . $i);
+                        if (!empty($a[$v])) {
+                            $headings[$i][$k] = $a[$v];
+                        } else {
+                            $unit = '(' . ConstTranslateTrait::currencyUnitTypeSymbol(CompanyTrait::getCompany()['currency_unit']) . ')';
+                            $headings[$i][$k] = $v . $unit;
+                        }
+                        if ($dir == 'order') {
+                            $headings[$i][$k] = $headings[$i][$k] . $this->getUnit($v);
+                        }
                     }
                 }
             }
@@ -76,9 +82,9 @@ trait ExportTrait
                 $rowCount = Excel::store(new OrderExport($data, $headings, $name, $dir), $path);
             } elseif ($dir == 'merchantOrder') {
                 $rowCount = Excel::store(new MerchantOrderExport($data, $headings, $name, $dir), $path);
-            }elseif ($dir == 'addressExcelExport') {
+            } elseif ($dir == 'addressExcelExport') {
                 $rowCount = Excel::store(new AddressExport($data, $headings, $name, $dir), $path);
-            }elseif ($dir == 'billVerify') {
+            } elseif ($dir == 'billVerify') {
                 $rowCount = Excel::store(new BillVerifyExport($data, $headings, $name, $dir), $path);
             } else {
                 $rowCount = Excel::store(new BaseExport($data, $headings, $name, $dir), $path);
