@@ -26,6 +26,7 @@ class MerchantResource extends JsonResource
             'short_name' => $this->short_name,
             'email' => $this->email,
             'country' => $this->country,
+            'auto_settlement' => $this->auto_settlement,
             'settlement_type' => $this->settlement_type,
             'settlement_type_name' => $this->settlement_type_name,
             'merchant_group_id' => $this->merchant_group_id,
