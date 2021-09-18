@@ -33,8 +33,6 @@ return [
             "base" => "基本信息",
             "sender" => "发件人信息",
             "receiver" => "收件人信息",
-            "amount" => "费用信息",
-            "settlement" => "结算信息",
             "other" => "其他信息",
             "package_1" => "包裹一",
             "package_2" => "包裹二",
@@ -46,6 +44,7 @@ return [
             "material_3" => "货物三",
             "material_4" => "货物四",
             "material_5" => "货物五",
+            "amount" => "增值费",
         ],
         [
             'create_date' => "*开单日期",
@@ -76,23 +75,9 @@ return [
             "control_mode" => "控货方式",
             "receipt_type" => "回单要求",
             "receipt_count" => "回单分数",
-
-            "amount_1" => "基础运费",
-            "amount_2" => "货物价值",
-            "amount_3" => "保价费",
-            "amount_4" => "包装费",
-            "amount_5" => "送货费",
-            "amount_6" => "上楼费",
-            "amount_7" => "接货费",
-            "amount_8" => "装卸费",
-            "amount_9" => "其他费用",
-            "amount_10" => "代收货款",
-            "amount_11" => "贷款手续费",
-
             "special_remark" => "特别事项",
             "mask_code" => "掩码",
-            "settlement_amount" => "运费合计",
-            "settlement_type" => "结算方式",
+
 
             "package_no_1" => "*包裹单号",
             "package_name_1" => "包裹名称",

@@ -700,7 +700,7 @@ class TrackingOrderService extends BaseService
      */
     public function removeListFromBatch($idList)
     {
-        $idList = explode_id_string($idList);
+        $idList = explode_id_string($idList['id_list']);
         $dbTrackingOrderList = parent::getList(['id' => ['in', $idList]], ['*'], false)->toArray();
         if (empty($dbTrackingOrderList)) {
             throw new BusinessLogicException('运单的当前状态不能操作，只允许待分配或已分配状态的运单操作');
