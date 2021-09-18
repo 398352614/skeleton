@@ -107,9 +107,8 @@ class Merchant extends Authenticatable implements JWTSubject
         'appointment_days',
         'delay_time',
         'pickup_count',
-        'auto_settlement',
-        'settlement_type_name',
         'auto_settlement_name',
+        'settlement_type_name',
         'pie_count',
     ];
 
@@ -138,10 +137,6 @@ class Merchant extends Authenticatable implements JWTSubject
         return empty($this->country) ? null : CountryTrait::getCountryName($this->country);
     }
 
-    public function getAutoSettlementAttribute()
-    {
-        return empty($this->auto_settlement) ? null : ConstTranslateTrait::statusList($this->auto_settlement);
-    }
 
     public function getAdditionalStatusAttribute()
     {
