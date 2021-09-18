@@ -19,7 +19,8 @@ class FeeService extends BaseService
 {
     public $filterRules = [
         'name' => ['like', 'name'],
-        'payer_type' => ['=', 'payer_type']
+        'payer_type' => ['=', 'payer_type'],
+        'level'=>['=','level']
     ];
 
     public function __construct(Fee $model)
