@@ -23,7 +23,7 @@ class MerchantValidate extends BaseValidate
         'name' => 'required|string|max:100|uniqueIgnore:merchant,id,company_id',
         'email' => 'required|string|max:50|email|uniqueIgnore:merchant,id',
         'country' => 'nullable|string|max:50',
-        'settlement_type' => 'required|integer|in:1,2,3',
+        'settlement_type' => 'required|integer|in:1,2,3,4',
         'merchant_group_id' => 'required|integer',
         'contacter' => 'required|string|max:50',
         'phone' => 'required|string|max:20|regex:/^[0-9 ]([0-9- ])*[0-9 ]$/',
