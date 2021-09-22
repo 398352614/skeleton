@@ -757,16 +757,16 @@ class TourService extends BaseService
         if (intval($batch['status'] !== BaseConstService::BATCH_DELIVERING)) {
             throw new BusinessLogicException('站点当前状态不能签收');
         }
-        if (!empty($params['additional_package_list']) && intval($params['pay_type']) == BaseConstService::BATCH_PAY_TYPE_4) {
-            foreach ($params['additional_package_list'] as $v) {
-                if ($v['sticker_no'] !== '' || $v['delivery_charge'] == BaseConstService::YES) {
-                    throw new BusinessLogicException('顺带包裹费用不为0，不能选择无需支付');
-                }
-            }
-        }
-        if (intval($params['pay_type']) == BaseConstService::BATCH_PAY_TYPE_4 && (intval($params['total_sticker_amount']) !== 0 || intval($params['total_replace_amount']) !== 0 || intval($params['total_settlement_amount']) !== 0 || intval($params['total_delivery_amount']) !== 0)) {
-            throw new BusinessLogicException('费用不为0，不能选择无需支付');
-        }
+//        if (!empty($params['additional_package_list']) && intval($params['pay_type']) == BaseConstService::BATCH_PAY_TYPE_4) {
+//            foreach ($params['additional_package_list'] as $v) {
+//                if ($v['sticker_no'] !== '' || $v['delivery_charge'] == BaseConstService::YES) {
+//                    throw new BusinessLogicException('顺带包裹费用不为0，不能选择无需支付');
+//                }
+//            }
+//        }
+//        if (intval($params['pay_type']) == BaseConstService::BATCH_PAY_TYPE_4 && (intval($params['total_sticker_amount']) !== 0 || intval($params['total_replace_amount']) !== 0 || intval($params['total_settlement_amount']) !== 0 || intval($params['total_delivery_amount']) !== 0)) {
+//            throw new BusinessLogicException('费用不为0，不能选择无需支付');
+//        }
         $line = $this->getLineService()->getInfo(['id' => $tour['line_id']], ['*'], false);
         if (empty($line)) {
             throw new BusinessLogicException('线路已删除，请联系管理员');

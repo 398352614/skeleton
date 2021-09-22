@@ -331,7 +331,7 @@ class BaseConstService
     const BATCH_EXCEPTION_STAGE_2_TYPE_2 = 2;
     const BATCH_EXCEPTION_STAGE_2_TYPE_3 = 3;
 
-    //站点支付类型1-现金支付2-银行支付3-第三方支付4-无需支付
+    //站点支付类型1-现金支付2-银行支付3-第三方支付
     const BATCH_PAY_TYPE_1 = 1;
     const BATCH_PAY_TYPE_2 = 2;
     const BATCH_PAY_TYPE_3 = 3;
