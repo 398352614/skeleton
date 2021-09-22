@@ -140,7 +140,7 @@ class Batch extends BaseModel
 
     public function getPayTypeNameAttribute()
     {
-        return empty($this->pay_type) ? null : ConstTranslateTrait::batchPayTypeList($this->pay_type);
+        return empty($this->pay_type) ? null : ConstTranslateTrait::payTypeList($this->pay_type);
     }
 
     public function getExceptionLabelNameAttribute()
