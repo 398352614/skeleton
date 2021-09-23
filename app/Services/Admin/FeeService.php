@@ -18,6 +18,7 @@ use Illuminate\Support\Arr;
 class FeeService extends BaseService
 {
     public $filterRules = [
+        'status'=>['=','status'],
         'name' => ['like', 'name'],
         'payer_type' => ['=', 'payer_type'],
         'level'=>['=','level']
