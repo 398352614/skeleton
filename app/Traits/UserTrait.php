@@ -18,10 +18,10 @@ Trait UserTrait
             $user = Merchant::query()->where('id', $id)->first();
         } elseif ($type == BaseConstService::USER_ADMIN) {
             $user = Employee::query()->where('id', $id)->first();
-            $user['name'] = $user['username'];
+            $user['name'] = $user['username'] ?? '';
         } elseif ($type == BaseConstService::USER_DRIVER) {
             $user = Driver::query()->where('id', $id)->first();
-            $user['name'] = $user['fullname'];
+            $user['name'] = $user['fullname'] ?? '';
         }
         $user['user_type'] = $type;
         return $user;

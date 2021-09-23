@@ -842,7 +842,7 @@ class OrderService extends BaseService
 //            }
 //        }
         if ($params['settlement_amount'] !== 0) {
-            $transportPrice = $this->getTransportPriceService()->getInfo(['id' => $params['transport_price_id'], ['*'], false], ['*'], false);
+            $transportPrice = $this->getTransportPriceService()->getInfo(['id' => $params['transport_price_id']], ['*'], false);
             if (empty($transportPrice)) {
                 throw new BusinessLogicException('费用不存在');
             } elseif ($transportPrice['status'] == BaseConstService::NO) {

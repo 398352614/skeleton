@@ -300,6 +300,12 @@ class BillService extends BaseService
         return $data;
     }
 
+    /**
+     * @param $data
+     * @param $transportPrice
+     * @param int $status
+     * @throws BusinessLogicException
+     */
     public function storeByTransportPrice($data, $transportPrice, $status = BaseConstService::BILL_VERIFY_STATUS_2)
     {
         $data['expect_amount'] = $data['settlement_amount'];
@@ -309,6 +315,7 @@ class BillService extends BaseService
         $data['mode'] = BaseConstService::BILL_MODE_2;
         $data['create_Date'] = today()->format('Y-m-d');
         $data['actual_amount'] = 0;
+        $data['payer_type'] = $transportPrice['payer_type'];
         if ($transportPrice['payer_type'] == BaseConstService::USER_MERCHANT) {
             $data['payer_id'] = $data['merchant_id'];
             $data['payer_name'] = UserTrait::get($data['payer_id'], BaseConstService::USER_MERCHANT)['name'];
@@ -319,6 +326,7 @@ class BillService extends BaseService
         } elseif ($data['payee_type'] == BaseConstService::FEE_PAYEE_TYPE_7) {
             $data['payee_type'] = BaseConstService::USER_DRIVER;
         }
+        $data['payee_type'] = $transportPrice['payee_type'];
         $data['object_type'] = BaseConstService::BILL_OBJECT_TYPE_1;
         $data['object_no'] = $data['order_no'];
         $data['pay_type'] = $transportPrice['pay_type'] ?? BaseConstService::PAY_TYPE_1;
