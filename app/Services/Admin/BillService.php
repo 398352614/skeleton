@@ -65,9 +65,13 @@ class BillService extends BaseService
     /**
      * 查询
      * @return \Illuminate\Database\Eloquent\Collection
+     * @throws BusinessLogicException
      */
     public function getPageList()
     {
+        if(empty($this->formData['payer_name'])){
+            throw new BusinessLogicException('付款方名称不能为空');
+        }
         if ((!empty($this->formData['user_type']) && $this->formData['user_type'] == BaseConstService::USER_MERCHANT) || empty($this->formData['user_type'])) {
             $where = [];
             if (!empty($this->formData['code'])) {
