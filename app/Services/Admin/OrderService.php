@@ -841,7 +841,7 @@ class OrderService extends BaseService
 //                throw new BusinessLogicException('新增失败');
 //            }
 //        }
-        if ($params['settlement_amount'] == 0) {
+        if ($params['settlement_amount'] !== 0) {
             $transportPrice = $this->getTransportPriceService()->getInfo(['id' => $params['transport_price_id'], ['*'], false], ['*'], false);
             if (empty($transportPrice)) {
                 throw new BusinessLogicException('费用不存在');
