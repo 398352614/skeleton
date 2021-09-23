@@ -1140,8 +1140,8 @@ trait ConstTranslateTrait
     ];
 
     public static $ledgerStatusList = [
-        BaseConstService::LEDGER_STATUS_1 => '无限透支',
-        BaseConstService::LEDGER_STATUS_2 => '有限透支',
+        BaseConstService::LEDGER_STATUS_1 => '是',
+        BaseConstService::LEDGER_STATUS_2 => '否',
     ];
 
     public static $billModeList = [
