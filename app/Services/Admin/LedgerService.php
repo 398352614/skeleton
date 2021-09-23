@@ -93,7 +93,7 @@ class LedgerService extends BaseService
         } else {
             $dbData = $dbData->toArray();
         }
-        $data = Arr::only($data, 'credit');
+        $data = Arr::only($data, ['credit','status']);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
