@@ -60,7 +60,7 @@ class OrderImportService extends BaseService
             "material_3", "", "", "", "", "", "", "", "", "",
             "material_4", "", "", "", "", "", "", "", "", "",
             "material_5", "", "", "", "", "", "", "", "", "",
-            "amount", "", "", "", "", "", "", "", "", "", "", ""
+            "amount"
         ],
         [
             "create_date", "type", "merchant", "out_user_id", "out_order_no",
@@ -275,7 +275,7 @@ class OrderImportService extends BaseService
             }
             $data['expect_total_amount'] = $totalAmount + $data['count_settlement_amount'];
 
-            
+
         } catch (BusinessLogicException $e) {
             $error['log'] = __($e->getMessage(), $e->replace);
         }

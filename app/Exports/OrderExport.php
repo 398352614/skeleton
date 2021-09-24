@@ -74,6 +74,9 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 //合并单元格
+                $endColumn = $event->sheet->getDelegate()->getHighestColumn();
+                $endRow = $event->sheet->getDelegate()->getHighestRow();
+                $cell = 'A1:' . $endColumn . $endRow;
                 $event->sheet->getDelegate()->mergeCells('A1:E1');
                 $event->sheet->getDelegate()->mergeCells('F1:M1');
                 $event->sheet->getDelegate()->mergeCells('N1:U1');
@@ -88,12 +91,9 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
                 $event->sheet->getDelegate()->mergeCells('CD1:CM1');
                 $event->sheet->getDelegate()->mergeCells('CN1:CW1');
                 $event->sheet->getDelegate()->mergeCells('CX1:DG1');
-                $event->sheet->getDelegate()->mergeCells('DH1:DS1');
+                $event->sheet->getDelegate()->mergeCells('DH1:'.$endColumn.'1');
 
 
-                $endColumn = $event->sheet->getDelegate()->getHighestColumn();
-                $endRow = $event->sheet->getDelegate()->getHighestRow();
-                $cell = 'A1:' . $endColumn . $endRow;
 
                 //设置行高
                 $event->sheet->getDelegate()->getRowDimension(1)->setRowHeight(48);
