@@ -580,24 +580,15 @@ class OrderImportService extends BaseService
             }
         }
 
-        for ($i = 0; $i < 11; $i++) {
-            $data['amount_list'][$i]['type'] = $i + 1;
-            if (empty($data['amount_' . ($i + 1)])) {
-                $data['amount_list'][$i]['expect_amount'] = 0;
-            } else {
-                $data['amount_list'][$i]['expect_amount'] = $data['amount_' . ($i + 1)];
-            }
-        }
 
         foreach (array_keys($data) as $k => $v) {
             if (is_integer($v)) {
-                $data['amount_list'][] = [
+                $data['bill_list'][] = [
                     'expect_amount' => $data[$v],
                     'fee_id' => $v
                 ];
             }
         }
-
         $data = Arr::only($data, [
             "create_date", "type", "merchant_id", "out_user_id", "out_order_no",
             "place_fullname", "place_phone", "place_country", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date", "place_address",
@@ -605,7 +596,7 @@ class OrderImportService extends BaseService
             "settlement_amount", "settlement_type",
             "control_mode", "receipt_type", "receipt_count", "special_remark", "mask_code",
 
-            'amount_list',
+            'bill_list',
             'package_list',
             'material_list',
         ]);
