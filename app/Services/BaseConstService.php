@@ -913,7 +913,7 @@ class BaseConstService
     const LEDGER_PAY_TYPE_4 = 4;
 
 
-    //结算方式1-单结2-日结3-周结4-月结
+    //结算方式1-银行2-支票3-现金4-余额
     const PAY_TYPE_1 = 1;
     const PAY_TYPE_2 = 2;
     const PAY_TYPE_3 = 3;
