@@ -244,6 +244,7 @@ Trait AddressTrait
             } elseif (empty($data[$v])) {
                 $data['warehouse_' . $v] = '';
             }
+            $data['warehouse_fullname']=$from['name'];
         }
         return $data;
     }

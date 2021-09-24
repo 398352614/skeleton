@@ -33,6 +33,8 @@ class BillVerifyService extends BaseService
         'pay_type' => ['=', 'pay_type']
     ];
 
+    public $orderBy =['id'=>'desc'];
+
 
     /**
      * AddressService constructor.

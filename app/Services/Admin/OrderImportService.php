@@ -549,7 +549,6 @@ class OrderImportService extends BaseService
             $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
             $data = AddressTrait::warehouseToSecondPlace($newData, $data);
         }
-
         for ($j = 0; $j < 5; $j++) {
             if (!empty($data['package_no_' . ($j + 1)])) {
                 $data['package_list'][$j]['name'] = $data['package_name_' . ($j + 1)] ?? '';
