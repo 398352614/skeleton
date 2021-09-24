@@ -200,6 +200,13 @@ class OrderImportService extends BaseService
                 $error[$v] = $validator->errors()->first($v);
             }
         }
+        foreach (array_keys($data) as $k => $v) {
+            if (is_integer($v)) {
+                if ($data[$v] < 0) {
+                    $error[$v] = __("费用不得小于O");
+                }
+            }
+        }
         //检验货主
         $merchant = $this->getMerchantService()->getInfo(['id' => $data['merchant_id'], 'status' => BaseConstService::MERCHANT_STATUS_1], ['*'], false);
         if (empty($merchant)) {
@@ -273,9 +280,7 @@ class OrderImportService extends BaseService
                     $totalAmount = $totalAmount + $data['amount_' . ($i + 1)];
                 }
             }
-            $data['expect_total_amount'] = $totalAmount + $data['count_settlement_amount'];
-
-
+            $data['expect_total_amount'] = $totalAmount + $data['settlement_amount'];
         } catch (BusinessLogicException $e) {
             $error['log'] = __($e->getMessage(), $e->replace);
         }
@@ -583,6 +588,16 @@ class OrderImportService extends BaseService
                 $data['amount_list'][$i]['expect_amount'] = $data['amount_' . ($i + 1)];
             }
         }
+
+        foreach (array_keys($data) as $k => $v) {
+            if (is_integer($v)) {
+                $data['amount_list'][] = [
+                    'expect_amount' => $data[$v],
+                    'fee_id' => $v
+                ];
+            }
+        }
+
         $data = Arr::only($data, [
             "create_date", "type", "merchant_id", "out_user_id", "out_order_no",
             "place_fullname", "place_phone", "place_country", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date", "place_address",

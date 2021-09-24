@@ -996,18 +996,7 @@ class TrackingOrderService extends BaseService
             throw new BusinessLogicException('网点不存在');
         }
         //填充发件人信息
-        $params = array_merge($params, [
-            'warehouse_fullname' => $warehouse['name'],
-            'warehouse_phone' => $warehouse['phone'],
-            'warehouse_country' => $warehouse['country'],
-            'warehouse_post_code' => $warehouse['post_code'],
-            'warehouse_house_number' => $warehouse['house_number'],
-            'warehouse_city' => $warehouse['city'],
-            'warehouse_street' => $warehouse['street'],
-            'warehouse_address' => $warehouse['address'],
-            'warehouse_lon' => $warehouse['lon'],
-            'warehouse_lat' => $warehouse['lat']
-        ]);
+        $params = AddressTrait::addressToWarehouse($warehouse,$params);
         return $line;
     }
 

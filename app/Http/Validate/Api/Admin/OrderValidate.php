@@ -135,7 +135,7 @@ class OrderValidate extends BaseValidate
         'synchronizeStatusList' => ['id_list'],
         'priceCount' => ['distance',
             'merchant_id', 'execution_date', 'second_execution_date',
-            'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery', 'expect_total_amount', 'actual_amount',
+            'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'replace_amount', 'delivery', 'actual_amount',
             //发货人信息
             'second_place_fullname', 'second_place_phone', 'second_place_country', 'second_place_post_code', 'second_place_house_number',
             'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat', 'second_place_country',

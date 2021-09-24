@@ -82,7 +82,7 @@ Trait AddressTrait
         foreach (self::$place as $k => $v) {
             if (!empty($from[$v])) {
                 $data['second_' . $v] = $from[$v];
-            }elseif (empty($data[$v])) {
+            } elseif (empty($data[$v])) {
                 $data[$v] = '';
             }
         }
@@ -128,7 +128,7 @@ Trait AddressTrait
         foreach (self::$address as $k => $v) {
             if (!empty($from['warehouse_' . $v])) {
                 $data['place_' . $v] = $from['warehouse_' . $v];
-            }elseif (empty($data[$v])) {
+            } elseif (empty($data[$v])) {
                 $data[$v] = '';
             }
         }
@@ -151,7 +151,7 @@ Trait AddressTrait
         foreach (self::$address as $k => $v) {
             if (!empty($from['warehouse_' . $v])) {
                 $data['second_place_' . $v] = $from['warehouse_' . $v];
-            }elseif (empty($data[$v])) {
+            } elseif (empty($data[$v])) {
                 $data[$v] = '';
             }
         }
@@ -170,7 +170,7 @@ Trait AddressTrait
         foreach (self::$address as $k => $v) {
             if (!empty($from[$v])) {
                 $data['place_' . $v] = $from[$v];
-            }elseif (empty($data[$v])) {
+            } elseif (empty($data[$v])) {
                 $data[$v] = '';
             }
         }
@@ -190,7 +190,7 @@ Trait AddressTrait
         foreach (self::$address as $k => $v) {
             if (!empty($from['place_' . $v])) {
                 $data[$v] = $from['place_' . $v];
-            }elseif (empty($data[$v])) {
+            } elseif (empty($data[$v])) {
                 $data[$v] = '';
             }
         }
@@ -209,7 +209,7 @@ Trait AddressTrait
         foreach (self::$address as $k => $v) {
             if (!empty($from['second_place_' . $v])) {
                 $data[$v] = $from['second_place_' . $v];
-            }elseif (empty($data[$v])) {
+            } elseif (empty($data[$v])) {
                 $data[$v] = '';
             }
         }
@@ -228,8 +228,21 @@ Trait AddressTrait
         foreach (self::$address as $k => $v) {
             if (!empty($from['warehouse_' . $v])) {
                 $data[$v] = $from['warehouse_' . $v];
-            }elseif (empty($data[$v])) {
+            } elseif (empty($data[$v])) {
                 $data[$v] = '';
+            }
+        }
+        return $data;
+    }
+
+    public static function addressToWarehouse($from, $to)
+    {
+        $data = $to;
+        foreach (self::$address as $k => $v) {
+            if (!empty($from[$v])) {
+                $data['warehouse_' . $v] = $from[$v];
+            } elseif (empty($data[$v])) {
+                $data['warehouse_' . $v] = '';
             }
         }
         return $data;
