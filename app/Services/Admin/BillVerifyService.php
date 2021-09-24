@@ -58,6 +58,9 @@ class BillVerifyService extends BaseService
         if ($dbBillList->pluck('verify_no')->toArray() == [null]) {
             throw new BusinessLogicException('所选账单已生成对账单');
         }
+        if($dbBillList->pluck('payer_id')->count() > 1){
+            throw new BusinessLogicException('只能生成同货主的对账单');
+        }
         $params['verify_no'] = $this->getOrderNoRuleService()->createBillVerifyNo();
         $params['create_date'] = today()->format('Y-m-d');
         $totalExpectAmount = 0;
