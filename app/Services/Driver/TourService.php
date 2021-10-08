@@ -688,7 +688,7 @@ class TourService extends BaseService
         if ($piePackageList->isNotEmpty()) {
             PackageTrailService::storeByTrackingOrderList($piePackageList->toArray(), BaseConstService::PACKAGE_TRAIL_PIE_CANCEL, array_merge($batch, $data));
         }
-        $this->dealBillList($batch,BaseConstService::BILL_STATUS_3);
+        $this->dealBillList($batch, $params, BaseConstService::BILL_STATUS_3);
         $this->getOrderService()->batchCancel($batch['batch_no']);
         return [$tour, $batch, $cancelTrackingOrderList];
     }
@@ -778,7 +778,7 @@ class TourService extends BaseService
         !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list'], $dbMaterialList);
 
         /*******************************************1.处理站点下的账单*************************************************/
-        $this->dealBillList($batch,BaseConstService::BILL_STATUS_2);
+        $this->dealBillList($batch, $params, BaseConstService::BILL_STATUS_2);
 
         /*******************************************2.处理站点下的包裹*************************************************/
         $info = $this->dealPackageList($batch, $params);
@@ -1629,13 +1629,14 @@ class TourService extends BaseService
         return $arrCount;
     }
 
-    public function dealBillList($batch, $status)
+    public function dealBillList($batch, $params, $status)
     {
         $dbBillList = $this->getBillService()->getByObject($batch);
         foreach ($dbBillList as $k => $v) {
             $this->getBillService()->update(['id' => $v['id']], [
                 'actual_amount' => $v['expect_amount'],
-                'status' => $status
+                'status' => $status,
+                'pay_type' => $params['pay_type']
             ]);
         }
     }
