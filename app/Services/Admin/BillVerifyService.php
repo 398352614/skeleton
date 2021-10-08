@@ -145,7 +145,7 @@ class BillVerifyService extends BaseService
         $billList = $this->getBillService()->getList(['verify_no' => $info['verify_no']], ['*'], false);
         if (!empty($billList)) {
             foreach ($billList as $k => $v) {
-                $this->getBillService()->update(['verify_no' => $info['verify_no']], [
+                $this->getBillService()->update(['bill_no' => $v['bill_no']], [
                     'operator_type' => BaseConstService::USER_ADMIN,
                     'operator_id' => auth()->user()->id,
                     'operator_name' => auth()->user()->username,
