@@ -202,7 +202,7 @@ class Order extends BaseModel
 
     public function getSettlementTypeNameAttribute()
     {
-        return empty($this->settlement_type) ? null : ConstTranslateTrait::orderSettlementTypeList($this->settlement_type);
+        return empty($this->settlement_type) ? null : ConstTranslateTrait::merchantSettlementTypeList($this->settlement_type);
     }
 
     public function getTransportPriceTypeNameAttribute()
