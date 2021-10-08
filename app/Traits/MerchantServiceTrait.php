@@ -2,8 +2,14 @@
 
 namespace App\Traits;
 
+use App\Services\Merchant\JournalService;
 use App\Services\Merchant\BaseLineService;
 use App\Services\Merchant\BaseWarehouseService;
+use App\Services\Merchant\BillService;
+use App\Services\Merchant\CompanyService;
+use App\Services\Merchant\CountryService;
+use App\Services\Merchant\FeeService;
+use App\Services\Merchant\LedgerService;
 use App\Services\Merchant\OrderAmountService;
 use App\Services\Merchant\OrderDefaultConfigService;
 use App\Services\Merchant\OrderTemplateService;
@@ -49,6 +55,54 @@ Trait MerchantServiceTrait
     {
         return self::getInstance(BaseWarehouseService::class);
 
+    }
+
+    /**
+     * @return JournalService
+     */
+    public function getJournalService()
+    {
+        return self::getInstance(JournalService::class);
+    }
+
+    /**
+     * @return LedgerService
+     */
+    public function getLedgerService()
+    {
+        return self::getInstance(LedgerService::class);
+    }
+
+    /**
+     * @return CompanyService
+     */
+    public function getCompanyService()
+    {
+        return self::getInstance(CompanyService::class);
+    }
+
+    /**
+     * @return CountryService
+     */
+    public function getCountryService()
+    {
+        return self::getInstance(CountryService::class);
+    }
+
+    /**
+     * @return BillService
+     */
+    public function getBillService()
+    {
+        return self::getInstance(BillService::class);
+    }
+
+    /**
+     * @return FeeService
+     */
+    public function getFeeService()
+    {
+        return self::getInstance(FeeService::class);
     }
 
     /**

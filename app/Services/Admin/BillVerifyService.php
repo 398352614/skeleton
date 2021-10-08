@@ -153,8 +153,12 @@ class BillVerifyService extends BaseService
                     'verify_time' => now(),
                     'actual_amount' => $v['expect_amount']
                 ]);
+                if ($v['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_2) {
+                    $this->getJournalService()->record(array_merge(collect($v)->toArray(), $data));
+                }
             }
         }
+
     }
 
     /**
