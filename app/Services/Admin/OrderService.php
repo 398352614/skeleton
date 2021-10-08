@@ -204,7 +204,7 @@ class OrderService extends BaseService
         $dbOrder['package_list'] = $this->getPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], true);
         $dbOrder['material_list'] = $this->getMaterialService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         $dbOrder['amount_list'] = $this->getOrderAmountService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
-        $dbOrder['bill_list'] = $this->getBillService()->getList(['object_no' => $dbOrder['order_no'], 'bill_type' => BaseConstService::BILL_TYPE_2, 'object_type' => BaseConstService::BILL_OBJECT_TYPE_1], ['*'], false);
+        $dbOrder['bill_list'] = $this->getBillService()->getList(['object_no' => $dbOrder['order_no'], 'type' => BaseConstService::BILL_TYPE_2, 'object_type' => BaseConstService::BILL_OBJECT_TYPE_1], ['*'], false);
         $merchant = $this->getMerchantService()->getInfo(['id' => $dbOrder['merchant_id']], ['*'], false);
         if (!empty($merchant)) {
             $dbOrder['merchant_id_name'] = $merchant['name'];
