@@ -145,16 +145,17 @@ class BillVerifyService extends BaseService
         $billList = $this->getBillService()->getList(['verify_no' => $info['verify_no']], ['*'], false);
         if (!empty($billList)) {
             foreach ($billList as $k => $v) {
-                $this->getBillService()->update(['bill_no' => $v['bill_no']], [
+                $params = [
                     'operator_type' => BaseConstService::USER_ADMIN,
                     'operator_id' => auth()->user()->id,
                     'operator_name' => auth()->user()->username,
                     'verify_status' => $data['status'],
                     'verify_time' => now(),
                     'actual_amount' => $v['expect_amount']
-                ]);
-                if ($v['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_2) {
-                    $this->getJournalService()->record(array_merge(collect($v)->toArray(), $data));
+                ];
+                $this->getBillService()->update(['bill_no' => $v['bill_no']], $params);
+                if ($data['status'] == BaseConstService::BILL_VERIFY_STATUS_2) {
+                    $this->getJournalService()->record(array_merge(collect($v)->toArray(), $params));
                 }
             }
         }
