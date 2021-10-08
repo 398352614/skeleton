@@ -158,7 +158,7 @@ class BillService extends BaseService
         }
         $data['object_type'] = BaseConstService::BILL_OBJECT_TYPE_1;
         $data['object_no'] = $order['order_no'];
-        $data['pay_type'] = $fee['pay_type'] ?? BaseConstService::PAY_TYPE_1;
+        $data['pay_type'] = null;
         $data['operator_id'] = auth()->user()->id;
         $data['operator_type'] = BaseConstService::USER_ADMIN;
         $data['operator_name'] = auth()->user()->username;
