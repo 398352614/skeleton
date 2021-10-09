@@ -323,7 +323,7 @@ class BillService extends BaseService
         }
         if ($transportPrice['payee_type'] == BaseConstService::USER_COMPANY) {
             $data['payee_id'] = auth()->user()->company_id;
-            $data['payee_name'] = $this->getCompanyService()->getInfo(['id' => auth()->user()->id], ['*'], false)->toArray()['name'] ?? '';
+            $data['payee_name'] = $this->getCompanyService()->getInfo(['id' => auth()->user()->id], ['*'], false)['name'] ?? '';
         } elseif ($data['payee_type'] == BaseConstService::FEE_PAYEE_TYPE_7) {
             $data['payee_type'] = BaseConstService::USER_DRIVER;
         }
