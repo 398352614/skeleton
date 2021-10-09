@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\Data;
+namespace App\Console\Commands\Cron;
 
 use App\Jobs\AutoBillVerify;
 use App\Models\BillVerify;
