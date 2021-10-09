@@ -752,7 +752,7 @@ trait ConstTranslateTrait
     ];
 
     public static $transportPriceTypeList = [
-        BaseConstService::TRANSPORT_PRICE_TYPE_1 => '阶梯乘积值计算（固定费用+（每单位重量价格*重量价格）*（每单位里程价格*里程价格））',
+        BaseConstService::TRANSPORT_PRICE_TYPE_1 => '阶梯乘积值计算（固定费用+（重量价格*重量）*（里程价格*里程））',
         BaseConstService::TRANSPORT_PRICE_TYPE_2 => '阶梯固定值计算（固定费用+（重量价格档）*（里程价格档））',
     ];
 

@@ -37,6 +37,10 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use mysql_xdevapi\Exception;
 
+/**
+ * Class OrderService
+ * @package App\Services\Admin
+ */
 class OrderService extends BaseService
 {
     use ImportTrait, LocationTrait, CountryTrait, ExportTrait;
@@ -170,7 +174,7 @@ class OrderService extends BaseService
             $list[$k]['tracking_order_status_name'] = '';
             $trackingOrder = array_values($trackingOrderList->where('order_no', $v['order_no'])->sortByDesc('id')->toArray());
             $list[$k]['tracking_order_count'] = count($trackingOrder);
-            if (!empty($trackingOrder)) {
+            if (!empty($trackingOrder) && !empty($trackingOrder[0])) {
                 $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]['type_name']) . '-' . __($trackingOrder[0]['status_name']);
                 $list[$k]['tracking_order_status'] = $trackingOrder[0]['status'];
                 if ($list[$k]['status'] == BaseConstService::ORDER_STATUS_2 && $trackingOrder[0]['status'] == BaseConstService::TRACKING_ORDER_STATUS_6) {
