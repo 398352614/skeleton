@@ -877,7 +877,7 @@ class OrderService extends BaseService
         }
         $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
         if (!empty($merchant) && $merchant['auto_settlement'] == BaseConstService::YES && $merchant['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_1) {
-            $billList = $this->getBillService()->getList(['object_no' => $params['order_no']], ['*'], false);
+            $billList = $this->getBillService()->getList(['object_no' => $params['order_no'], 'payer_type' => BaseConstService::FEE_PAYER_TYPE_4], ['*'], false);
             if (!empty($billList)) {
                 $this->getBillVerifyService()->store(['bill_list' => $billList]);
             }
