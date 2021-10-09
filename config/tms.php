@@ -47,6 +47,7 @@ return [
     'env' => env('APP_ENV'),
     'excel' => env('EXCEL'),
     'admin_id' => env('ADMIN_ID'),
+    'test_config_id' => env('TEST_CONFIG_ID'),
     'erp_merchant_id' => env('ERP_MERCHANT_ID'),
     'eushop_merchant_id' => env('EUSHOP_MERCHANT_ID'),
     'old_company_id' => env('OLD_COMPANY_ID'),
