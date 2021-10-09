@@ -9,6 +9,7 @@ use App\Services\Merchant\BillService;
 use App\Services\Merchant\CompanyService;
 use App\Services\Merchant\CountryService;
 use App\Services\Merchant\FeeService;
+use App\Services\Merchant\LedgerLogService;
 use App\Services\Merchant\LedgerService;
 use App\Services\Merchant\OrderAmountService;
 use App\Services\Merchant\OrderDefaultConfigService;
@@ -87,6 +88,14 @@ Trait MerchantServiceTrait
     public function getCountryService()
     {
         return self::getInstance(CountryService::class);
+    }
+
+    /**
+     * @return LedgerLogService
+     */
+    public function getLedgerLogService()
+    {
+        return self::getInstance(LedgerLogService::class);
     }
 
     /**

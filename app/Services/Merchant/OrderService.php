@@ -205,6 +205,12 @@ class OrderService extends BaseService
         $dbOrder['package_list'] = $this->getPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         $dbOrder['material_list'] = $this->getMaterialService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         $dbOrder['amount_list'] = $this->getOrderAmountService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
+        $dbOrder['bill_list'] = $this->getBillService()->getList(['object_no' => $dbOrder['order_no'], 'bill_type' => BaseConstService::BILL_TYPE_2, 'object_type' => BaseConstService::BILL_OBJECT_TYPE_1], ['*'], false);
+        $merchant = $this->getMerchantService()->getInfo(['id' => $dbOrder['merchant_id']], ['*'], false);
+        if (!empty($merchant)) {
+            $dbOrder['merchant_id_name'] = $merchant['name'];
+            $dbOrder['merchant_id_code'] = $merchant['code'];
+        }
         return $dbOrder;
     }
 
@@ -365,6 +371,13 @@ class OrderService extends BaseService
                 $this->getAddressService()->store($address);
             }
         } catch (BusinessLogicException $e) {
+            Log::channel('info')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', ['message' => $e->getMessage()]);
+        } catch (\Exception $e) {
+            Log::channel('info')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
         }
     }
 
@@ -711,6 +724,15 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
+        //验证国家
+        $countryList = $this->getCountryService()->getList([], ['*'], false)->pluck('short')->toArray();
+        if (empty($countryList)) {
+            throw new BusinessLogicException('请先配置国家');
+        }
+        if ((!empty($params['place_country']) && !in_array($params['place_country'], $countryList))
+            || (!empty($params['second_place_country']) && !in_array($params['second_place_country'], $countryList))) {
+            throw new BusinessLogicException('国家不存在');
+        }
         //兼容
         if ($params['place_country'] == 'NL' && post_code_be($params['place_post_code'])) {
             $params['place_country'] = 'BE';
@@ -930,31 +952,44 @@ class OrderService extends BaseService
     }
 
     /**
-     * 添加货物列表
+     * 添加费用列表
      * @param $params
      * @throws BusinessLogicException
      */
     private function addAmountList($params)
     {
-        $dataList = [];
-        //若存在包裹列表,则新增包裹列表
-        if (!empty($params['amount_list'])) {
-            foreach ($params['amount_list'] as $k => $v) {
-                $dataList[$k]['order_no'] = $params['order_no'];
-                $dataList[$k]['expect_amount'] = $v['expect_amount'];
-                $dataList[$k]['actual_amount'] = 0.00;
-                $dataList[$k]['type'] = $v['type'];
-                $dataList[$k]['remark'] = '';
-                $dataList[$k]['status'] = BaseConstService::ORDER_AMOUNT_STATUS_2;
-                if (!empty($v['in_total'])) {
-                    $dataList[$k]['in_total'] = $v['in_total'];
-                } else {
-                    $dataList[$k]['in_total'] = BaseConstService::YES;
+        if ($params['settlement_amount'] !== 0) {
+            $transportPrice = $this->getTransportPriceService()->getInfo(['id' => $params['transport_price_id']], ['*'], false);
+            if (empty($transportPrice)) {
+                throw new BusinessLogicException('费用不存在');
+            } elseif ($transportPrice['status'] == BaseConstService::NO) {
+                throw new BusinessLogicException('费用已禁用');
+            } else {
+                $transportPrice = $transportPrice->toArray();
+                if ($transportPrice['pay_timing'] == BaseConstService::BILL_PAY_TIMING_1) {
+                    $this->getBillService()->storeByTransportPrice($params, $transportPrice, BaseConstService::BILL_VERIFY_STATUS_2);
+                } elseif ($transportPrice['pay_timing'] == BaseConstService::BILL_PAY_TIMING_2) {
+                    $this->getBillService()->storeByTransportPrice($params, $transportPrice);
                 }
             }
-            $rowCount = $this->getOrderAmountService()->insertAll($dataList);
-            if ($rowCount === false) {
-                throw new BusinessLogicException('新增失败');
+        }
+        if (!empty($params['bill_list'])) {
+            $feeList = $this->getFeeService()->getList(['id' => ['in', collect($params['bill_list'])->pluck('fee_id')->toArray()]], ['*'], false);
+            foreach ($params['bill_list'] as $k => $v) {
+                $fee = $feeList->where('id', $v['fee_id'] ?? 0)->first();
+                if (empty($fee)) {
+                    throw new BusinessLogicException('费用不存在');
+                } elseif ($fee['status'] == BaseConstService::NO) {
+                    throw new BusinessLogicException('费用已禁用');
+                } else {
+                    $fee = $fee->toArray();
+                    $v['number'] = $k;
+                    if ($fee['pay_timing'] == BaseConstService::BILL_PAY_TIMING_1) {
+                        $this->getBillService()->orderStore($v, $fee, $params, BaseConstService::BILL_VERIFY_STATUS_2);
+                    } elseif ($fee['pay_timing'] == BaseConstService::BILL_PAY_TIMING_2) {
+                        $this->getBillService()->orderStore($v, $fee, $params);
+                    }
+                }
             }
         }
     }
@@ -965,6 +1000,7 @@ class OrderService extends BaseService
      * @param $data
      * @return bool|int|void
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function updateById($id, $data)
     {
@@ -998,7 +1034,7 @@ class OrderService extends BaseService
         //新增包裹列表和材料列表
         $this->addAllItemList($data);
         //删除费用
-        $rowCount = $this->getOrderAmountService()->delete(['order_no' => $dbOrder['order_no']]);
+        $rowCount = $this->getBillService()->delete(['object_no' => $dbOrder['order_no'], 'object_type' => BaseConstService::BILL_OBJECT_TYPE_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }
@@ -1241,6 +1277,10 @@ class OrderService extends BaseService
         $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_5]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        $rowCount = $this->getBillService()->update(['object_no' => $dbOrder['order_no'], 'object_type' => BaseConstService::BILL_OBJECT_TYPE_1], ['object_no' => '']);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
         if ((!empty($params['no_push']) && $params['no_push'] == 0) || empty($params['no_push'])) {
             //以取消取派方式推送商城

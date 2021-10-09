@@ -757,7 +757,7 @@
     "新增": "Add",
     "修改": "Modify",
     "启用禁用": "Enable/disable",
-    "阶梯乘积值计算（固定费用+（每单位重量价格*重量价格）*（每单位里程价格*里程价格））": "Tiered product value calculation (fixed cost + (price per unit weight * weight price) * (price per unit mileage * mileage price))",
+    "阶梯乘积值计算（固定费用+（重量价格*重量）*（里程价格*里程））": "Tiered product value calculation (fixed cost + (price per unit weight * weight price) * (price per unit mileage * mileage price))",
     "阶梯固定值计算（固定费用+（重量价格档）*（里程价格档））": "Calculation of tiered fixed value (fixed cost + (weight price range) * (mileage price range))",
     "未超期": "Not overdue",
     "已超期": "Overdue",
