@@ -79,6 +79,7 @@ class CountryService extends BaseService
             throw new BusinessLogicException('已添加了国家，不能再次添加国家');
         }
         $count = parent::count();
+        dd(auth()->user()->company_id, config('tms.test_company_id'));
         if ($count >= 3 && (auth()->user()->company_id !== config('tms.test_company_id'))) {
             throw new BusinessLogicException('最多添加三个国家');
         }
@@ -104,7 +105,7 @@ class CountryService extends BaseService
     public function destroy($id)
     {
         $country = parent::getInfo(['id' => $id], ['*'], false);
-        if(!empty($country)){
+        if (!empty($country)) {
             $order = $this->getOrderService()->getList(['place_country' => $country['short']], ['id'], false)->toArray();
             if (!empty($order)) {
                 throw new BusinessLogicException('系统中已维护该国家，不能删除');
