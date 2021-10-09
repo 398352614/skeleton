@@ -80,7 +80,7 @@ class CountryService extends BaseService
         }
         $count = parent::count();
         dd(auth()->user()->company_id, config('tms.test_company_id'));
-        if ($count >= 3 && (auth()->user()->company_id !== config('tms.test_company_id'))) {
+        if ($count >= 3 && (auth()->user()->company_id != config('tms.test_company_id'))) {
             throw new BusinessLogicException('最多添加三个国家');
         }
         $country = CountryTrait::getCountry($params['short']);
