@@ -57,7 +57,7 @@ class BillVerifyService extends BaseService
         if ($dbBillList->isEmpty()) {
             throw new BusinessLogicException('所选账单不存在');
         }
-        if ($dbBillList->pluck('verify_no')->toArray() == [null]) {
+        if ($dbBillList->pluck('verify_no')->toArray() !== [null]) {
             throw new BusinessLogicException('所选账单已生成对账单');
         }
         if (count(array_unique($dbBillList->pluck('payer_id')->toArray())) > 1) {
