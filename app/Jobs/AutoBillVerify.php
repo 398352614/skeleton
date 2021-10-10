@@ -40,7 +40,7 @@ class AutoBillVerify implements ShouldQueue
      *
      * @var int
      */
-    public $tries = 3;
+    public $tries = 0;
 
     private $merchantId;
 
