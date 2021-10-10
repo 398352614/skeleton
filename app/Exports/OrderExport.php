@@ -296,6 +296,7 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
     public function columnWidths(): array
     {
         return [
+            'A' => 15,
             'B' => 15,
             'M' => 15,
             'U' => 15,
