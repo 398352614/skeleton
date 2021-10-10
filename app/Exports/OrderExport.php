@@ -137,9 +137,8 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
                     'H' => implode(',', CountryTrait::getCountryNameList()),
                     'P' => implode(',', CountryTrait::getCountryNameList()),
 
-                    'AG' => implode(',', array_values(ConstTranslateTrait::orderControlModeList())),
-                    'AH' => implode(',', array_values(ConstTranslateTrait::orderReceiptTypeList())),
-                    'AF' => implode(',', array_values(ConstTranslateTrait::orderSettlementTypeList())),
+                    'V' => implode(',', array_values(ConstTranslateTrait::orderControlModeList())),
+                    'W' => implode(',', array_values(ConstTranslateTrait::orderReceiptTypeList())),
 
                     'AD' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
                     'AK' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
@@ -297,18 +296,14 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
     public function columnWidths(): array
     {
         return [
-            'B' => 20,
-            'C' => 15,
-            'F' => 15,
-            'N' => 15,
+            'B' => 15,
             'M' => 15,
             'U' => 15,
-            'E' => 15,
-            'AS' => 15,
-            'AZ' => 15,
-            'BG' => 15,
-            'BN' => 15,
-            'BU' => 15,
+            'AF' => 15,
+            'AM' => 15,
+            'AT' => 15,
+            'BA' => 15,
+            'BH' => 15,
         ];
     }
 
