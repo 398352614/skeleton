@@ -255,7 +255,7 @@ class BillVerifyService extends BaseService
             if (!empty($billList)) {
                 $this->store(['bill_list' => $billList]);
             }
-            $this->getMerchantService()->update(['id' => $merchantId], ['last_settlement_date', today()->format('Y-m-d')]);
+            $this->getMerchantService()->update(['id' => $merchantId], ['last_settlement_date' => today()->format('Y-m-d')]);
         }
     }
 
