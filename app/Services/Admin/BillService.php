@@ -69,7 +69,11 @@ class BillService extends BaseService
      */
     public function getPageList()
     {
-        if ((!empty($this->formData['user_type']) && $this->formData['user_type'] == BaseConstService::USER_MERCHANT) || empty($this->formData['user_type'])) {
+        if ($this->formData['per_page'] == 0) {
+            //获未对账的账单
+            $this->query->whereNull('verify_no');
+            $data = parent::getPageList();
+        } elseif ((!empty($this->formData['user_type']) && $this->formData['user_type'] == BaseConstService::USER_MERCHANT) || empty($this->formData['user_type'])) {
             $where = [];
             if (!empty($this->formData['code'])) {
                 $where['code'] = $this->formData['code'];
@@ -95,10 +99,6 @@ class BillService extends BaseService
                     $data[$k]['merchant_group_name'] = $merchantGroupList->where('id', $merchant['merchant_group_id'])->first()['name'];
                 }
             }
-        } elseif ($this->formData['per_page'] == 0) {
-            //获未对账的账单
-            $this->query->whereNull('verify_no');
-            $data = parent::getPageList();
         } else {
             $data = parent::getPageList();
         }
