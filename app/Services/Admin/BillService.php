@@ -69,7 +69,7 @@ class BillService extends BaseService
      */
     public function getPageList()
     {
-        if ($this->formData['per_page'] == 0) {
+        if (!empty($this->formData['per_page']) && $this->formData['per_page'] == 0) {
             //获未对账的账单
             $this->query->whereNull('verify_no');
             $data = parent::getPageList();
