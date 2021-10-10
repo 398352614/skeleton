@@ -8,6 +8,7 @@ use App\Models\Merchant;
 use App\Services\BaseConstService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 
 class Minute extends Command
 {
@@ -61,6 +62,7 @@ class Minute extends Command
                     && $v['settlement_date'] == now()->day)
             ) {
                 if ($v['last_settlement_date'] !== today()->format('Y-m-d')) {
+                    Log::channel('roll')->info(__CLASS__ .'.'. __FUNCTION__ .'.'. '$merchantList', $v);
                     dispatch(new AutoBillVerify($v['id']));
                 }
             }
