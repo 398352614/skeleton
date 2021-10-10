@@ -1091,6 +1091,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::post('/{id}/verify', 'BillVerifyController@verify')->name('bill-verify.verify');
         //删除
         Route::delete('/{id}', 'BillVerifyController@destroy')->name('bill-verify.destroy');
+        //删除
+        Route::post('/auto/{id}', 'BillVerifyController@autoStore')->name('bill-verify.store');
     });
 
     //流水

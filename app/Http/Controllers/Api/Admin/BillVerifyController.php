@@ -39,6 +39,16 @@ class BillVerifyController extends BaseController
 
     /**
      * @param $id
+     * @return void
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function autoStore($id)
+    {
+        return $this->service->autoStore($id);
+    }
+
+    /**
+     * @param $id
      * @return mixed
      * @throws \App\Exceptions\BusinessLogicException
      */

@@ -95,9 +95,25 @@ class BillService extends BaseService
                     $data[$k]['merchant_group_name'] = $merchantGroupList->where('id', $merchant['merchant_group_id'])->first()['name'];
                 }
             }
+        } elseif ($this->formData['per_page'] == 0) {
+            //获未对账的账单
+            $this->query->whereNull('verify_no');
+            $data = parent::getPageList();
         } else {
             $data = parent::getPageList();
         }
+        return $data;
+    }
+
+    /**
+     * @param $merchantId
+     * @param $dateTime
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function getNotVerifyList($merchantId, $dateTime)
+    {
+        $this->query->whereNull('verify_no');
+        $data = $this->getList(['payer_id' => $merchantId, 'verify_status' => BaseConstService::BILL_VERIFY_STATUS_1, 'created_at' => ['<', $dateTime]], ['*'], false);
         return $data;
     }
 

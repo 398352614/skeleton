@@ -15,6 +15,7 @@ use App\Models\Ledger;
 use App\Models\Merchant;
 use App\Services\BaseConstService;
 use Illuminate\Support\Arr;
+use WebSocket\Base;
 
 
 class BillVerifyService extends BaseService
@@ -57,7 +58,7 @@ class BillVerifyService extends BaseService
         if ($dbBillList->isEmpty()) {
             throw new BusinessLogicException('所选账单不存在');
         }
-        if ($dbBillList->pluck('verify_no')->toArray() !== [null]) {
+        if ($dbBillList->pluck('verify_no')->unique()->toArray() !== [null]) {
             throw new BusinessLogicException('所选账单已生成对账单');
         }
         if (count(array_unique($dbBillList->pluck('payer_id')->toArray())) > 1) {
@@ -243,18 +244,16 @@ class BillVerifyService extends BaseService
         $merchant = $this->getMerchantService()->getInfo(['id' => $merchantId, 'status' => BaseConstService::YES], ['*'], false);
         if ($merchant['last_settlement_date'] !== today()->format('Y-m-d')) {
             if ($merchant['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_2 && !empty($merchant['settlement_time'])) {
-                $time = explode('-', $merchant['settlement_time']);
-                $dateTime = today()->addHours($time[0])->addMinutes($time[1]);
-                $billList = $this->getBillService()->getList(['verify_status' => BaseConstService::BILL_VERIFY_STATUS_1, 'created_at' => ['<', $dateTime]], ['*'], false);
+                $time = explode(':', $merchant['settlement_time']);
+                $dateTime = today()->addHours($time[0])->addMinutes($time[1])->format('Y-m-d H:i:s');
+                $billList = $this->getBillService()->getNotVerifyList($merchantId, $dateTime);
             } elseif ($merchant['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_3 && !empty($merchant['settlement_week'])) {
-                $billList = $this->getBillService()->getList(['verify_status' => BaseConstService::BILL_VERIFY_STATUS_1, 'create_date' => ['<', today()->format('Y-m-d')]], ['*'], false);
+                $billList = $this->getBillService()->getList(['payer_id' => $merchantId, 'verify_status' => BaseConstService::BILL_VERIFY_STATUS_1, 'verify_no' => null, 'create_date' => ['<', today()->format('Y-m-d')]], ['*'], false);
             } elseif ($merchant['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_4 && !empty($merchant['settlement_date'])) {
-                $billList = $this->getBillService()->getList(['verify_status' => BaseConstService::BILL_VERIFY_STATUS_1, 'create_date' => ['<', today()->format('Y-m-d')]], ['*'], false);
+                $billList = $this->getBillService()->getList(['payer_id' => $merchantId, 'verify_status' => BaseConstService::BILL_VERIFY_STATUS_1, 'verify_no' => null, 'create_date' => ['<', today()->format('Y-m-d')]], ['*'], false);
             }
             if (!empty($billList)) {
-                $this->store([
-                    'bill_list' => $billList->pluck('bill_no')->toArray()
-                ]);
+                $this->store(['bill_list' => $billList]);
             }
             $this->getMerchantService()->update(['id' => $merchantId], ['last_settlement_date', today()->format('Y-m-d')]);
         }
