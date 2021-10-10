@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 
 /**
@@ -122,7 +123,11 @@ class Fee extends BaseModel
 
     public function getPayeeTypeNameAttribute()
     {
-        return empty($this->payee_type) ? null : ConstTranslateTrait::userTypeList($this->payee_type);
+        if($this->payee_type == BaseConstService::FEE_PAYEE_TYPE_7){
+            return ConstTranslateTrait::userTypeList(BaseConstService::USER_DRIVER);
+        }else{
+            return empty($this->payee_type) ? null : ConstTranslateTrait::userTypeList($this->payee_type);
+        }
     }
 
     public function getObjectTypeNameAttribute()
