@@ -66,19 +66,20 @@ class AutoBillVerify implements ShouldQueue
     public function handle()
     {
         $billVerifyService = FactoryInstanceTrait::getInstance(BillVerifyService::class);
-        $merchantService = FactoryInstanceTrait::getInstance(MerchantService::class);
-
-        /** @var $billVerifyService BillVerifyService*/
+        /** @var $billVerifyService BillVerifyService */
         try {
             $billVerifyService->autoStore($this->merchantId);
-        }catch (BusinessLogicException $e){
+        } catch (BusinessLogicException $e) {
             Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'message' => $e->getMessage()
             ]);
         }
-        $merchantService->update(['id' => $this->merchantId], ['last_settlement_date' => today()->format('Y-m-d')]);
+        $row = Merchant::query()->where('id', $this->merchantId)->update(['last_settlement_date' => today()->format('Y-m-d')]);
+        if ($row == false) {
+            Log::info(1);
+        }
     }
 
 }
