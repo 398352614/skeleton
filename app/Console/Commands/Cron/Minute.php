@@ -48,6 +48,7 @@ class Minute extends Command
 
     public function autoBillVerify()
     {
+        Log::info(6);
         $merchantList = Merchant::query()->where('status', BaseConstService::YES)->where('auto_settlement', BaseConstService::YES)->get();
         foreach ($merchantList as $k => $v) {
             if (
@@ -69,6 +70,8 @@ class Minute extends Command
                 }
                 Log::info(2);
             }
+            Log::info(4);
         }
+        Log::info(5);
     }
 }
