@@ -48,9 +48,11 @@ class Minute extends Command
 
     public function autoBillVerify()
     {
-        Log::info(6);
         $merchantList = Merchant::query()->where('status', BaseConstService::YES)->where('auto_settlement', BaseConstService::YES)->get();
         foreach ($merchantList as $k => $v) {
+            Log::info($v['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_2);
+            Log::info(!empty($v['settlement_time']));
+            Log::info($v['settlement_time'] < now()->format('H-i'));
             if (
                 ($v['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_2
                     && !empty($v['settlement_time'])
