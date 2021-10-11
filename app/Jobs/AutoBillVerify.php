@@ -4,6 +4,7 @@
 namespace App\Jobs;
 
 
+use App\Exceptions\BusinessLogicException;
 use App\Models\BillVerify;
 use App\Models\Merchant;
 use App\Services\Admin\BillVerifyService;
@@ -67,7 +68,7 @@ class AutoBillVerify implements ShouldQueue
         /** @var $billVerifyService BillVerifyService*/
         try {
             $billVerifyService->autoStore($this->merchantId);
-        }catch (Exception $e){
+        }catch (BusinessLogicException $e){
             Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
