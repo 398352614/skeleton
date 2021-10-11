@@ -170,6 +170,13 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
 
     Route::post('order-dispatch-info', 'OrderController@getOrderDispatchInfo');//派送情况
 
+    //账单
+    Route::prefix('bill')->group(function () {
+        //列表
+        Route::get('/', 'BillController@index')->name('bill.index');
+        //列表
+        Route::get('/{id}', 'BillController@show')->name('bill.show');
+    });
 
     //    //运单管理
 //    Route::prefix('tracking-order')->group(function () {

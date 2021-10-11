@@ -6,16 +6,15 @@
  * Time: 13:38
  */
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Merchant;
 
 
 use App\Http\Controllers\BaseController;
-use App\Services\Admin\BillService;
-use App\Services\Admin\LedgerService;
+use App\Services\Merchant\BillService;
 
 /**
  * Class AddressController
- * @package App\Http\Controllers\Api\Admin
+ * @package App\Http\Controllers\Api\Merchant
  * @property BillService $service
  */
 class BillController extends BaseController
