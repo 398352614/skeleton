@@ -61,10 +61,13 @@ class Minute extends Command
                     && !empty($v['settlement_date'])
                     && $v['settlement_date'] == now()->day)
             ) {
-                if ($v['last_settlement_date'] !== today()->format('Y-m-d')) {
+                Log::info(1);
+                if ($v['last_settlement_date'] > today()->format('Y-m-d')) {
+                    Log::info(3);
                     Log::channel('roll')->info(__CLASS__ .'.'. __FUNCTION__ .'.'. '$merchantList', collect($v)->toArray());
                     dispatch(new AutoBillVerify($v['id']));
                 }
+                Log::info(2);
             }
         }
     }
