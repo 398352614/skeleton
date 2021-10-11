@@ -76,6 +76,8 @@ class AutoBillVerify implements ShouldQueue
                 'message' => $e->getMessage()
             ]);
         }
+        Log::info($this->merchantId);
+        Log::info(today()->format('Y-m-d'));
         $row = Merchant::query()->where('id', $this->merchantId)->update(['last_settlement_date' => today()->format('Y-m-d')]);
         if ($row == false) {
             Log::info(1);
