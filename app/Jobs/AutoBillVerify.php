@@ -61,6 +61,7 @@ class AutoBillVerify implements ShouldQueue
      */
     public function handle()
     {
+        Log::info('job start');
         $billVerifyService = FactoryInstanceTrait::getInstance(BillVerifyService::class);
         /** @var $billVerifyService BillVerifyService */
         try {
