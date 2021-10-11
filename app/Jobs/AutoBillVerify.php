@@ -5,18 +5,14 @@ namespace App\Jobs;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Models\BillVerify;
 use App\Models\Merchant;
 use App\Services\Admin\BillVerifyService;
-use App\Services\Admin\MerchantService;
-use App\Services\Admin\TourService;
 use App\Traits\FactoryInstanceTrait;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use mysql_xdevapi\Exception;
 
 class AutoBillVerify implements ShouldQueue
 {
@@ -37,7 +33,7 @@ class AutoBillVerify implements ShouldQueue
      *
      * @var int
      */
-    public $timeout = 30;
+    public $timeout = 2;
 
     /**
      * 任务可以尝试的最大次数。
