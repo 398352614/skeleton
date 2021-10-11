@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 
 use App\Http\Controllers\BaseController;
+use App\Jobs\AutoBillVerify;
 use App\Services\Admin\BillVerifyService;
 
 /**
@@ -44,7 +45,7 @@ class BillVerifyController extends BaseController
      */
     public function autoStore($id)
     {
-        return $this->service->autoStore($id);
+        dispatch(new AutoBillVerify($id));
     }
 
     /**
