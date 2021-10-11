@@ -8,6 +8,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\BillVerify;
 use App\Models\Merchant;
 use App\Services\Admin\BillVerifyService;
+use App\Services\Admin\MerchantService;
 use App\Services\Admin\TourService;
 use App\Traits\FactoryInstanceTrait;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -65,6 +66,8 @@ class AutoBillVerify implements ShouldQueue
     public function handle()
     {
         $billVerifyService = FactoryInstanceTrait::getInstance(BillVerifyService::class);
+        $merchantService = FactoryInstanceTrait::getInstance(MerchantService::class);
+
         /** @var $billVerifyService BillVerifyService*/
         try {
             $billVerifyService->autoStore($this->merchantId);
@@ -75,6 +78,7 @@ class AutoBillVerify implements ShouldQueue
                 'message' => $e->getMessage()
             ]);
         }
+        $merchantService->update(['id' => $this->merchantId], ['last_settlement_date' => today()->format('Y-m-d')]);
     }
 
 }
