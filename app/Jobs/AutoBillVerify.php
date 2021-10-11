@@ -13,6 +13,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+use mysql_xdevapi\Exception;
 
 class AutoBillVerify implements ShouldQueue
 {
@@ -63,7 +65,15 @@ class AutoBillVerify implements ShouldQueue
     {
         $billVerifyService = FactoryInstanceTrait::getInstance(BillVerifyService::class);
         /** @var $billVerifyService BillVerifyService*/
-        $billVerifyService->autoStore($this->merchantId);
+        try {
+            $billVerifyService->autoStore($this->merchantId);
+        }catch (Exception $e){
+            Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
 }

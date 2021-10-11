@@ -50,15 +50,10 @@ class Minute extends Command
     {
         $merchantList = Merchant::query()->where('status', BaseConstService::YES)->where('auto_settlement', BaseConstService::YES)->get();
         foreach ($merchantList as $k => $v) {
-            Log::info($v['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_2);
-            Log::info(!empty($v['settlement_time']));
-            Log::info($v['settlement_time']);
-            Log::info(now()->format('H-i'));
-
             if (
                 ($v['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_2
                     && !empty($v['settlement_time'])
-                    && $v['settlement_time'] < now()->format('H-i')) or
+                    && $v['settlement_time'] < now()->format('H:i')) or
                 ($v['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_3
                     && !empty($v['settlement_week'])
                     && $v['settlement_week'] == now()->dayOfWeek) or
@@ -66,16 +61,11 @@ class Minute extends Command
                     && !empty($v['settlement_date'])
                     && $v['settlement_date'] == now()->day)
             ) {
-                Log::info(1);
                 if ($v['last_settlement_date'] < today()->format('Y-m-d')) {
-                    Log::info(3);
                     Log::channel('roll')->info(__CLASS__ .'.'. __FUNCTION__ .'.'. '$merchantList', collect($v)->toArray());
                     dispatch(new AutoBillVerify($v['id']));
                 }
-                Log::info(2);
             }
-            Log::info(4);
         }
-        Log::info(5);
     }
 }
