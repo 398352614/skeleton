@@ -257,7 +257,7 @@ class OrderImportService extends BaseService
         try {
             //检查网点
             if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
-                $this->getLineService()->getInfoByRule($data, BaseConstService::TRACKING_ORDER_OR_BATCH_1, BaseConstService::YES);
+                $this->getLineService()->getInfoByRule($data, BaseConstService::TRACKING_ORDER_OR_BATCH_1, BaseConstService::NO);
                 $this->getTrackingOrderService()->fillWarehouseInfo($data, BaseConstService::NO);
             } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
                 $address = $this->getBaseWarehouseService()->pieAddress($data, 2);
