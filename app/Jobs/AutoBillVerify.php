@@ -30,7 +30,7 @@ class AutoBillVerify implements ShouldQueue
      *
      * @var string|null
      */
-    public $queue = 'bill-verify';
+    public $queue = 'auto-bill-verify';
 
     /**
      * 任务可以执行的最大秒数 (超时时间)。
@@ -44,7 +44,7 @@ class AutoBillVerify implements ShouldQueue
      *
      * @var int
      */
-    public $tries = 0;
+    public $tries = 1;
 
     private $merchantId;
 
@@ -76,8 +76,6 @@ class AutoBillVerify implements ShouldQueue
                 'message' => $e->getMessage()
             ]);
         }
-        Log::info($this->merchantId);
-        Log::info(today()->format('Y-m-d'));
         $row = Merchant::query()->where('id', $this->merchantId)->update(['last_settlement_date' => today()->format('Y-m-d')]);
         if ($row == false) {
             Log::info(1);
