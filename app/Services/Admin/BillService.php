@@ -62,6 +62,7 @@ class BillService extends BaseService
         }
         if ($params['pay_timing'] == BaseConstService::FEE_PAY_TYPE_1) {
             $this->getJournalService()->record($params);
+            $this->getLedgerService()->deduct($params['payer_type'], $params['payer_id'], $params['expect_amount']);
         }
     }
 
@@ -124,7 +125,7 @@ class BillService extends BaseService
      * @param array $data
      * @throws BusinessLogicException
      */
-    public function merchantRecharge(array $data)
+    public function storeByRecharge(array $data)
     {
         $data['mode'] = BaseConstService::BILL_MODE_1;
         $data['create_Date'] = today()->format('Y-m-d');
@@ -139,7 +140,7 @@ class BillService extends BaseService
         $data['operator_type'] = BaseConstService::USER_ADMIN;
         $data['operator_name'] = auth()->user()->username;
         $data['create_timing'] = BaseConstService::BILL_CREATE_TIMING_2;
-        $data['pay_timing'] = BaseConstService::BILL_PAY_TIMING_1;
+        $data['pay_timing'] = BaseConstService::BILL_PAY_TIMING_4;
         $data['status'] = BaseConstService::BILL_STATUS_2;
         self::store($data);
     }
@@ -151,7 +152,7 @@ class BillService extends BaseService
      * @param int $status
      * @throws BusinessLogicException
      */
-    public function orderStore($data, $fee, $order, $status = BaseConstService::BILL_VERIFY_STATUS_1)
+    public function storeByFee($data, $fee, $order, $status = BaseConstService::BILL_VERIFY_STATUS_1)
     {
         $data['type'] = BaseConstService::BILL_TYPE_2;
         $data['fee_id'] = $fee['id'];
@@ -182,8 +183,8 @@ class BillService extends BaseService
         }
         $data['object_type'] = BaseConstService::BILL_OBJECT_TYPE_1;
         $data['object_no'] = $order['order_no'];
-        if($fee['pay_type'] == BaseConstService::FEE_PAY_TYPE_1){
-            $data['pay_type'] =  BaseConstService::PAY_TYPE_4;
+        if ($fee['pay_type'] == BaseConstService::FEE_PAY_TYPE_1) {
+            $data['pay_type'] = BaseConstService::PAY_TYPE_4;
         }
         $data['operator_id'] = auth()->user()->id;
         $data['operator_type'] = BaseConstService::USER_ADMIN;
@@ -358,8 +359,8 @@ class BillService extends BaseService
         $data['payee_type'] = $transportPrice['payee_type'];
         $data['object_type'] = BaseConstService::BILL_OBJECT_TYPE_1;
         $data['object_no'] = $data['order_no'];
-        if($transportPrice['pay_type'] == BaseConstService::FEE_PAY_TYPE_1){
-            $data['pay_type'] =  BaseConstService::PAY_TYPE_4;
+        if ($transportPrice['pay_type'] == BaseConstService::FEE_PAY_TYPE_1) {
+            $data['pay_type'] = BaseConstService::PAY_TYPE_4;
         }
         $data['operator_id'] = auth()->user()->id;
         $data['operator_type'] = BaseConstService::USER_ADMIN;

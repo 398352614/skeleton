@@ -46,7 +46,7 @@ class CreateBillTable extends Migration
             $table->string('operator_name')->default('')->nullable()->comment('操作人名称');
 
             $table->tinyInteger('create_timing')->default(null)->nullable()->comment('产生时机1-手动2-下单时3-取货完成时4-派送完成时');
-            $table->tinyInteger('pay_timing')->default(1)->nullable()->comment('支付时机1-手动2-下单时3-取货完成时4-派送完成时');
+            $table->tinyInteger('pay_timing')->default(1)->nullable()->comment('支付时机1-下单时2-取件时3-派件时4-其他');
 
             $table->index('company_id', 'company_id');
             $table->index('bill_no', 'bill_no');

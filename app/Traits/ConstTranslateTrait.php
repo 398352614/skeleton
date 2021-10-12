@@ -270,9 +270,9 @@ trait ConstTranslateTrait
         BaseConstService::FLOW_CAR_MANAGEMENT_INDEX => '智能管车'
     ];
 
-    public static $feePayTypeList=[
-        BaseConstService::FEE_PAY_TYPE_1=>'系统结算',
-        BaseConstService::FEE_PAY_TYPE_2=>'现场结算',
+    public static $feePayTypeList = [
+        BaseConstService::FEE_PAY_TYPE_1 => '系统结算',
+        BaseConstService::FEE_PAY_TYPE_2 => '现场结算',
     ];
 
     //快捷方式路由列表(前端需要)
@@ -983,7 +983,6 @@ trait ConstTranslateTrait
     ];
 
 
-
     //重量单位
     publiC static $weightUnitTypeList = [
         BaseConstService::WEIGHT_UNIT_TYPE_1 => '千克',
@@ -1160,6 +1159,7 @@ trait ConstTranslateTrait
         BaseConstService::BILL_PAY_TIMING_1 => '下单时',
         BaseConstService::BILL_PAY_TIMING_2 => '取件时',
         BaseConstService::BILL_PAY_TIMING_3 => '派件时',
+        BaseConstService::BILL_PAY_TIMING_4 => '其他',
     ];
 
     public static $billVerifyStatusList = [

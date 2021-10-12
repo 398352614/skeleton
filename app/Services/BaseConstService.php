@@ -939,6 +939,7 @@ class BaseConstService
     const BILL_PAY_TIMING_1 = 1;
     const BILL_PAY_TIMING_2 = 2;
     const BILL_PAY_TIMING_3 = 3;
+    const BILL_PAY_TIMING_4 = 4;
 
     //账单审核状态
     const BILL_VERIFY_STATUS_1 = 1;

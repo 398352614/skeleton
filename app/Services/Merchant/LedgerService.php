@@ -174,4 +174,26 @@ class LedgerService extends BaseService
         }
     }
 
+    /**
+     * @param int $payerType
+     * @param $payeeId
+     * @param $expectAmount
+     * @throws BusinessLogicException
+     */
+    public function deduct(int $payerType, $payeeId, $expectAmount)
+    {
+        $data = parent::getInfoLock(['user_type' => $payerType, 'user_id' => $payeeId], ['*'], false);
+        if (empty($data)) {
+            throw new BusinessLogicException('账户不存在');
+        }
+        $balance = $data['balance'] - $expectAmount;
+        if ($balance < -$data['credit']) {
+            throw new BusinessLogicException('信用额度已到达上限，请及时充值');
+        }
+        $row = parent::updateById($data['id'], ['balance' => $balance]);
+        if ($row == false) {
+            throw new BusinessLogicException('操作失败');
+        }
+    }
+
 }

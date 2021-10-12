@@ -872,9 +872,9 @@ class OrderService extends BaseService
                     $fee = $fee->toArray();
                     $v['number'] = $k;
                     if ($fee['pay_timing'] == BaseConstService::BILL_PAY_TIMING_1) {
-                        $this->getBillService()->orderStore($v, $fee, $params, BaseConstService::BILL_VERIFY_STATUS_2);
+                        $this->getBillService()->storeByFee($v, $fee, $params, BaseConstService::BILL_VERIFY_STATUS_2);
                     } elseif ($fee['pay_timing'] == BaseConstService::BILL_PAY_TIMING_2) {
-                        $this->getBillService()->orderStore($v, $fee, $params);
+                        $this->getBillService()->storeByFee($v, $fee, $params);
                     }
                 }
             }

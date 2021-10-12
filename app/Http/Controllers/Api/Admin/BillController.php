@@ -40,7 +40,7 @@ class BillController extends BaseController
      */
     public function merchantRecharge()
     {
-        return $this->service->merchantRecharge($this->data);
+        return $this->service->storeByRecharge($this->data);
     }
 
 //    /**
