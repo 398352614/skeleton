@@ -36,7 +36,9 @@ use App\Services\Driver\TrackingOrderMaterialService;
 use App\Services\Driver\TrackingOrderPackageService;
 use App\Services\Driver\TrackingOrderService;
 use App\Services\Driver\TrackingPackageService;
+use App\Services\Driver\TransportPriceService;
 use App\Services\Driver\WareHouseService;
+use App\Services\Driver\FeeService;
 use App\Services\OrderNoRuleService;
 use App\Services\PackageNoRuleService;
 
@@ -50,6 +52,22 @@ Trait DriverServiceTrait
     public function getMerchantService()
     {
         return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * @return FeeService
+     */
+    public function getFeeService()
+    {
+        return self::getInstance(FeeService::class);
+    }
+
+    /**
+     * @return TransportPriceService
+     */
+    public function getTransportPriceService()
+    {
+        return self::getInstance(TransportPriceService::class);
     }
 
     /**

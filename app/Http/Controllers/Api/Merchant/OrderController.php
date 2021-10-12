@@ -10,7 +10,6 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 use App\Exceptions\BusinessLogicException;
-use App\Jobs\OrderStore;
 use App\Services\BaseConstService;
 use App\Services\Merchant\OrderService;
 use Illuminate\Database\Eloquent\Builder;
@@ -71,6 +70,7 @@ class OrderController extends OrderBaseController
     /**
      * 新增
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function store()
     {
@@ -90,6 +90,7 @@ class OrderController extends OrderBaseController
      * @param $id
      * @return bool|int|void
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function update($id)
     {
@@ -101,6 +102,7 @@ class OrderController extends OrderBaseController
      * @param $id
      * @return array
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function updateAddressDate($id)
     {

@@ -256,35 +256,37 @@ class BillService extends BaseService
         return $data;
     }
 
+    /**
+     * @param $info
+     * @return array
+     */
     public function getListByBatch($info)
     {
         $packageList = $this->getTrackingOrderPackageService()->getList(['batch_no' => $info['batch_no']], ['*'], false);
         $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false);
         $data = array_merge(
+            //站点费用
             parent::getList([
                 'object_no' => $info['batch_no'],
                 'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
                 'type' => BaseConstService::BILL_TYPE_2
             ], ['*'], false)->toArray() ?? [],
+            //包裹费用
             parent::getList([
                 'object_no' => ['in', $packageList->pluck('express_first_no')->toArray()],
                 'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
                 'type' => BaseConstService::BILL_TYPE_2
             ], ['*'], false)->toArray() ?? [],
-            parent::getList(['object_no' => ['in', $trackingOrderList->pluck('order_no')->toArray()],
+            //取件订单费用
+            parent::getList(['object_no' => ['in', $trackingOrderList->where('type', BaseConstService::TRACKING_ORDER_TYPE_1)->pluck('order_no')->toArray()],
                 'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
-                'type' => BaseConstService::BILL_TYPE_2
+                'pay_timing' => BaseConstService::BILL_PAY_TIMING_2
             ], ['*'], false)->toArray() ?? [],
-            parent::getList(['object_no' => ['in', $trackingOrderList->where('type',BaseConstService::TRACKING_ORDER_TYPE_1)->pluck('order_no')->toArray()],
+            //派件订单费用
+            parent::getList(['object_no' => ['in', $trackingOrderList->where('type', BaseConstService::TRACKING_ORDER_TYPE_2)->pluck('order_no')->toArray()],
                 'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
-                'type' => BaseConstService::BILL_TYPE_1,
-                'payer_type' => BaseConstService::FEE_PAYER_TYPE_5
-            ], ['*'], false)->toArray() ?? [],
-            parent::getList(['object_no' => ['in', $trackingOrderList->where('type',BaseConstService::TRACKING_ORDER_TYPE_2)->pluck('order_no')->toArray()],
-                'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
-                'type' => BaseConstService::BILL_TYPE_1,
-                'payer_type' => BaseConstService::FEE_PAYER_TYPE_6
-            ], ['*'], false)->toArray() ?? [],
+                'pay_timing' => BaseConstService::BILL_PAY_TIMING_3
+            ], ['*'], false)->toArray() ?? []
         );
         $data = collect($data)->groupBy('fee_id')->toArray();
         $newData = [];

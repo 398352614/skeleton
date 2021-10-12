@@ -23,6 +23,7 @@ class TransportPriceValidate extends BaseValidate
         'starting_price' => 'nullable|numeric|gte:0',
         'remark' => 'nullable|string|max:250',
         'status' => 'required|integer|in:1,2',
+        'payer_type'=>'required|string',
         //公里计费列表
         'km_list.*.start' => 'required_with:km_list|integer',
         'km_list.*.end' => 'required_with:km_list|integer|gt:km_list.*.start',
@@ -46,13 +47,13 @@ class TransportPriceValidate extends BaseValidate
 
     public $scene = [
         'store' => [
-            'name', 'starting_price', 'remark', 'status',
+            'name', 'starting_price', 'remark', 'status','payer_type',
             'km_list', 'km_list.*.start', 'km_list.*.end', 'km_list.*.price',
             'weight_list', 'weight_list.*.start', 'weight_list.*.end', 'weight_list.*.price',
             'special_time_list', 'special_time_list.*.start', 'special_time_list.*.end', 'special_time_list.*.price','type'
         ],
         'update' => [
-            'name', 'starting_price', 'remark', 'status',
+            'name', 'starting_price', 'remark', 'status','payer_type',
             'km_list', 'km_list.*.start', 'km_list.*.end', 'km_list.*.price',
             'weight_list', 'weight_list.*.start', 'weight_list.*.end', 'weight_list.*.price',
             'special_time_list', 'special_time_list.*.start', 'special_time_list.*.end', 'special_time_list.*.price','type'

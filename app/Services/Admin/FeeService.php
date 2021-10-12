@@ -18,10 +18,10 @@ use Illuminate\Support\Arr;
 class FeeService extends BaseService
 {
     public $filterRules = [
-        'status'=>['=','status'],
+        'status' => ['=', 'status'],
         'name' => ['like', 'name'],
         'payer_type' => ['=', 'payer_type'],
-        'level'=>['=','level']
+        'level' => ['=', 'level']
     ];
 
     public function __construct(Fee $model)
@@ -52,9 +52,15 @@ class FeeService extends BaseService
         if ($params['payer_type'] == BaseConstService::FEE_PAYER_TYPE_4) {
             $params['pay_type'] = BaseConstService::FEE_PAY_TYPE_1;
             $params['payee_type'] = BaseConstService::FEE_PAYEE_TYPE_1;
+            $params['pay_timing'] = BaseConstService::BILL_PAY_TIMING_1;
         } elseif (in_array($params['payer_type'], [BaseConstService::FEE_PAYER_TYPE_5, BaseConstService::FEE_PAYER_TYPE_6])) {
             $params['pay_type'] = BaseConstService::FEE_PAY_TYPE_2;
             $params['payee_type'] = BaseConstService::FEE_PAYEE_TYPE_7;
+            if ($params['payer_type'] == BaseConstService::FEE_PAYER_TYPE_5) {
+                $params['pay_timing'] = BaseConstService::BILL_PAY_TIMING_2;
+            } else {
+                $params['pay_timing'] = BaseConstService::BILL_PAY_TIMING_3;
+            }
         }
         $rowCount = parent::create($params);
         if ($rowCount === false) {
@@ -75,6 +81,18 @@ class FeeService extends BaseService
         $fee = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($fee)) {
             throw new BusinessLogicException('数据不存在');
+        }
+        if ($data['payer_type'] == BaseConstService::FEE_PAYER_TYPE_4) {
+            $data['pay_type'] = BaseConstService::FEE_PAY_TYPE_1;
+            $data['payee_type'] = BaseConstService::FEE_PAYEE_TYPE_1;
+        } elseif (in_array($data['payer_type'], [BaseConstService::FEE_PAYER_TYPE_5, BaseConstService::FEE_PAYER_TYPE_6])) {
+            $data['pay_type'] = BaseConstService::FEE_PAY_TYPE_2;
+            $data['payee_type'] = BaseConstService::FEE_PAYEE_TYPE_7;
+            if ($data['payer_type'] == BaseConstService::FEE_PAYER_TYPE_5) {
+                $data['pay_timing'] = BaseConstService::BILL_PAY_TIMING_2;
+            } else {
+                $data['pay_timing'] = BaseConstService::BILL_PAY_TIMING_3;
+            }
         }
         if (intval($fee['level']) == 1) {
             $data = Arr::only($data, ['name', 'amount']);

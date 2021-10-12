@@ -6,7 +6,7 @@
  * Time: 20:06
  */
 
-namespace App\Services\Admin;
+namespace App\Services\Driver;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\TransportPriceResource;
