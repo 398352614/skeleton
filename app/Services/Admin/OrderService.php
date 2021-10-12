@@ -855,7 +855,7 @@ class OrderService extends BaseService
                 $transportPrice = $transportPrice->toArray();
                 if ($transportPrice['pay_timing'] == BaseConstService::BILL_PAY_TIMING_1) {
                     $this->getBillService()->storeByTransportPrice($params, $transportPrice, BaseConstService::BILL_VERIFY_STATUS_2);
-                } elseif ($transportPrice['pay_timing'] == BaseConstService::BILL_PAY_TIMING_2) {
+                } elseif (in_array($fee['pay_timing'], [BaseConstService::BILL_PAY_TIMING_2, BaseConstService::BILL_PAY_TIMING_3])) {
                     $this->getBillService()->storeByTransportPrice($params, $transportPrice);
                 }
             }
@@ -873,7 +873,7 @@ class OrderService extends BaseService
                     $v['number'] = $k;
                     if ($fee['pay_timing'] == BaseConstService::BILL_PAY_TIMING_1) {
                         $this->getBillService()->storeByFee($v, $fee, $params, BaseConstService::BILL_VERIFY_STATUS_2);
-                    } elseif ($fee['pay_timing'] == BaseConstService::BILL_PAY_TIMING_2) {
+                    } elseif (in_array($fee['pay_timing'], [BaseConstService::BILL_PAY_TIMING_2, BaseConstService::BILL_PAY_TIMING_3])) {
                         $this->getBillService()->storeByFee($v, $fee, $params);
                     }
                 }
