@@ -241,7 +241,7 @@ class BillService extends BaseService
         $data['operator_name'] = auth()->user()->username;
         $data['crate_timing'] = BaseConstService::BILL_CREATE_TIMING_2;
         $data['pay_timing'] = BaseConstService::BILL_PAY_TIMING_1;
-        $this->store($data);
+        self::store($data);
     }
 
     /**
@@ -365,6 +365,7 @@ class BillService extends BaseService
         $data['operator_type'] = BaseConstService::USER_ADMIN;
         $data['operator_name'] = auth()->user()->username;
         $data['create_timing'] = BaseConstService::BILL_CREATE_TIMING_2;
+        $data['pay_timing'] = $transportPrice['pay_timing'];
         $data['status'] = $status;
         self::store($data);
     }
