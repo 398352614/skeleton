@@ -156,9 +156,6 @@ class BillVerifyService extends BaseService
                     'actual_amount' => $v['expect_amount']
                 ];
                 $this->getBillService()->update(['bill_no' => $v['bill_no']], $params);
-                if ($data['status'] == BaseConstService::BILL_VERIFY_STATUS_2) {
-                    $this->getJournalService()->record(array_merge(collect($v)->toArray(), $params));
-                }
             }
         }
 

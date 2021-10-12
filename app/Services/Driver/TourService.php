@@ -1629,12 +1629,18 @@ class TourService extends BaseService
         return $arrCount;
     }
 
+    /**
+     * @param $batch
+     * @param $params
+     * @param $status
+     * @throws BusinessLogicException
+     */
     public function dealBillList($batch, $params, $status)
     {
         $dbBillList = $this->getBillService()->getByObject($batch);
         foreach ($dbBillList as $k => $v) {
             $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbBillList->pluck('object_no')->toArray()], ['*'], false, ['id' => 'desc']);
-            if(!empty($trackingOrder)){
+            if (!empty($trackingOrder)) {
                 if (
                     ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 && $v['pay_timing'] == BaseConstService::BILL_PAY_TIMING_2) ||
                     ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2 && $v['pay_timing'] == BaseConstService::BILL_PAY_TIMING_3)
@@ -1644,6 +1650,8 @@ class TourService extends BaseService
                         'status' => $status,
                         'pay_type' => $params['pay_type']
                     ]);
+                    $this->getJournalService()->record($params);
+                    $this->getLedgerService()->deduct($v['payer_type'], $v['payer_id'], $v['expect_amount']);
                 }
             }
         }

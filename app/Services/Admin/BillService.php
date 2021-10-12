@@ -60,6 +60,9 @@ class BillService extends BaseService
         if ($bill === false) {
             throw new BusinessLogicException('订单新增失败');
         }
+        if ($params['pay_timing'] == BaseConstService::FEE_PAY_TYPE_1) {
+            $this->getJournalService()->record($params);
+        }
     }
 
     /**

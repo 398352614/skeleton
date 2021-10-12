@@ -60,6 +60,9 @@ class BillService extends BaseService
         if ($bill === false) {
             throw new BusinessLogicException('订单新增失败');
         }
+        if ($params['pay_timing'] == BaseConstService::FEE_PAY_TYPE_1) {
+            $this->getJournalService()->record($params);
+        }
     }
 
     /**
@@ -162,8 +165,8 @@ class BillService extends BaseService
         }
         $data['object_type'] = BaseConstService::BILL_OBJECT_TYPE_1;
         $data['object_no'] = $order['order_no'];
-        if($fee['pay_type'] == BaseConstService::FEE_PAY_TYPE_1){
-            $data['pay_type'] =  BaseConstService::PAY_TYPE_4;
+        if ($fee['pay_type'] == BaseConstService::FEE_PAY_TYPE_1) {
+            $data['pay_type'] = BaseConstService::PAY_TYPE_4;
         }
         $data['operator_id'] = auth()->user()->id;
         $data['operator_type'] = BaseConstService::USER_ADMIN;
@@ -287,9 +290,6 @@ class BillService extends BaseService
         } elseif ($data['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_1) {
             throw new BusinessLogicException('参数非法');
         }
-        if ($data['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_2) {
-            $this->getJournalService()->record(array_merge(collect($dbData)->toArray(), $data));
-        }
     }
 
     public function show($id)
@@ -327,7 +327,7 @@ class BillService extends BaseService
             $data['payer_id'] = $data['merchant_id'];
             $data['payer_name'] = UserTrait::get($data['payer_id'], BaseConstService::USER_MERCHANT)['name'];
             $data['actual_amount'] = $data['expect_amount'] ?? 0;
-        }else{
+        } else {
             $data['actual_amount'] = 0;
         }
         if ($transportPrice['payee_type'] == BaseConstService::USER_COMPANY) {
@@ -339,8 +339,8 @@ class BillService extends BaseService
         $data['payee_type'] = $transportPrice['payee_type'];
         $data['object_type'] = BaseConstService::BILL_OBJECT_TYPE_1;
         $data['object_no'] = $data['order_no'];
-        if($transportPrice['pay_type'] == BaseConstService::FEE_PAY_TYPE_1){
-            $data['pay_type'] =  BaseConstService::PAY_TYPE_4;
+        if ($transportPrice['pay_type'] == BaseConstService::FEE_PAY_TYPE_1) {
+            $data['pay_type'] = BaseConstService::PAY_TYPE_4;
         }
         $data['operator_id'] = auth()->user()->id;
         $data['operator_type'] = BaseConstService::USER_ADMIN;

@@ -6,7 +6,7 @@
  * Time: 13:41
  */
 
-namespace App\Services\Admin;
+namespace App\Services\Driver;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\AddressResource;
@@ -37,7 +37,7 @@ class LedgerService extends BaseService
         'user_type' => ['=', 'user_type'],
     ];
 
-    public $orderBy = ['id'=>'desc'];
+    public $orderBy = ['id' => 'desc'];
 
     /**
      * AddressService constructor.
@@ -93,7 +93,7 @@ class LedgerService extends BaseService
         } else {
             $dbData = $dbData->toArray();
         }
-        $data = Arr::only($data, ['credit','status']);
+        $data = Arr::only($data, ['credit', 'status']);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
@@ -187,6 +187,9 @@ class LedgerService extends BaseService
             throw new BusinessLogicException('账户不存在');
         }
         $balance = $data['balance'] - $expectAmount;
+        if ($balance < -$data['credit']) {
+            throw new BusinessLogicException('信用额度已到达上限，请及时充值');
+        }
         $row = parent::updateById($data['id'], ['balance' => $balance]);
         if ($row == false) {
             throw new BusinessLogicException('操作失败');

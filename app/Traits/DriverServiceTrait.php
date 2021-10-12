@@ -2,10 +2,13 @@
 
 namespace App\Traits;
 
+use App\Services\Driver\JournalService;
 use App\Services\Driver\BagService;
 use App\Services\Driver\BaseLineService;
 use App\Services\Driver\BaseWarehouseService;
 use App\Services\Driver\BillService;
+use App\Services\Driver\LedgerLogService;
+use App\Services\Driver\LedgerService;
 use App\Services\Driver\MemorandumService;
 use App\Services\Driver\MerchantGroupLineService;
 use App\Services\Driver\MerchantGroupService;
@@ -52,6 +55,14 @@ Trait DriverServiceTrait
     public function getMerchantService()
     {
         return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * @return LedgerLogService
+     */
+    public function getLedgerLogService()
+    {
+        return self::getInstance(LedgerLogService::class);
     }
 
     /**
@@ -182,6 +193,22 @@ Trait DriverServiceTrait
     public function getTrackingOrderService()
     {
         return self::getInstance(TrackingOrderService::class);
+    }
+
+    /**
+     * @return JournalService
+     */
+    public function getJournalService()
+    {
+        return self::getInstance(JournalService::class);
+    }
+
+    /**
+     * @return LedgerService
+     */
+    public function getLedgerService()
+    {
+        return self::getInstance(LedgerService::class);
     }
 
     /**
