@@ -158,6 +158,11 @@ class BillService extends BaseService
         $data['actual_amount'] = 0;
         $data['create_timing'] = BaseConstService::BILL_CREATE_TIMING_1;
         $data['pay_timing'] = $fee['pay_timing'];
+        if ($fee['pay_timing'] == BaseConstService::BILL_PAY_TIMING_1) {
+            $data['actual_amount'] = $data['expect_amount'] ?? 0;
+        } else {
+            $data['actual_amount'] = 0;
+        }
         //填充付款方
         $data['payer_type'] = $fee['payer_type'] ?? BaseConstService::USER_MERCHANT;
         if ($data['payer_type'] == BaseConstService::USER_MERCHANT) {
@@ -174,7 +179,7 @@ class BillService extends BaseService
         }
         $data['object_type'] = BaseConstService::BILL_OBJECT_TYPE_1;
         $data['object_no'] = $order['order_no'];
-        $data['pay_type'] = null;
+        $data['pay_type'] = $fee['pay_type'] ?? BaseConstService::PAY_TYPE_1;
         $data['operator_id'] = auth()->user()->id;
         $data['operator_type'] = BaseConstService::USER_ADMIN;
         $data['operator_name'] = auth()->user()->username;
@@ -331,11 +336,13 @@ class BillService extends BaseService
         $data['fee_name'] = __('运费');
         $data['mode'] = BaseConstService::BILL_MODE_2;
         $data['create_Date'] = today()->format('Y-m-d');
-        $data['actual_amount'] = 0;
         $data['payer_type'] = $transportPrice['payer_type'];
         if ($transportPrice['payer_type'] == BaseConstService::USER_MERCHANT) {
             $data['payer_id'] = $data['merchant_id'];
             $data['payer_name'] = UserTrait::get($data['payer_id'], BaseConstService::USER_MERCHANT)['name'];
+            $data['actual_amount'] = $data['expect_amount'] ?? 0;
+        } else {
+            $data['actual_amount'] = 0;
         }
         if ($transportPrice['payee_type'] == BaseConstService::USER_COMPANY) {
             $data['payee_id'] = auth()->user()->company_id;

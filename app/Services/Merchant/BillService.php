@@ -166,7 +166,6 @@ class BillService extends BaseService
         $data['operator_id'] = auth()->user()->id;
         $data['operator_type'] = BaseConstService::USER_ADMIN;
         $data['operator_name'] = auth()->user()->username;
-
         $data['status'] = $status;
         self::store($data);
     }
@@ -316,21 +315,18 @@ class BillService extends BaseService
         $data['expect_amount'] = $data['settlement_amount'];
         $data['create_timing'] = BaseConstService::BILL_CREATE_TIMING_1;
         $data['pay_timing'] = $transportPrice['pay_timing'];
-        if ($transportPrice['pay_timing'] == BaseConstService::BILL_PAY_TIMING_1) {
-            $data['actual_amount'] = $data['expect_amount'] ?? 0;
-        } else {
-            $data['actual_amount'] = 0;
-        }
         $data['type'] = BaseConstService::BILL_TYPE_1;
         $data['fee_id'] = $transportPrice['id'];
         $data['fee_name'] = __('运费');
         $data['mode'] = BaseConstService::BILL_MODE_2;
         $data['create_Date'] = today()->format('Y-m-d');
-        $data['actual_amount'] = 0;
         $data['payer_type'] = $transportPrice['payer_type'];
         if ($transportPrice['payer_type'] == BaseConstService::USER_MERCHANT) {
             $data['payer_id'] = $data['merchant_id'];
             $data['payer_name'] = UserTrait::get($data['payer_id'], BaseConstService::USER_MERCHANT)['name'];
+            $data['actual_amount'] = $data['expect_amount'] ?? 0;
+        }else{
+            $data['actual_amount'] = 0;
         }
         if ($transportPrice['payee_type'] == BaseConstService::USER_COMPANY) {
             $data['payee_id'] = auth()->user()->company_id;

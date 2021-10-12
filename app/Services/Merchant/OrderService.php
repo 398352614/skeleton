@@ -968,7 +968,7 @@ class OrderService extends BaseService
                 $transportPrice = $transportPrice->toArray();
                 if ($transportPrice['pay_timing'] == BaseConstService::BILL_PAY_TIMING_1) {
                     $this->getBillService()->storeByTransportPrice($params, $transportPrice, BaseConstService::BILL_VERIFY_STATUS_2);
-                } elseif ($transportPrice['pay_timing'] == BaseConstService::BILL_PAY_TIMING_2) {
+                } else {
                     $this->getBillService()->storeByTransportPrice($params, $transportPrice);
                 }
             }
