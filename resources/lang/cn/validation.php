@@ -188,6 +188,9 @@ return [
         'item_list.1.post_code_end' => [
             'gte' => '结束邮编不能小于起始邮编'
         ],
+        'bill_list.*.expect_amount'=>[
+            'gte' => '费用金额不能小于0'
+        ],
         //材料列表
         'material_list.*.order_no' => [
             'required_with' => '材料所属订单号是必须的',

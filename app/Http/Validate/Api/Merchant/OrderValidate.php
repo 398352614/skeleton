@@ -75,7 +75,7 @@ class OrderValidate extends BaseValidate
 
         'order_no' => 'nullable|string|max:50',
         'order_no_list' => 'required|string',
-
+        'bill_list.*.expect_amount'=>'integer|gte:0',
         'amount_list.*.expect_amount' => 'required_with:amount_list|gte:0',
         'amount_list.*.type' => 'required_with:amount_list|integer|in:1,2,3,4,5,6,7,8,9,10,11',
     ];
@@ -97,6 +97,8 @@ class OrderValidate extends BaseValidate
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark',
             'amount_list.*.expect_amount','amount_list.*.type',
+            //费用信息
+            'bill_list.*.expect_amount'
         ],
         'update' => [
             'merchant_id', 'execution_date', 'second_execution_date', 'mask_code',
@@ -114,6 +116,8 @@ class OrderValidate extends BaseValidate
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark',
             'amount_list.*.expect_amount','amount_list.*.type',
+            //费用信息
+            'bill_list.*.expect_amount'
         ],
         'updateSecondDate' => ['second_execution_date'],
         'updateAddressDate' => ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street','order_no','execution_date'],
