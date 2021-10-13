@@ -1639,7 +1639,7 @@ class TourService extends BaseService
     {
         $dbBillList = $this->getBillService()->getByObject($batch);
         foreach ($dbBillList as $k => $v) {
-            $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => collect($dbBillList)->pluck('object_no')->toArray()], ['*'], false, ['id' => 'desc']);
+            $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $v['object_no']], ['*'], false, ['id' => 'desc']);
             if (!empty($trackingOrder)) {
                 if (
                     ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 && $v['pay_timing'] == BaseConstService::BILL_PAY_TIMING_2) ||
