@@ -16,6 +16,7 @@ use App\Services\BaseConstService;
 use App\Traits\CompanyTrait;
 use App\Traits\UserTrait;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 
 class BillService extends BaseService
@@ -116,6 +117,7 @@ class BillService extends BaseService
      */
     public function getNotVerifyList($merchantId, $dateTime)
     {
+        Log::info('job start5');
         $this->query->whereNull('verify_no');
         $data = $this->getList(['payer_id' => $merchantId, 'verify_status' => BaseConstService::BILL_VERIFY_STATUS_1, 'created_at' => ['<', $dateTime]], ['*'], false);
         return $data;
