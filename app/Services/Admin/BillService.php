@@ -118,8 +118,9 @@ class BillService extends BaseService
     public function getNotVerifyList($merchantId, $dateTime)
     {
         Log::info('job start5');
-        $this->query->whereNull('verify_no');
-        $data = $this->getList(['payer_id' => $merchantId, 'verify_status' => BaseConstService::BILL_VERIFY_STATUS_1, 'created_at' => ['<', $dateTime]], ['*'], false);
+        $data = $this->query->whereNull('verify_no')->where('payer_id',$merchantId)->where('verify_status',BaseConstService::BILL_VERIFY_STATUS_1)
+        ->where('create_at','<',$dateTime)->get();
+        Log::info('1',$data);
         return $data;
     }
 
