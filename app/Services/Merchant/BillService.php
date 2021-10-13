@@ -135,7 +135,7 @@ class BillService extends BaseService
      * @param int $status
      * @throws BusinessLogicException
      */
-    public function storeByOrder($data, $fee, $order, $status = BaseConstService::BILL_VERIFY_STATUS_1)
+    public function storeByFee($data, $fee, $order, $status = BaseConstService::BILL_VERIFY_STATUS_1)
     {
         $data['type'] = BaseConstService::BILL_TYPE_2;
         $data['fee_id'] = $fee['id'];
