@@ -121,7 +121,7 @@ class BillService extends BaseService
             ->whereNull('verify_no')
             ->where('payer_id', $merchantId)
             ->where('verify_status','=', BaseConstService::BILL_VERIFY_STATUS_1)
-            ->where('create_at', '<', $dateTime)
+            ->where('created_at', '<', $dateTime)
             ->get();
         return $data;
     }
