@@ -240,6 +240,7 @@ class BillVerifyService extends BaseService
      */
     public function autoStore($merchantId)
     {
+        Log::info(7);
         $merchant = $this->getMerchantService()->getInfo(['id' => $merchantId, 'status' => BaseConstService::YES], ['*'], false);
         if ($merchant['last_settlement_date'] !== today()->format('Y-m-d')) {
             if ($merchant['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_2 && !empty($merchant['settlement_time'])) {
