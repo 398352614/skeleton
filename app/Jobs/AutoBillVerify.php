@@ -64,12 +64,9 @@ class AutoBillVerify implements ShouldQueue
     {
         Log::info('job start');
         $merchant = Merchant::query()->where('id', $this->merchantId)->first('company_id');
-        if (empty(auth()->user())) {
-            $employee = Employee::query()->where('id', $merchant['company_id'])->first();
-            if (!empty($employee)) {
-                auth()->setUser($employee);
-            }
-        }
+        $employee = Employee::query()->where('id', $merchant['company_id'])->first();
+        auth()->setUser($employee);
+        dd(auth()->user()->company_id);
         $billVerifyService = FactoryInstanceTrait::getInstance(BillVerifyService::class);
         /** @var $billVerifyService BillVerifyService */
         try {
