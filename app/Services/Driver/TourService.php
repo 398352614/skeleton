@@ -1651,7 +1651,7 @@ class TourService extends BaseService
                         'pay_type' => $params['pay_type']
                     ]);
                     $this->getJournalService()->record($params);
-                    $this->getLedgerService()->deduct($v['payer_type'], $v['payer_id'], $v['expect_amount']);
+//                    $this->getLedgerService()->deduct($v['payer_type'], $v['payer_id'], $v['expect_amount']);
                 }
             }
         }
