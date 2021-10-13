@@ -85,6 +85,7 @@ class FeeService extends BaseService
         if ($data['payer_type'] == BaseConstService::FEE_PAYER_TYPE_4) {
             $data['pay_type'] = BaseConstService::FEE_PAY_TYPE_1;
             $data['payee_type'] = BaseConstService::FEE_PAYEE_TYPE_1;
+            $data['pay_timing'] = BaseConstService::BILL_PAY_TIMING_1;
         } elseif (in_array($data['payer_type'], [BaseConstService::FEE_PAYER_TYPE_5, BaseConstService::FEE_PAYER_TYPE_6])) {
             $data['pay_type'] = BaseConstService::FEE_PAY_TYPE_2;
             $data['payee_type'] = BaseConstService::FEE_PAYEE_TYPE_7;
