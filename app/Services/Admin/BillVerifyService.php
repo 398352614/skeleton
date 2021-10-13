@@ -84,9 +84,8 @@ class BillVerifyService extends BaseService
         $params['expect_amount'] = $totalExpectAmount;
         $bill = parent::create($params);
         if ($bill === false) {
-            throw new BusinessLogicException('订单新增失败');
+            throw new BusinessLogicException('新增失败');
         }
-
         if (!empty($params['bill_list'])) {
             $row = $this->getBillService()->update(['bill_no' => ['in', collect($params['bill_list'])->pluck('bill_no')->toArray()]], [
                 'verify_no' => $params['verify_no']
