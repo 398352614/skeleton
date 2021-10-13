@@ -5,6 +5,7 @@ namespace App\Jobs;
 
 
 use App\Exceptions\BusinessLogicException;
+use App\Models\Employee;
 use App\Models\Merchant;
 use App\Services\Admin\BillVerifyService;
 use App\Traits\FactoryInstanceTrait;
@@ -62,6 +63,13 @@ class AutoBillVerify implements ShouldQueue
     public function handle()
     {
         Log::info('job start');
+        $merchant = Merchant::query()->where('id', $this->merchantId)->first('company_id');
+        if (empty(auth()->user())) {
+            $employee = Employee::query()->where('id', $merchant['company_id'])->first();
+            if (!empty($employee)) {
+                auth()->setUser($employee);
+            }
+        }
         $billVerifyService = FactoryInstanceTrait::getInstance(BillVerifyService::class);
         /** @var $billVerifyService BillVerifyService */
         try {
@@ -72,7 +80,7 @@ class AutoBillVerify implements ShouldQueue
                 'line' => $e->getLine(),
                 'message' => $e->getMessage()
             ]);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
