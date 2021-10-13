@@ -90,6 +90,7 @@ class AutoBillVerify implements ShouldQueue
             ]);
         }
         Merchant::query()->where('id', $this->merchantId)->update(['last_settlement_date' => today()->format('Y-m-d')]);
+        Log::info(8);
     }
 
 }
