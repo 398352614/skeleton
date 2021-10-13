@@ -53,6 +53,7 @@ class AutoBillVerify implements ShouldQueue
     {
         Log::notice(1);
         $this->merchantId = $merchantId;
+        Log::notice(2);
     }
 
 

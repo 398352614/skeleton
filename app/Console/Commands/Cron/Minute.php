@@ -62,8 +62,8 @@ class Minute extends Command
                     && $v['settlement_date'] == now()->day)
             ) {
                 if ($v['last_settlement_date'] < today()->format('Y-m-d')) {
-                    Log::channel('roll')->info(__CLASS__ .'.'. __FUNCTION__ .'.'. '$merchantList', collect($v)->toArray());
-                    AutoBillVerify::dispatch($v['id']);
+                    Log::channel('roll')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . '$merchantList', collect($v)->toArray());
+                    dispatch(new AutoBillVerify($v['id']));
                     Log::channel('roll')->notice('结束');
                 }
             }
