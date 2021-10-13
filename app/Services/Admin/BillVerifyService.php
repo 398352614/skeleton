@@ -253,6 +253,7 @@ class BillVerifyService extends BaseService
             } elseif ($merchant['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_4 && !empty($merchant['settlement_date'])) {
                 $billList = $this->getBillService()->getList(['payer_id' => $merchantId, 'verify_status' => BaseConstService::BILL_VERIFY_STATUS_1, 'verify_no' => null, 'create_date' => ['<', today()->format('Y-m-d')]], ['*'], false);
             }
+            Log::info('A',$billList);
             if (!empty($billList)) {
                 $this->store(['bill_list' => $billList]);
             }
