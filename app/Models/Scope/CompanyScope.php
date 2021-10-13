@@ -27,6 +27,7 @@ use App\Models\Fee;
 use App\Models\Holiday;
 use App\Models\HolidayDate;
 use App\Models\KilometresCharging;
+use App\Models\Ledger;
 use App\Models\Line;
 use App\Models\LineArea;
 use App\Models\LineRange;
@@ -114,6 +115,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof Driver))
                 && (!($model instanceof Bill))
                 && (!($model instanceof BillVerify))
+                && (!($model instanceof Ledger))
 
                 && (!($model instanceof AdditionalPackage))
                 && (!($model instanceof MerchantApi))
