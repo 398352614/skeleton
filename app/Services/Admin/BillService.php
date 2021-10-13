@@ -123,9 +123,6 @@ class BillService extends BaseService
             ->where('verify_status','=', BaseConstService::BILL_VERIFY_STATUS_1)
             ->where('create_at', '<', $dateTime)
             ->get();
-        Log::info('job start5');
-
-        Log::info('1', $data);
         return $data;
     }
 
