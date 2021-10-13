@@ -68,6 +68,12 @@ class AutoBillVerify implements ShouldQueue
             Log::info('job start1');
             $billVerifyService->autoStore($this->merchantId);
         } catch (BusinessLogicException $e) {
+            Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
+        }catch (\Exception $e) {
             Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
