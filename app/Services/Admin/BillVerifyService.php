@@ -54,6 +54,7 @@ class BillVerifyService extends BaseService
      */
     public function store($params)
     {
+        Log::info(1);
         $billNoList = collect($params['bill_list'])->pluck('bill_no')->toArray();
         $dbBillList = $this->getBillService()->getList(['bill_no' => ['in', $billNoList]], ['*'], false);
         if ($dbBillList->isEmpty()) {
