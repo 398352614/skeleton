@@ -888,8 +888,6 @@ class OrderService extends BaseService
                 $this->getBillVerifyService()->store(['bill_list' => $billList]);
             }
         }
-        dd(1);
-
     }
 
     /**
