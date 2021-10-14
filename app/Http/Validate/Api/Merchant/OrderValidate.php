@@ -75,7 +75,7 @@ class OrderValidate extends BaseValidate
 
         'order_no' => 'nullable|string|max:50',
         'order_no_list' => 'required|string',
-        'bill_list.*.expect_amount'=>'integer|gte:0',
+        'bill_list.*.expect_amount'=>'gte:0',
         'amount_list.*.expect_amount' => 'required_with:amount_list|gte:0',
         'amount_list.*.type' => 'required_with:amount_list|integer|in:1,2,3,4,5,6,7,8,9,10,11',
     ];
