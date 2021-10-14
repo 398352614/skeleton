@@ -178,6 +178,20 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('/{id}', 'BillController@show')->name('bill.show');
     });
 
+    //费用管理
+    Route::prefix('fee')->group(function () {
+        //列表查询
+        Route::get('/', 'FeeController@index')->name('fee.index');
+        //详情
+        Route::get('/{id}', 'FeeController@show')->name('fee.index');
+        //新增
+        Route::post('/', 'FeeController@store')->name('fee.store');
+        //修改
+        Route::put('/{id}', 'FeeController@update')->name('fee.update');
+        //删除
+        Route::delete('/{id}', 'FeeController@destroy')->name('fee.destroy');
+    });
+
     //    //运单管理
 //    Route::prefix('tracking-order')->group(function () {
 //        //查询初始化
