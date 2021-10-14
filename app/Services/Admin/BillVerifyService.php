@@ -242,7 +242,7 @@ class BillVerifyService extends BaseService
     {
         Log::info(7);
         $merchant = $this->getMerchantService()->getInfo(['id' => $merchantId, 'status' => BaseConstService::YES], ['*'], false);
-        if ($merchant['last_settlement_date'] !== today()->format('Y-m-d')) {
+        if (!empty($merchant) && $merchant['last_settlement_date'] !== today()->format('Y-m-d')) {
             if ($merchant['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_2 && !empty($merchant['settlement_time'])) {
                 $time = explode(':', $merchant['settlement_time']);
                 $dateTime = today()->addHours($time[0])->addMinutes($time[1])->format('Y-m-d H:i:s');
