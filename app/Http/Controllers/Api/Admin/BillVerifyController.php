@@ -35,7 +35,7 @@ class BillVerifyController extends BaseController
      */
     public function store()
     {
-        return $this->service->store($this->data);
+        return $this->service->autoStore($this->data);
     }
 
     /**
@@ -45,7 +45,8 @@ class BillVerifyController extends BaseController
      */
     public function autoStore($id)
     {
-        dispatch(new AutoBillVerify($id));
+        return $this->service->autoStore($id);
+//        dispatch(new AutoBillVerify($id));
     }
 
     /**

@@ -240,7 +240,6 @@ class BillVerifyService extends BaseService
      */
     public function autoStore($merchantId)
     {
-        Log::info(7);
         $merchant = $this->getMerchantService()->getInfo(['id' => $merchantId, 'status' => BaseConstService::YES], ['*'], false);
         if (!empty($merchant) && $merchant['last_settlement_date'] !== today()->format('Y-m-d')) {
             if ($merchant['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_2 && !empty($merchant['settlement_time'])) {
@@ -248,9 +247,9 @@ class BillVerifyService extends BaseService
                 $dateTime = today()->addHours($time[0])->addMinutes($time[1])->format('Y-m-d H:i:s');
                 $billList = $this->getBillService()->getNotVerifyList($merchantId, $dateTime);
             } elseif ($merchant['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_3 && !empty($merchant['settlement_week'])) {
-                $billList = $this->getBillService()->getList(['payer_id' => $merchantId, 'verify_status' => BaseConstService::BILL_VERIFY_STATUS_1, 'verify_no' => null, 'create_date' => ['<', today()->format('Y-m-d')]], ['*'], false);
+                $billList = $this->getBillService()->getNotVerifyList($merchantId, today());
             } elseif ($merchant['settlement_type'] == BaseConstService::MERCHANT_SETTLEMENT_TYPE_4 && !empty($merchant['settlement_date'])) {
-                $billList = $this->getBillService()->getList(['payer_id' => $merchantId, 'verify_status' => BaseConstService::BILL_VERIFY_STATUS_1, 'verify_no' => null, 'create_date' => ['<', today()->format('Y-m-d')]], ['*'], false);
+                $billList = $this->getBillService()->getNotVerifyList($merchantId, today());
             }
             if (!empty($billList)) {
                 $this->store(['bill_list' => $billList]);
