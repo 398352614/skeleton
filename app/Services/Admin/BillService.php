@@ -177,6 +177,10 @@ class BillService extends BaseService
         if ($data['payer_type'] == BaseConstService::USER_MERCHANT) {
             $data['payer_id'] = $order['merchant_id'];
             $data['payer_name'] = UserTrait::get($data['payer_id'], BaseConstService::USER_MERCHANT)['name'];
+        }elseif ($data['payer_type'] == BaseConstService::USER_SENDER){
+            $data['payer_name'] = $order['sender_name'];
+        }elseif ($data['payer_type'] == BaseConstService::USER_RECEIVER){
+            $data['payer_name'] = $order['receiver_name'];
         }
         //填充收款方
         $data['payee_type'] = $fee['payee_type'] ?? BaseConstService::USER_COMPANY;
