@@ -70,6 +70,8 @@ class OrderInfoResource extends JsonResource
             'receipt_type'=>$this->receipt_type,
             'receipt_type_name' => $this->receipt_type_name,
             'receipt_count'=>$this->receipt_count,
+            'expect_total_amount'=>$this->expect_total_amount,
+            'actual_total_amount'=>$this->actual_total_amount,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];
