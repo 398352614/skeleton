@@ -56,6 +56,7 @@ class OrderImportService extends BaseService
             "material_3", "", "", "", "", "", "", "", "",
             "material_4", "", "", "", "", "", "", "", "",
             "material_5", "", "", "", "", "", "", "", "",
+            "amount"
         ],
         [
             "type", "out_user_id", "out_order_no", "special_remark",
@@ -82,7 +83,10 @@ class OrderImportService extends BaseService
     public function templateExport()
     {
         $cellData[0] = [];
-        return $this->excelExport('merchantOrderTemplate', self::$headings, $cellData, 'merchantOrder');
+        $headings = self::$headings;
+        $feeList = $this->getFeeService()->getList(['status' => BaseConstService::YES, 'level' => BaseConstService::FEE_LEVEL_2], ['*'], false)->pluck('name')->toArray();
+        $headings[1] = array_merge($headings[1], $feeList);
+        return $this->excelExport('template', $headings, $cellData, 'order');
     }
 
     /**
@@ -98,27 +102,25 @@ class OrderImportService extends BaseService
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
         $params['path'] = str_replace(env('APP_URL') . '/storage/', 'public//', $params['path']);
         $row = collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
-        $row = array_values($row);
         //表头验证
-        $firstHeadings = array_values(__('excel.merchantOrder.0'));
-        $secondHeadings = array_values(__('excel.merchantOrder.1'));
+        $firstHeadings = array_values(__('excel.order.0'));
+        $secondHeadings = array_values(__('excel.order.1'));
+        $newSecondRow = [];
         foreach ($row[1] as $k => $v) {
-            if (!empty($v)) {
-                $row[1][$k] = preg_replace('/\(.*\)/', '', $v);
+            $row[1][$k] = preg_replace('/\(.*\)/', '', $v);
+            if ($v !== null) {
+                $newSecondRow[] = $row[1][$k];
             }
         }
-        $importHeadings = $importHeadings2 = [];
+        $newRow = [];
         foreach ($row[0] as $k => $v) {
             if ($v !== null) {
-                $importHeadings[] = $v;
+                $newRow[] = $v;
             }
         }
-        foreach ($row[1] as $k => $v) {
-            if ($v !== null) {
-                $importHeadings2[] = $v;
-            }
-        }
-        if ($importHeadings !== $firstHeadings || array_diff($importHeadings2, $secondHeadings) !== []) {
+        $feeList = $this->getFeeService()->getList(['status' => BaseConstService::YES, 'level' => BaseConstService::FEE_LEVEL_2], ['*'], false)->pluck('name')->toArray();
+        $secondHeadings = array_merge($secondHeadings, $feeList);
+        if ($newRow !== $firstHeadings || array_diff($newSecondRow, $secondHeadings) !== []) {
             throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
         }
         if (count($row) < 3) {
@@ -155,6 +157,7 @@ class OrderImportService extends BaseService
         }
         $list = json_decode($params['list'], true);
         for ($i = 0, $j = count($list); $i < $j; $i++) {
+            $list[$i]['place_country'] = CountryTrait::getShort($list[$i]['place_country_name']) ?? $list[$i]['place_country_name'];
             $list[$i] = $this->check($list[$i]);
             for ($k = 0; $k < 5; $k++) {
                 if ($list[$i]['data']['package_no_' . ($k + 1)]) {
@@ -213,9 +216,28 @@ class OrderImportService extends BaseService
                 $error['second_place_city'] = __('城市 是必填项');
             }
         }
+        foreach (array_keys($data) as $k => $v) {
+            if (is_integer($v)) {
+                if ($data[$v] < 0) {
+                    $error[$v] = __("费用不得小于O");
+                }
+            }
+        }
+        //检验货主
+        $merchant = $this->getMerchantService()->getInfo(['id' => $data['merchant_id'], 'status' => BaseConstService::MERCHANT_STATUS_1], ['*'], false);
+        if (empty($merchant)) {
+            $error['merchant_id'] = __('货主不存在');
+        }
+
         //包裹材料验证
         if (empty($data['package_no_1']) && empty($data['material_code_1'])) {
             $error['log'] = __('订单中必须存在一个包裹或一种货物');
+        }
+        if (CompanyTrait::getAddressTemplateId() == 1 && empty($data['place_address']) && $data['type'] != BaseConstService::ORDER_TYPE_2) {
+            $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
+        }
+        if (CompanyTrait::getAddressTemplateId() == 1 && empty($data['second_place_address']) && $data['type'] != BaseConstService::ORDER_TYPE_1) {
+            $data['second_place_address'] = CommonService::addressFieldsSortCombine($data, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
         }
         //填充地址
         try {
@@ -246,7 +268,7 @@ class OrderImportService extends BaseService
             !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
             $dbOrder = $this->getOrderService()->getInfo($where, ['id', 'order_no', 'out_order_no', 'status'], false);
             if (!empty($dbOrder)) {
-                $error['out_order_no'] = __('外部订单号已存在');
+                $list['error']['out_order_no'] = __('外部订单号已存在');
             }
         }
 
@@ -255,14 +277,14 @@ class OrderImportService extends BaseService
             $package[$j] = Package::query()->where('express_first_no', $data['package_no_' . ($j + 1)])->whereNotNull('merchant_id')
                 ->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_4, BaseConstService::PACKAGE_STATUS_5])->first();
             if (!empty($package[$j])) {
-                $error['package_no_' . ($j + 1)] = __('包裹') . ($j + 1) . __('编号有重复');
+                $list['error']['package_no_' . ($j + 1)] = __('包裹') . ($j + 1) . __('编号有重复');
             }
             if (!empty($data['package_no_' . $j]) && empty($data['package_weight_' . $j])) {
                 $data['package_weight_' . $j] = 1;
             }
             //有效期判断
             if (!empty($data['package_no_' . $j]) && !empty($data['package_expiration_date_' . ($j + 1)]) && $data['package_expiration_date_' . ($j + 1)] < $data['execution_date']) {
-                $error['log'] = __('有效日期不得小于取派日期');
+                $list['error'] = __('有效日期不得小于取派日期');
             }
         }
         try {
@@ -356,6 +378,9 @@ class OrderImportService extends BaseService
                 $data['place_city'] = $info['city'];
                 $data['place_street'] = $info['street'];
             }
+        } else {
+            $data['place_lon'] = $address['place_lon'];
+            $data['place_lat'] = $address['place_lat'];
         }
         return $data;
     }
@@ -384,10 +409,20 @@ class OrderImportService extends BaseService
     {
         //将表头和每条数据组合
         $headings = OrderImportService::$headings[1];
-        $data = [];
-        for ($i = 2; $i < count($row); $i++) {
-            $data[$i - 2] = collect($headings)->combine($row[$i])->toArray();
+        $data[] = __('excel.order.1');
+        $feeList = $this->getFeeService()->getList(['status' => BaseConstService::YES, 'level' => BaseConstService::FEE_LEVEL_2], ['*'], false);
+        if (!empty($feeList)) {
+            foreach ($feeList as $k => $v) {
+                $data[0][$v['id']] = $v['name'];
+            }
         }
+        $keyList = array_keys($data[0]);
+        for ($i = 2; $i < count($row); $i++) {
+            foreach ($keyList as $k => $v) {
+                $data[$i][$v] = $row[$i][$k];
+            }
+        }
+        $data = array_values($data);
         //数据处理
         $merchantOrderTypeList = array_flip(ConstTranslateTrait::merchantOrderTypeList());
         $packageFeatureList = array_flip(ConstTranslateTrait::packageFeatureList());
@@ -418,6 +453,7 @@ class OrderImportService extends BaseService
             }
             //日期如果是excel时间格式，转换成短横连接格式
             is_numeric($data[$i]['execution_date']) && $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
+            is_numeric($data[$i]['create_date']) && $data[$i]['create_date'] = date('Y-m-d', ($data[$i]['create_date'] - 25569) * 24 * 3600);
             is_numeric($data[$i]['second_execution_date']) && $data[$i]['second_execution_date'] = date('Y-m-d', ($data[$i]['second_execution_date'] - 25569) * 24 * 3600);
             $data[$i] = array_map('strval', $data[$i]);
         }
@@ -502,12 +538,14 @@ class OrderImportService extends BaseService
                 $data['material_list'] = array_values($data['material_list']);
             }
         }
-        for ($i = 0; $i < 11; $i++) {
-            $data['amount_list'][$i]['type'] = $i + 1;
-            if (empty($data['amount_' . ($i + 1)])) {
-                $data['amount_list'][$i]['expect_amount'] = 0;
-            } else {
-                $data['amount_list'][$i]['expect_amount'] = $data['amount_' . ($i + 1)];
+
+
+        foreach (array_keys($data) as $k => $v) {
+            if (is_integer($v)) {
+                $data['bill_list'][] = [
+                    'expect_amount' => $data[$v],
+                    'fee_id' => $v
+                ];
             }
         }
         $data = Arr::only($data, [
@@ -517,7 +555,7 @@ class OrderImportService extends BaseService
             "settlement_amount", "settlement_type",
             "control_mode", "receipt_type", "receipt_count", "special_remark", "mask_code",
 
-            'amount_list',
+            'bill_list',
             'package_list',
             'material_list',
         ]);

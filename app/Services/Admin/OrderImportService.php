@@ -157,6 +157,9 @@ class OrderImportService extends BaseService
         $info = [];
         $package = [];
         $material = [];
+        if (empty($params['list'])) {
+            throw new BusinessLogicException('数据不能为空');
+        }
         $list = json_decode($params['list'], true);
         for ($i = 0, $j = count($list); $i < $j; $i++) {
             $list[$i]['place_country'] = CountryTrait::getShort($list[$i]['place_country_name']) ?? $list[$i]['place_country_name'];
@@ -198,6 +201,22 @@ class OrderImportService extends BaseService
             $key = $validator->errors()->keys();
             foreach ($key as $v) {
                 $error[$v] = $validator->errors()->first($v);
+            }
+        }
+        if (in_array($data['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3]) && (empty($data['place_country']) || $data['place_country'] !== 'NL')) {
+            if (empty($data['place_street'])) {
+                $error['place_street'] = __('街道 是必填项');
+            }
+            if (empty($data['place_city'])) {
+                $error['place_city'] = __('城市 是必填项');
+            }
+        }
+        if (in_array($data['type'], [BaseConstService::ORDER_TYPE_2, BaseConstService::ORDER_TYPE_3]) && (empty($data['second_place_country']) || $data['second_place_country'] !== 'NL')) {
+            if (empty($data['second_place_street'])) {
+                $error['second_place_street'] = __('街道 是必填项');
+            }
+            if (empty($data['second_place_city'])) {
+                $error['second_place_city'] = __('城市 是必填项');
             }
         }
         foreach (array_keys($data) as $k => $v) {
