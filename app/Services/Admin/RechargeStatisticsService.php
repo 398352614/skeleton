@@ -21,7 +21,7 @@ class RechargeStatisticsService extends BaseService
         'merchant_id' => ['like', 'merchant_id'],
         'status' => ['=', 'status'],
         'driver_name' => ['like', 'key_word'],
-        'recharge_date' => ['between', ['begin_date', 'end_date']],
+        'execution_date' => ['between', ['begin_date', 'end_date']],
     ];
 
     public function __construct(RechargeStatistics $rechargeStatistics)

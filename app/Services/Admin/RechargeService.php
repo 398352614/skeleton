@@ -21,7 +21,7 @@ class RechargeService extends BaseService
         'recharge_no' => ['=', 'recharge_no'],
         'out_user_id' => ['=', 'out_user_id'],
         'driver_name,out_user_id' => ['like', 'key_word'],
-        'execution_date' => ['between', ['begin_date', 'end_date']],
+        'recharge_date' => ['between', ['begin_date', 'end_date']],
     ];
 
     public function __construct(Recharge $recharge)
