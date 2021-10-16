@@ -336,6 +336,7 @@ return [
             "material_3" => "Material 3",
             "material_4" => "Material 4",
             "material_5" => "Material 5",
+            'amount' =>'Amount'
         ],
         [
             "type" => "*Type",
@@ -346,7 +347,6 @@ return [
             "place_fullname" => "*Fullname",
             "place_phone" => "*Phone",
             "place_country_name" => "*Country",
-
             "place_post_code" => "*Post Code",
             "place_house_number" => "*House number",
             "place_city" => "*City",
@@ -357,16 +357,15 @@ return [
             "second_place_fullname" => "*Fullname",
             "second_place_phone" => "*Phone",
             "second_place_country_name" => "*Country",
-
             "second_place_post_code" => "*Post Code",
             "second_place_house_number" => "*House number",
             "second_place_city" => "*City",
             "second_place_street" => "*Street",
             "second_execution_date" => "*Execution date",
 
-            "mask_code" => "Mask code",
-            "settlement_amount" => "Settlement amount",
-            "settlement_type" => "Settlement type",
+//            "mask_code" => "Mask code",
+//            "settlement_amount" => "Settlement amount",
+//            "settlement_type" => "Settlement type",
 
             "package_no_1" => "*Number",
             "package_name_1" => "Name",
@@ -374,7 +373,7 @@ return [
             "package_feature_1" => "Feature",
             "package_remark_1" => "Remark",
             "package_expiration_date_1" => "Expiration date",
-            "package_out_order_no_1" => "Out order number",
+//            "package_out_order_no_1" => "Out order number",
 
             "package_no_2" => "Number",
             "package_name_2" => "Name",
@@ -382,7 +381,7 @@ return [
             "package_feature_2" => "Feature",
             "package_remark_2" => "Remark",
             "package_expiration_date_2" => "Expiration date",
-            "package_out_order_no_2" => "Out order number",
+//            "package_out_order_no_2" => "Out order number",
 
             "package_no_3" => "Number",
             "package_name_3" => "Name",
@@ -390,7 +389,7 @@ return [
             "package_feature_3" => "Feature",
             "package_remark_3" => "Remark",
             "package_expiration_date_3" => "Expiration date",
-            "package_out_order_no_3" => "Out order number",
+//            "package_out_order_no_3" => "Out order number",
 
             "package_no_4" => "Number",
             "package_name_4" => "Name",
@@ -398,7 +397,7 @@ return [
             "package_feature_4" => "Feature",
             "package_remark_4" => "Remark",
             "package_expiration_date_4" => "Expiration date",
-            "package_out_order_no_4" => "Out order number",
+//            "package_out_order_no_4" => "Out order number",
 
             "package_no_5" => "Number",
             "package_name_5" => "Name",
@@ -406,7 +405,7 @@ return [
             "package_feature_5" => "Feature",
             "package_remark_5" => "Remark",
             "package_expiration_date_5" => "Expiration date",
-            "package_out_order_no_5" => "Out order number",
+//            "package_out_order_no_5" => "Out order number",
 
             "material_code_1" => "*Code",
             "material_name_1" => "Name",
@@ -417,7 +416,7 @@ return [
             "material_pack_type_1" => "Pack type",
             "material_price_1" => "Price",
             "material_remark_1" => "Remark",
-            "material_out_order_no_1" => "Out order number",
+//            "material_out_order_no_1" => "Out order number",
 
             "material_code_2" => "Code",
             "material_name_2" => "Name",
@@ -428,7 +427,7 @@ return [
             "material_pack_type_2" => "Pack type",
             "material_price_2" => "Price",
             "material_remark_2" => "Remark",
-            "material_out_order_no_2" => "Out order number",
+//            "material_out_order_no_2" => "Out order number",
 
             "material_code_3" => "Code",
             "material_name_3" => "Name",
@@ -439,7 +438,7 @@ return [
             "material_pack_type_3" => "Pack type",
             "material_price_3" => "Price",
             "material_remark_3" => "Remark",
-            "material_out_order_no_3" => "Out order number",
+//            "material_out_order_no_3" => "Out order number",
 
             "material_code_4" => "Code",
             "material_name_4" => "Name",
@@ -450,7 +449,7 @@ return [
             "material_pack_type_4" => "Pack type",
             "material_price_4" => "Price",
             "material_remark_4" => "Remark",
-            "material_out_order_no_4" => "Out order number",
+//            "material_out_order_no_4" => "Out order number",
 
             "material_code_5" => "Code",
             "material_name_5" => "Name",
@@ -461,7 +460,7 @@ return [
             "material_pack_type_5" => "Pack type",
             "material_price_5" => "Price",
             "material_remark_5" => "Remark",
-            "material_out_order_no_5" => "Out order number"
+//            "material_out_order_no_5" => "Out order number"
         ]
     ],
 ];

@@ -436,7 +436,6 @@ class OrderImportService extends BaseService
     public function importForm($row)
     {
         //将表头和每条数据组合
-        $headings = OrderImportService::$headings[1];
         $data[] = __('excel.order.1');
         $feeList = $this->getFeeService()->getList(['status' => BaseConstService::YES, 'level' => BaseConstService::FEE_LEVEL_2], ['*'], false);
         if (!empty($feeList)) {

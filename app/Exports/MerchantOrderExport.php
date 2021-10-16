@@ -5,6 +5,7 @@ namespace App\Exports;
 use App\Models\Merchant;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -12,6 +13,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 
 
@@ -73,6 +75,8 @@ class MerchantOrderExport implements FromArray, WithTitle, WithEvents, WithStric
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 //合并单元格
+                $endColumn = $event->sheet->getDelegate()->getHighestColumn();
+                $endRow = $event->sheet->getDelegate()->getHighestRow();
                 $event->sheet->getDelegate()->mergeCells('B1:D1');
                 $event->sheet->getDelegate()->mergeCells('E1:L1');
                 $event->sheet->getDelegate()->mergeCells('M1:T1');
@@ -86,9 +90,7 @@ class MerchantOrderExport implements FromArray, WithTitle, WithEvents, WithStric
                 $event->sheet->getDelegate()->mergeCells('BQ1:BY1');
                 $event->sheet->getDelegate()->mergeCells('BZ1:CH1');
                 $event->sheet->getDelegate()->mergeCells('CI1:CQ1');
-
-                $endColumn = $event->sheet->getDelegate()->getHighestColumn();
-                $endRow = $event->sheet->getDelegate()->getHighestRow();
+                $event->sheet->getDelegate()->mergeCells('CR1:' . $endColumn . '1');
                 $cell = 'A1:' . $endColumn . $endRow;
 
                 //设置行高
@@ -166,6 +168,50 @@ class MerchantOrderExport implements FromArray, WithTitle, WithEvents, WithStric
                             ->setPromptTitle('')
                             ->setPrompt('')
                             ->setFormula1('"' . $v . '"');
+                    }
+                }
+//
+//                public function getHighestRowAndColumn()
+//                {
+//                    // Lookup highest column and highest row
+//                    $col = ['A' => '1A'];
+//                    $row = [1];
+//                    foreach ($this->getCoordinates() as $coord) {
+//                        $c = '';
+//                        $r = 0;
+//                        sscanf($coord, '%[A-Z]%d', $c, $r);
+//                        $row[$r] = $r;
+//                        $col[$c] = strlen($c) . $c;
+//                    }
+//
+//                    // Determine highest column and row
+//                    $highestRow = max($row);
+//                    $highestColumn = substr(max($col), 1);
+//
+//                    return [
+//                        'row' => $highestRow,
+//                        'column' => $highestColumn,
+//                    ];
+//                }
+//
+//                // Determine highest column and row
+//                $highestRow = max($row);
+//                $highestColumn = substr(max($col), 1);
+
+                $endColumnIndex = Coordinate::columnIndexFromString($endColumn);
+                for ($k = 96, $l = $endColumnIndex; $k <= $l; $k++) {
+                    for ($i = 0; $i < 200; $i++) {
+                        $event->sheet->getDelegate()->getCellByColumnAndRow($k, $i + 3)->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                            ->setErrorStyle(DataValidation::STYLE_INFORMATION)
+                            ->setAllowBlank(true)
+                            ->setShowInputMessage(true)
+                            ->setShowErrorMessage(true)
+                            ->setShowDropDown(true)
+                            ->setErrorTitle(__('输入的值有误'))
+                            ->setError(__('输入的值有误'))
+                            ->setPromptTitle('')
+                            ->setPrompt('')
+                            ->setFormula1('"' .implode(',', array_values(ConstTranslateTrait::statusList())).'"');
                     }
                 }
 

@@ -192,6 +192,7 @@ return [
             "material_3" => "货物三",
             "material_4" => "货物四",
             "material_5" => "货物五",
+            "amount" => "费用",
         ],
         [
             "type" => "*订单类型",
@@ -218,9 +219,9 @@ return [
             "second_place_street" => "*街道",
             "second_execution_date" => "*派件日期",
 
-            "mask_code" => "掩码",
-            "settlement_amount" => "运费合计",
-            "settlement_type" => "结算方式",
+//            "mask_code" => "掩码",
+//            "settlement_amount" => "运费合计",
+//            "settlement_type" => "结算方式",
 
             "package_no_1" => "*包裹单号",
             "package_name_1" => "包裹名称",
@@ -228,7 +229,7 @@ return [
             "package_feature_1" => "特性",
             "package_remark_1" => "备注",
             "package_expiration_date_1" => "最迟派送日期",
-            "package_out_order_no_1" => "外部标识",
+//            "package_out_order_no_1" => "外部标识",
 
             "package_no_2" => "包裹单号",
             "package_name_2" => "包裹名称",
@@ -236,7 +237,7 @@ return [
             "package_feature_2" => "特性",
             "package_remark_2" => "备注",
             "package_expiration_date_2" => "最迟派送日期",
-            "package_out_order_no_2" => "外部标识",
+//            "package_out_order_no_2" => "外部标识",
 
             "package_no_3" => "包裹单号",
             "package_name_3" => "包裹名称",
@@ -244,7 +245,7 @@ return [
             "package_feature_3" => "特性",
             "package_remark_3" => "备注",
             "package_expiration_date_3" => "最迟派送日期",
-            "package_out_order_no_3" => "外部标识",
+//            "package_out_order_no_3" => "外部标识",
 
             "package_no_4" => "包裹单号",
             "package_name_4" => "包裹名称",
@@ -252,7 +253,7 @@ return [
             "package_feature_4" => "特性",
             "package_remark_4" => "备注",
             "package_expiration_date_4" => "最迟派送日期",
-            "package_out_order_no_4" => "外部标识",
+//            "package_out_order_no_4" => "外部标识",
 
             "package_no_5" => "包裹单号",
             "package_name_5" => "包裹名称",
@@ -260,7 +261,7 @@ return [
             "package_feature_5" => "特性",
             "package_remark_5" => "备注",
             "package_expiration_date_5" => "最迟派送日期",
-            "package_out_order_no_5" => "外部标识",
+//            "package_out_order_no_5" => "外部标识",
 
             "material_code_1" => "*代码",
             "material_name_1" => "货物名称",
@@ -271,7 +272,7 @@ return [
             "material_pack_type_1" => "包装",
             "material_price_1" => "单价",
             "material_remark_1" => "备注",
-            "material_out_order_no_1" => "外部标识",
+//            "material_out_order_no_1" => "外部标识",
 
             "material_code_2" => "代码",
             "material_name_2" => "货物名称",
@@ -282,7 +283,7 @@ return [
             "material_pack_type_2" => "包装",
             "material_price_2" => "单价",
             "material_remark_2" => "备注",
-            "material_out_order_no_2" => "外部标识",
+//            "material_out_order_no_2" => "外部标识",
 
             "material_code_3" => "代码",
             "material_name_3" => "货物名称",
@@ -293,7 +294,7 @@ return [
             "material_pack_type_3" => "包装",
             "material_price_3" => "单价",
             "material_remark_3" => "备注",
-            "material_out_order_no_3" => "外部标识",
+//            "material_out_order_no_3" => "外部标识",
 
             "material_code_4" => "代码",
             "material_name_4" => "货物名称",
@@ -304,7 +305,7 @@ return [
             "material_pack_type_4" => "包装",
             "material_price_4" => "单价",
             "material_remark_4" => "备注",
-            "material_out_order_no_4" => "外部标识",
+//            "material_out_order_no_4" => "外部标识",
 
             "material_code_5" => "代码",
             "material_name_5" => "货物名称",
@@ -315,7 +316,7 @@ return [
             "material_pack_type_5" => "包装",
             "material_price_5" => "单价",
             "material_remark_5" => "备注",
-            "material_out_order_no_5" => "外部标识"
+//            "material_out_order_no_5" => "外部标识"
         ]
     ],
 

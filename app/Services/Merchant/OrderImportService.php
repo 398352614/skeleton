@@ -86,7 +86,7 @@ class OrderImportService extends BaseService
         $headings = self::$headings;
         $feeList = $this->getFeeService()->getList(['status' => BaseConstService::YES, 'level' => BaseConstService::FEE_LEVEL_2], ['*'], false)->pluck('name')->toArray();
         $headings[1] = array_merge($headings[1], $feeList);
-        return $this->excelExport('template', $headings, $cellData, 'order');
+        return $this->excelExport('template', $headings, $cellData, 'merchantOrder');
     }
 
     /**
@@ -103,8 +103,8 @@ class OrderImportService extends BaseService
         $params['path'] = str_replace(env('APP_URL') . '/storage/', 'public//', $params['path']);
         $row = collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
         //表头验证
-        $firstHeadings = array_values(__('excel.order.0'));
-        $secondHeadings = array_values(__('excel.order.1'));
+        $firstHeadings = array_values(__('excel.merchantOrder.0'));
+        $secondHeadings = array_values(__('excel.merchantOrder.1'));
         $newSecondRow = [];
         foreach ($row[1] as $k => $v) {
             $row[1][$k] = preg_replace('/\(.*\)/', '', $v);
@@ -408,8 +408,7 @@ class OrderImportService extends BaseService
     public function importForm($row)
     {
         //将表头和每条数据组合
-        $headings = OrderImportService::$headings[1];
-        $data[] = __('excel.order.1');
+        $data[] = __('excel.merchantOrder.1');
         $feeList = $this->getFeeService()->getList(['status' => BaseConstService::YES, 'level' => BaseConstService::FEE_LEVEL_2], ['*'], false);
         if (!empty($feeList)) {
             foreach ($feeList as $k => $v) {
@@ -428,8 +427,15 @@ class OrderImportService extends BaseService
         $packageFeatureList = array_flip(ConstTranslateTrait::packageFeatureList());
         $materialTypeList = array_flip(ConstTranslateTrait::materialTypeList());
         $materialPackTypeList = array_flip(ConstTranslateTrait::materialPackTypeList());
-        for ($i = 0; $i < count($data); $i++) {
+        $statusList = array_flip(ConstTranslateTrait::statusList());
+        for ($i = 1; $i < count($data); $i++) {
             //反向翻译
+            foreach (array_keys($data[$i]) as $v) {
+                if (is_integer($v)) {
+                    $data[$i][$v . '_name'] = $data[$i][$v];
+                    $data[$i][$v] = $statusList[$data[$i][$v]] ?? BaseConstService::NO;
+                }
+            }
             $data[$i]['place_country'] = CountryTrait::getShort($data[$i]['place_country_name']) ?? $data[$i]['place_country_name'];
             $data[$i]['second_place_country'] = CountryTrait::getShort($data[$i]['second_place_country_name']) ?? $data[$i]['second_place_country_name'];
             if (!empty($data[$i]['type'])) {
@@ -453,7 +459,6 @@ class OrderImportService extends BaseService
             }
             //日期如果是excel时间格式，转换成短横连接格式
             is_numeric($data[$i]['execution_date']) && $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
-            is_numeric($data[$i]['create_date']) && $data[$i]['create_date'] = date('Y-m-d', ($data[$i]['create_date'] - 25569) * 24 * 3600);
             is_numeric($data[$i]['second_execution_date']) && $data[$i]['second_execution_date'] = date('Y-m-d', ($data[$i]['second_execution_date'] - 25569) * 24 * 3600);
             $data[$i] = array_map('strval', $data[$i]);
         }
@@ -465,6 +470,7 @@ class OrderImportService extends BaseService
      * @param $params
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function createByList($params)
     {
@@ -538,20 +544,21 @@ class OrderImportService extends BaseService
                 $data['material_list'] = array_values($data['material_list']);
             }
         }
-
-
-        foreach (array_keys($data) as $k => $v) {
+        foreach (array_keys($data) as $v) {
             if (is_integer($v)) {
-                $data['bill_list'][] = [
-                    'expect_amount' => $data[$v],
-                    'fee_id' => $v
-                ];
+                $fee = $this->getFeeService()->getInfo(['id' => $v], ['*'], false);
+                if (!empty($fee) && $data[$v] == BaseConstService::YES) {
+                    $data['bill_list'][] = [
+                        'expect_amount' => $fee['amount'],
+                        'fee_id' => $v
+                    ];
+                }
             }
         }
         $data = Arr::only($data, [
             "type", "out_user_id", "out_order_no",
-            "place_fullname", "place_phone", "place_country","place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date",
-            "second_place_fullname", "second_place_phone","second_place_country", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date", "second_place_lon", "second_place_lat",
+            "place_fullname", "place_phone", "place_country", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date",
+            "second_place_fullname", "second_place_phone", "second_place_country", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date", "second_place_lon", "second_place_lat",
             "settlement_amount", "settlement_type",
             "control_mode", "receipt_type", "receipt_count", "special_remark", "mask_code",
 
