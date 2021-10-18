@@ -776,9 +776,11 @@ class OrderService extends BaseService
         }
         $params = $this->getTransportPriceService()->priceCount($params);
         $params['expect_total_amount']= $params['settlement_amount'];
-        foreach ($params['bill_list'] as $v) {
-            $params['expect_total_amount'] += $v['expect_amount'];
-        };
+        if(!empty($params['bill_list'])){
+            foreach ($params['bill_list'] as $v) {
+                $params['expect_total_amount'] += $v['expect_amount'];
+            }
+        }
         return $params;
     }
 
