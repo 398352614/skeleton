@@ -98,7 +98,7 @@ class CacheCompany extends Command
 //                    'country_en_name' => $countryList[$company['id']]['en_name'] ?? '',
 //                    'country_cn_name' => $countryList[$company['id']]['cn_name'] ?? '',
 //                ],
-                Arr::only($company, ['id', 'name', 'company_code'])
+                Arr::only($company, ['id', 'name', 'company_code','system_name'])
             ));
         })->toArray();
         foreach ($companyList as $company) {
