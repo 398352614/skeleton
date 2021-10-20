@@ -32,6 +32,8 @@ Route::namespace('Api\Admin')->group(function () {
     Route::get('/tour/unlock-redis', 'TourController@unlockRedis');
     // 翻译
     Route::get('/translate', 'AuthController@validation');
+    // 获取定制化界面
+    Route::get('/customize', 'CompanyCustomizeController@showByUrl');
 });
 
 //认证
@@ -1005,6 +1007,14 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/', 'MapConfigController@show')->name('holiday.update');
         //修改
         Route::put('/', 'MapConfigController@update')->name('holiday.update');
+    });
+
+    //地图配置
+    Route::prefix('company-customize')->group(function () {
+        //详情
+        Route::get('/', 'CompanyCustomizeController@show')->name('company-config.update');
+        //修改
+        Route::put('/', 'CompanyCustomizeController@update')->name('company-config.update');
     });
 
     //邮件模板

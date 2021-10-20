@@ -190,7 +190,9 @@
  * @apiDefine 57 代收货款
  */
 
-
+/**
+ * @apiDefine 58 自定义界面
+ */
 
 /**
  * @api {post} /admin/login 登录
@@ -25478,7 +25480,6 @@
  * @apiSuccess {string} code
  * @apiSuccess {string} msg
  * @apiSuccess {string} data
-
  * @apiSuccessExample {json} Success-Response:
  * {
  * "code": 200,
@@ -25526,7 +25527,6 @@
  * @apiParam {string} bill_no 账单单号
  * @apiParam {string} verify_no 对账单号
  * @apiParam {string} object_no 系统编号
-
  * @apiSuccess {string} code
  * @apiSuccess {string} msg
  * @apiSuccess {string} data
@@ -25820,6 +25820,133 @@
  * {
  * "code": 200,
  * "data": {
+ * }
+ */
+
+/**
+ * @api {get} /admin/customize 通过url获取自定义界面
+ * @apiName 通过url获取自定义界面
+ * @apiGroup 58
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {string} url 路由
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+ * @apiSuccess {string} data.company_id 公司ID,
+ * @apiSuccess {string} data.status 状态1-是2-否,
+ * @apiSuccess {string} data.admin_url 管理员端域名,
+ * @apiSuccess {string} data.admin_login_background 管理员端登录背景,
+ * @apiSuccess {string} data.admin_login_title 管理员端登录标题,
+ * @apiSuccess {string} data.admin_main_logo 管理员端主界面logo,
+ * @apiSuccess {string} data.merchant_url 货主端域名,
+ * @apiSuccess {string} data.merchant_login_background 货主端登录背景,
+ * @apiSuccess {string} data.merchant_login_title 货主端登录标题,
+ * @apiSuccess {string} data.merchant_main_logo 货主端主界面logo,
+ * @apiSuccess {string} data.driver_login_title 司机端主界面logo,
+ * @apiSuccess {string} data.consumer_url 客户端域名,
+ * @apiSuccess {string} data.consumer_login_title 货主端主界面logo,
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": {
+ * "id": 3,
+ * "status": 1,
+ * "company_id": 3,
+ * "admin_url": "tms-api.test:14280/api",
+ * "admin_login_background": "",
+ * "admin_login_title": "",
+ * "admin_main_logo": "",
+ * "merchant_url": "",
+ * "merchant_login_background": "",
+ * "merchant_login_title": "",
+ * "merchant_main_logo": "",
+ * "driver_login_title": "",
+ * "consumer_url": "",
+ * "consumer_login_title": "",
+ * "created_at": "2021-10-20 14:46:37",
+ * "updated_at": "2021-10-20 15:08:34",
+ * "status_name": "是"
+ * },
+ * "msg": "successful"
+ * }
+ */
+
+/**
+ * @api {get} /admin/company-customize 自定义界面详情
+ * @apiName 自定义界面详情
+ * @apiGroup 58
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+ * @apiSuccess {string} data.company_id 公司ID,
+ * @apiSuccess {string} data.status 状态1-是2-否,
+ * @apiSuccess {string} data.admin_url 管理员端域名,
+ * @apiSuccess {string} data.admin_login_background 管理员端登录背景,
+ * @apiSuccess {string} data.admin_login_title 管理员端登录标题,
+ * @apiSuccess {string} data.admin_main_logo 管理员端主界面logo,
+ * @apiSuccess {string} data.merchant_url 货主端域名,
+ * @apiSuccess {string} data.merchant_login_background 货主端登录背景,
+ * @apiSuccess {string} data.merchant_login_title 货主端登录标题,
+ * @apiSuccess {string} data.merchant_main_logo 货主端主界面logo,
+ * @apiSuccess {string} data.driver_login_title 司机端主界面logo,
+ * @apiSuccess {string} data.consumer_url 客户端域名,
+ * @apiSuccess {string} data.consumer_login_title 货主端主界面logo,
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": {
+ * "id": 3,
+ * "status": 1,
+ * "company_id": 3,
+ * "admin_url": "tms-api.test:14280/api",
+ * "admin_login_background": "",
+ * "admin_login_title": "",
+ * "admin_main_logo": "",
+ * "merchant_url": "",
+ * "merchant_login_background": "",
+ * "merchant_login_title": "",
+ * "merchant_main_logo": "",
+ * "driver_login_title": "",
+ * "consumer_url": "",
+ * "consumer_login_title": "",
+ * "created_at": "2021-10-20 14:46:37",
+ * "updated_at": "2021-10-20 15:08:34",
+ * "status_name": "是"
+ * },
+ * "msg": "successful"
+ * }
+ */
+
+/**
+ * @api {post} /admin/company-customize 自定义界面修改
+ * @apiName 自定义界面修改
+ * @apiGroup 58
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {string} status 状态1-是2-否,
+ * @apiParam {string} admin_url 管理员端域名,
+ * @apiParam {string} admin_login_background 管理员端登录背景,
+ * @apiParam {string} admin_login_title 管理员端登录标题,
+ * @apiParam {string} admin_main_logo 管理员端主界面logo,
+ * @apiParam {string} merchant_url 货主端域名,
+ * @apiParam {string} merchant_login_background 货主端登录背景,
+ * @apiParam {string} merchant_login_title 货主端登录标题,
+ * @apiParam {string} merchant_main_logo 货主端主界面logo,
+ * @apiParam {string} driver_login_title 司机端主界面logo,
+ * @apiParam {string} consumer_url 客户端域名,
+ * @apiParam {string} consumer_login_title 货主端主界面logo,
+ *
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": "",
+ * "msg": "successful"
  * }
  */
 

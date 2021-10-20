@@ -12,6 +12,7 @@ use App\Mail\SendResetCode;
 use App\Models\Bill;
 use App\Models\Company;
 use App\Models\CompanyConfig;
+use App\Models\CompanyCustomize;
 use App\Models\Employee;
 use App\Models\Fee;
 use App\Models\KilometresCharging;
@@ -105,9 +106,31 @@ class RegisterController extends BaseController
             $this->addOrderDefaultConfig($company); //添加订单默认配置
             $this->addMapConfig($company); //添加订单默认配置
             $this->addCompanyConfig($company); //添加公司配置
+            $this->addCompanyCustomize($company); //添加公司自定义
             Artisan::call('cache:company');
             return 'true';
         });
+    }
+
+    public function addCompanyCustomize($company)
+    {
+        CompanyCustomize::create([
+            'company_id' => $company['id'],
+            'status' => BaseConstService::YES,
+            'back_type' => BaseConstService::MAP_CONFIG_BACK_TYPE_1,
+            'mobile_type' => BaseConstService::MAP_CONFIG_MOBILE_TYPE_1,
+            'admin_url' => '',
+            'admin_login_background' => '',
+            'admin_login_title' => '',
+            'admin_main_logo' => '',
+            'merchant_url' => '',
+            'merchant_login_background' => '',
+            'merchant_login_title' => '',
+            'merchant_main_logo' => '',
+            'driver_login_title' => '',
+            'consumer_url' => '',
+            'consumer_login_title' => '',
+        ]);
     }
 
     public function addMapConfig($company)
@@ -372,7 +395,7 @@ class RegisterController extends BaseController
             throw new BusinessLogicException('初始化货主失败');
         }
         $id = $merchant->getAttribute('id');
-        Merchant::query()->where('id',$id)->update(['code' => sprintf("%05s", $id)]);
+        Merchant::query()->where('id', $id)->update(['code' => sprintf("%05s", $id)]);
         return $merchant;
     }
 
@@ -658,7 +681,7 @@ class RegisterController extends BaseController
             'user_type' => BaseConstService::USER_MERCHANT,
             'balance' => 0,
             'credit' => 0,
-            'create_date'=>today()->format('Y-m-d'),
+            'create_date' => today()->format('Y-m-d'),
             'pay_type' => BaseConstService::PAY_TYPE_1,
             'verify_type' => BaseConstService::LEDGER_VERIFY_TYPE_1,
             'status' => BaseConstService::LEDGER_STATUS_1,
