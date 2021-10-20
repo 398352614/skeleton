@@ -25921,7 +25921,7 @@
  */
 
 /**
- * @api {post} /admin/company-customize 自定义界面修改
+ * @api {put} /admin/company-customize 自定义界面修改
  * @apiName 自定义界面修改
  * @apiGroup 58
  * @apiVersion 1.0.0

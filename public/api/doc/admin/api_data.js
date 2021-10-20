@@ -68831,7 +68831,7 @@ define({ "api": [
     }
   },
   {
-    "type": "post",
+    "type": "put",
     "url": "/admin/company-customize",
     "title": "自定义界面修改",
     "name": "自定义界面修改",
