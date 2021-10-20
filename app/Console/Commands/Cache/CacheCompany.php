@@ -76,7 +76,7 @@ class CacheCompany extends Command
             $company = array_merge(
                 $companyConfig,
 //                ['country' => $country['short'] ?? '', 'country_en_name' => $country['en_name'] ?? '', 'country_cn_name' => $country['cn_name'] ?? ''],
-                Arr::only($company, ['id', 'name', 'company_code'])
+                Arr::only($company, ['id', 'name', 'company_code','system_name'])
             //, ['map_config' => $mapConfig]
             );
             Cache::tags($tag)->forget($rootKey . $company['id']);
