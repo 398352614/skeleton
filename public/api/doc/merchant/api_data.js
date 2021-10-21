@@ -225,7 +225,7 @@ define({ "api": [
     "groupTitle": "用户认证",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/login"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/login"
       }
     ],
     "header": {
@@ -335,7 +335,7 @@ define({ "api": [
     "groupTitle": "用户认证",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/password/reset"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/password/reset"
       }
     ],
     "header": {
@@ -424,7 +424,7 @@ define({ "api": [
     "groupTitle": "用户认证",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/password/code"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/password/code"
       }
     ],
     "header": {
@@ -520,7 +520,7 @@ define({ "api": [
     "groupTitle": "公共接口",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/timezone"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/timezone"
       }
     ],
     "header": {
@@ -715,7 +715,7 @@ define({ "api": [
     "groupTitle": "公共接口",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/company"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/company"
       }
     ],
     "header": {
@@ -805,7 +805,7 @@ define({ "api": [
     "groupTitle": "首页",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/statistics/last-week"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/statistics/last-week"
       }
     ],
     "header": {
@@ -895,7 +895,7 @@ define({ "api": [
     "groupTitle": "首页",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/statistics/last-month"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/statistics/last-month"
       }
     ],
     "header": {
@@ -985,7 +985,7 @@ define({ "api": [
     "groupTitle": "首页",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/statistics/today-overview"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/statistics/today-overview"
       }
     ],
     "header": {
@@ -1102,7 +1102,7 @@ define({ "api": [
     "groupTitle": "首页",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/statistics/period"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/statistics/period"
       }
     ],
     "header": {
@@ -1192,7 +1192,7 @@ define({ "api": [
     "groupTitle": "首页",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/statistics/this-week"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/statistics/this-week"
       }
     ],
     "header": {
@@ -1282,7 +1282,7 @@ define({ "api": [
     "groupTitle": "首页",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/statistics/this-month"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/statistics/this-month"
       }
     ],
     "header": {
@@ -1372,7 +1372,7 @@ define({ "api": [
     "groupTitle": "首页",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/statistics/order-trail"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/statistics/order-trail"
       }
     ],
     "header": {
@@ -1525,7 +1525,7 @@ define({ "api": [
     "groupTitle": "配置",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/api"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/api"
       }
     ]
   },
@@ -1672,7 +1672,7 @@ define({ "api": [
     "groupTitle": "配置",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant"
       }
     ],
     "header": {
@@ -1775,7 +1775,7 @@ define({ "api": [
     "groupTitle": "配置",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/api"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/api"
       }
     ]
   },
@@ -1858,7 +1858,7 @@ define({ "api": [
     "groupTitle": "配置",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant"
       }
     ],
     "header": {
@@ -1961,7 +1961,7 @@ define({ "api": [
     "groupTitle": "配置",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/password"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/password"
       }
     ],
     "header": {
@@ -2050,7 +2050,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/{id}/remove-batch"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order/{id}/remove-batch"
       }
     ],
     "header": {
@@ -2706,7 +2706,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/{id}"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order/{id}"
       }
     ],
     "header": {
@@ -2795,7 +2795,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/{id}"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order/{id}"
       }
     ],
     "header": {
@@ -2891,7 +2891,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/excel"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order/excel"
       }
     ],
     "header": {
@@ -3484,7 +3484,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/bill"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order/bill"
       }
     ],
     "header": {
@@ -4154,7 +4154,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order"
       }
     ],
     "header": {
@@ -4684,7 +4684,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order"
       }
     ],
     "header": {
@@ -4773,7 +4773,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant"
       }
     ],
     "header": {
@@ -5702,7 +5702,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/{id}"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order/{id}"
       }
     ],
     "header": {
@@ -5903,7 +5903,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/{id}/trail"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order/{id}/trail"
       }
     ],
     "header": {
@@ -6580,7 +6580,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/price-count"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order/price-count"
       }
     ],
     "header": {
@@ -6698,7 +6698,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/get-date"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order/get-date"
       }
     ],
     "header": {
@@ -6787,7 +6787,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/{id}/get-date"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order/{id}/get-date"
       }
     ],
     "header": {
@@ -6883,7 +6883,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/{id}/assign-batch"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order/{id}/assign-batch"
       }
     ],
     "header": {
@@ -7840,7 +7840,7 @@ define({ "api": [
     "groupTitle": "订单导入",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order-import/list"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order-import/list"
       }
     ],
     "header": {
@@ -8881,7 +8881,7 @@ define({ "api": [
     "groupTitle": "订单导入",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order-import/check"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order-import/check"
       }
     ],
     "header": {
@@ -8977,7 +8977,7 @@ define({ "api": [
     "groupTitle": "订单导入",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order-import"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order-import"
       }
     ],
     "header": {
@@ -9053,7 +9053,7 @@ define({ "api": [
     "groupTitle": "订单导入",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order-import/template"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/order-import/template"
       }
     ],
     "header": {
@@ -9226,7 +9226,7 @@ define({ "api": [
     "groupTitle": "地址管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/address/{id}"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/address/{id}"
       }
     ],
     "header": {
@@ -9322,7 +9322,7 @@ define({ "api": [
     "groupTitle": "地址管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/address/{id}"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/address/{id}"
       }
     ],
     "header": {
@@ -9509,7 +9509,7 @@ define({ "api": [
     "groupTitle": "地址管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/address/{id}"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/address/{id}"
       }
     ],
     "header": {
@@ -9787,7 +9787,7 @@ define({ "api": [
     "groupTitle": "地址管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/address"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/address"
       }
     ],
     "header": {
@@ -10002,7 +10002,7 @@ define({ "api": [
     "groupTitle": "地址管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/address/{id}"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/address/{id}"
       }
     ],
     "header": {
@@ -10274,7 +10274,7 @@ define({ "api": [
     "groupTitle": "运价信息",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/transport-price"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant/transport-price"
       }
     ],
     "header": {

@@ -5576,6 +5576,7 @@
  * @apiSuccess {string} data
  * @apiSuccess {string} data.line_rule 线路分配规则
  * @apiSuccess {string} data.scheduling_rule 调度规则
+ * @apiSuccess {string} data.stop_time 停留时间（分钟）
  * @apiSuccess {string} msg
  */
 
@@ -5587,6 +5588,7 @@
  * @apiUse auth
  * @apiParam {string} line_rule 联络规则
  * @apiParam {string} scheduling_rule 调度规则
+ * @apiParam {string} data.stop_time 停留时间（分钟）
  */
 
 /**

@@ -76,11 +76,13 @@ class CompanyConfigService extends BaseService
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object
      */
     public function getRuleConfig()
     {
-        return $this->query->select(['line_rule', 'scheduling_rule'])->first();
+        $data = $this->query->select(['line_rule', 'scheduling_rule'])->first();
+        $data['stop_time'] = $data['stop_time'] / 60;
+        return $data;
     }
 
     /**
@@ -92,7 +94,8 @@ class CompanyConfigService extends BaseService
     {
         $row = $this->update(['company_id' => auth()->user()->company_id], [
             'line_rule' => $data['line_rule'],
-            'scheduling_rule' => $data['scheduling_rule']
+            'scheduling_rule' => $data['scheduling_rule'],
+            'stop_time' => $data['stop_time'] * 60
         ]);
         if ($row == false) {
             throw new BusinessLogicException('更新失败');

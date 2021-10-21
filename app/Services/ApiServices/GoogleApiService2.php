@@ -14,6 +14,7 @@ use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\BaseServices\XLDirectionService;
 use App\Services\CurlClient;
+use App\Traits\CompanyTrait;
 use Illuminate\Support\Facades\Log;
 
 class GoogleApiService2
@@ -328,10 +329,11 @@ class GoogleApiService2
             throw new BusinessLogicException('google-api请求报错');
         }
         $result = [];
+        $stopTime = CompanyTrait::getCompany()['stop_time'];
         foreach ($res['routes'][0]['legs'] as $k => $v) {
             $result[] = [
                 'distance' => $v['distance']['value'],
-                'time' => $v['duration']['value']
+                'time' => $v['duration']['value'] + $stopTime
             ];
         }
         return $result;

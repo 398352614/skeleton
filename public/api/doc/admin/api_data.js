@@ -12680,6 +12680,13 @@ define({ "api": [
             "optional": false,
             "field": "scheduling_rule",
             "description": "<p>调度规则</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "data.stop_time",
+            "description": "<p>停留时间（分钟）</p>"
           }
         ]
       }
@@ -12756,6 +12763,13 @@ define({ "api": [
             "optional": false,
             "field": "data.scheduling_rule",
             "description": "<p>调度规则</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.stop_time",
+            "description": "<p>停留时间（分钟）</p>"
           },
           {
             "group": "Success 200",
