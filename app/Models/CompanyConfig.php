@@ -56,6 +56,7 @@ class CompanyConfig extends BaseModel
         'volume_unit',
         'stock_exception_verify',
         'map',
+        'stop_time',
         'created_at',
         'updated_at',
     ];

@@ -80,7 +80,7 @@ class CompanyConfigService extends BaseService
      */
     public function getRuleConfig()
     {
-        $data = $this->query->select(['line_rule', 'scheduling_rule'])->first();
+        $data = $this->query->select(['line_rule', 'scheduling_rule','stop_time'])->first();
         $data['stop_time'] = $data['stop_time'] / 60;
         return $data;
     }

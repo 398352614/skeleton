@@ -70,7 +70,7 @@ class CompanyConfigController extends BaseController
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object
      */
     public function rule_show()
     {
@@ -78,10 +78,11 @@ class CompanyConfigController extends BaseController
     }
 
     /**
-     * @return int
+     * @return void
+     * @throws BusinessLogicException
      */
     public function rule_update()
     {
-        return $this->service->setRuleConfig($this->data);
+         $this->service->setRuleConfig($this->data);
     }
 }
