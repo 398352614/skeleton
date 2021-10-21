@@ -20,7 +20,8 @@ class CompanyConfigValidate extends BaseValidate
         'currency_unit'             => 'required|integer|in:1,2,3',
         'volume_unit'               => 'required|integer|in:1,2',
         'map'                       => 'required|string|max:50',
-        'stock_exception_verify'    => 'nullable|integer|in:1,2'
+        'stock_exception_verify'    => 'nullable|integer|in:1,2',
+        'stop_time'                 => 'nullable|integer|gte:0'
     ];
 
     public $scene = [
@@ -40,7 +41,8 @@ class CompanyConfigValidate extends BaseValidate
 
         'rule_update' => [
             'line_rule',
-            'scheduling_rule'
+            'scheduling_rule',
+            'stop_time'
         ]
     ];
 }
