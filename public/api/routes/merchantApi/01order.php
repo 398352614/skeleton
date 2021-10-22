@@ -189,8 +189,8 @@ Route::post('order-out-status', 'OrderController@updateOutStatus');//出库
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiDescription 通过地址获取可预约日期，线路分配规则为邮编的情况，邮编必填；线路分配规则为区域的情况，经纬度必填，线路分配规则请在管理员端-配置管理-调度管理-调度规则页面确认或修改。
- * @apiParam {String} order_no[必填] 订单编号
  * @apiParam {String} type[必填] 类型1-取件2-派件
+ * @apiParam {String} place_country[必填] 国家
  * @apiParam {String} place_lon 经度
  * @apiParam {String} place_lat 纬度
  * @apiParam {String} place_post_code 邮编
