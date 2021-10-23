@@ -79,6 +79,7 @@ class Merchant extends Authenticatable implements JWTSubject
         'created_at',
         'updated_at',
         'last_settlement_date',
+        'can_select_all'
     ];
 
     /**
@@ -110,6 +111,7 @@ class Merchant extends Authenticatable implements JWTSubject
         'auto_settlement_name',
         'settlement_type_name',
         'pie_count',
+        'can_select_all_name',
     ];
 
     public function getAutoSettlementNameAttribute()
@@ -201,5 +203,10 @@ class Merchant extends Authenticatable implements JWTSubject
     public function merchantGroup()
     {
         return $this->belongsTo(MerchantGroup::class, 'merchant_group_id', 'id');
+    }
+
+    public function getCanSelectAllNameAttribute()
+    {
+        return empty($this->can_select_all) ? null : ConstTranslateTrait::warehouseCanSelectAllList($this->can_select_all);
     }
 }

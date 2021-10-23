@@ -100,6 +100,7 @@ class EmployeeService extends BaseService
      */
     public function updateById($id, $data)
     {
+        unset($data['password']);
         $data = $this->check($data);
         $role = Role::findById($data['role_id']);
         $employee = $this->model::findOrFail($id);
@@ -125,7 +126,6 @@ class EmployeeService extends BaseService
         if (empty($warehouse)) {
             throw new BusinessLogicException('网点不存在');
         }
-        unset($data['password']);
         return $data;
     }
 
