@@ -47,10 +47,16 @@ class CompanyCustomizeController extends BaseController
      */
     public function update()
     {
-        if (!empty($this->data['admin_url']) && !empty($this->service->getInfo(['admin_url' => $this->data['admin_url']], ['*'], false))) {
+        if (!empty($this->data['admin_url']) && !empty($this->service->getInfo([
+                'admin_url' => $this->data['admin_url'],
+                'company_id' => ['<>', auth()->user()->company_id]
+            ], ['*'], false))) {
             throw new BusinessLogicException('该网址已被占用');
         }
-        if (!empty($this->data['merchant_url']) && !empty($this->service->getInfo(['merchant_url' => $this->data['merchant_url']], ['*'], false))) {
+        if (!empty($this->data['merchant_url']) && !empty($this->service->getInfo([
+                'merchant_url' => $this->data['merchant_url'],
+                'company_id' => ['<>', auth()->user()->company_id]
+            ], ['*'], false))) {
             throw new BusinessLogicException('该网址已被占用');
         }
         return $this->service->update(['company_id' => auth()->user()->company_id], $this->data);
