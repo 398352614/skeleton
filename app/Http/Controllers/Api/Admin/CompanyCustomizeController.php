@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Http\Resources\Api\Admin\CompanyInfoResource;
 use App\Services\Admin\CompanyCustomizeService;
@@ -42,9 +43,13 @@ class CompanyCustomizeController extends BaseController
     /**
      * 修改
      * @return bool|int|void
+     * @throws \App\Exceptions\BusinessLogicException
      */
     public function update()
     {
+        if(!empty($this->data['admin_url']) && !empty($this->service->getInfo(['admin_url'=>$this->data['admin_url']],['*'],false))){
+            throw new BusinessLogicException('该网址已被占用');
+        }
         return $this->service->update(['company_id' => auth()->user()->company_id], $this->data);
     }
 }
