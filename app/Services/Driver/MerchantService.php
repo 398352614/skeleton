@@ -30,6 +30,9 @@ class MerchantService extends BaseService
 
     public function getMerchantList()
     {
+        if (!empty($this->formData['can_select_all'])) {
+            $this->query->where('can_select_all', $this->formData['can_select_all']);
+        }
         if (!empty($this->formData['recharge_status'])) {
             $merchantIdList = MerchantApi::query()->where('recharge_status', $this->formData['recharge_status'])->pluck('merchant_id');
             $this->query->whereIn('id', $merchantIdList);

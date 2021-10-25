@@ -39,6 +39,7 @@ class MerchantResource extends JsonResource
             'updated_at' => (string)$this->updated_at,
             'invoice_title'=>$this->invoice_title,
             'taxpayer_code'=>$this->taxpayer_code,
+            'can_select_all'=>$this->can_select_all,
             'bank'=>$this->bank,
             'bank_account'=>$this->bank_account,
             'invoice_address'=>$this->invoice_address,
