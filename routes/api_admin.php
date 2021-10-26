@@ -1086,7 +1086,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //充值列表
         Route::get('/merchant-recharge', 'BillController@index')->name('bill.merchant-index');
         //充值详情
-        Route::get('/merchant-recharge', 'BillController@index')->name('bill.merchant-index');
+        Route::get('/merchant-recharge/{id}', 'BillController@index')->name('bill.merchant-index');
         //充值审核
         Route::post('/{id}/verify', 'BillController@verify')->name('bill.verify');
     });

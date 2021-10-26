@@ -3283,7 +3283,7 @@
         "parent_id": 351,
         "name": "查看",
         "route": "",
-        "route_as": "",
+        "route_as": "bill.merchant-index",
         "level": 5,
         "sort_id": 1,
         "type": 2,
@@ -3292,20 +3292,101 @@
     {
         "id": 353,
         "parent_id": 351,
-        "name": "查看",
+        "name": "审核",
+        "route": "",
+        "route_as": "bill.verify",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+
+
+    {
+        "id": 355,
+        "parent_id": 240,
+        "name": "交账管理",
         "route": "",
         "route_as": "",
+        "level": 3,
+        "sort_id": 1,
+        "type": 1,
+        "is_show": 2
+    },
+
+    {
+        "id": 356,
+        "parent_id": 355,
+        "name": "账单明细",
+        "route": "",
+        "route_as": "",
+        "level": 4,
+        "sort_id": 1,
+        "type": 1,
+        "is_show": 2
+    },
+    {
+        "id": 357,
+        "parent_id": 356,
+        "name": "查看",
+        "route": "",
+        "route_as": "bill.index",
         "level": 5,
         "sort_id": 1,
         "type": 2,
         "is_show": 2
     },
     {
-        "id": 354,
-        "parent_id": 351,
-        "name": "查看",
+        "id": 358,
+        "parent_id": 356,
+        "name": "生成对账单",
+        "route": "",
+        "route_as": "bill-verify.store",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+
+    {
+        "id": 359,
+        "parent_id": 355,
+        "name": "对账账单",
         "route": "",
         "route_as": "",
+        "level": 4,
+        "sort_id": 1,
+        "type": 1,
+        "is_show": 2
+    },
+    {
+        "id": 360,
+        "parent_id": 359,
+        "name": "查看",
+        "route": "",
+        "route_as": "bill-verify.index",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 361,
+        "parent_id": 359,
+        "name": "审核",
+        "route": "",
+        "route_as": "bill-verify.verify",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 362,
+        "parent_id": 351,
+        "name": "删除",
+        "route": "",
+        "route_as": "bill-verify.destroy",
         "level": 5,
         "sort_id": 1,
         "type": 2,
