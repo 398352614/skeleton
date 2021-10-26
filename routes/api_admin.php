@@ -202,7 +202,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/tracking-order/{tracking_order_no}', 'TrackingOrderTrailController@index')->name('trail.index');
         //列表查询
-        Route::get('/package/{express_first_no}', 'PackageTrailController@index')->name('trail.index');
+        Route::get('/package/{express_first_no}', 'PackageTrailController@index')->name('package-trail.index');
     });
 
     //订单轨迹管理
@@ -594,17 +594,17 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //移动节点
         Route::put('/{id}/move/{parent}', 'WareHouseController@move')->name('warehouse.index');
         //查看线路
-        Route::get('/{id}/line', 'WareHouseController@getLineList')->name('warehouse.index');
+        Route::get('/{id}/line', 'WareHouseController@getLineList')->name('warehouse.line-index');
         //查看可选线路
-        Route::get('/{id}/all-line', 'WareHouseController@getAbleLineList')->name('warehouse.index');
+        Route::get('/{id}/all-line', 'WareHouseController@getAbleLineList')->name('warehouse.line-index');
         //加入线路
-        Route::post('/{id}/line', 'WareHouseController@addLineList')->name('warehouse.index');
+        Route::post('/{id}/line', 'WareHouseController@addLineList')->name('warehouse.line-update');
         //移除线路
-        Route::delete('/{id}/all-line', 'WareHouseController@removeLineList')->name('warehouse.index');
+        Route::delete('/{id}/all-line', 'WareHouseController@removeLineList')->name('warehouse.line-destroy');
         //新增线路
-        Route::post('/{id}/line', 'WareHouseController@addLineList')->name('warehouse.update');
+        Route::post('/{id}/line', 'WareHouseController@addLineList')->name('warehouse.line-store');
         //删除线路
-        Route::delete('/{id}/line', 'WareHouseController@removeLineList')->name('warehouse.update');
+        Route::delete('/{id}/line', 'WareHouseController@removeLineList')->name('warehouse.line-destroy');
     });
 
     //公司信息
@@ -731,8 +731,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     Route::prefix('country')->group(function () {
         Route::get('/', 'CountryController@index');
         Route::get('/init', 'CountryController@initStore');
-        Route::post('/', 'CountryController@store');
-        Route::delete('/{id}', 'CountryController@destroy');
+        Route::post('/', 'CountryController@store')->name('map.update');
+        Route::delete('/{id}', 'CountryController@destroy')->name('map.update');
     });
 
     //公共接口
@@ -1004,9 +1004,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //地图配置
     Route::prefix('map-config')->group(function () {
         //详情
-        Route::get('/', 'MapConfigController@show')->name('holiday.update');
+        Route::get('/', 'MapConfigController@show')->name('map.index');
         //修改
-        Route::put('/', 'MapConfigController@update')->name('holiday.update');
+        Route::put('/', 'MapConfigController@update')->name('map.update');
     });
 
     //地图配置
