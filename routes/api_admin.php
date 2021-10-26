@@ -90,7 +90,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'OrderController@index')->name('order.index');
         //获取详情
-        Route::get('/{id}', 'OrderController@show')->name('order.show');
+        Route::get('/{id}', 'OrderController@show')->name('order.index');
         //订单新增初始化
         Route::get('/init', 'OrderController@initStore')->name('order.store');
         //订单新增
@@ -176,7 +176,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //订单默认配置
     Route::prefix('order-config')->group(function () {
         //获取配置
-        Route::get('/', 'OrderDefaultConfigController@detail')->name('order-default-config.show');
+        Route::get('/', 'OrderDefaultConfigController@detail')->name('order-default-config.index');
         //更新配置
         Route::put('/', 'OrderDefaultConfigController@update')->name('order-default-config.update');
     });
@@ -225,7 +225,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'PackageController@index')->name('package.index');
         //获取详情
-        Route::get('/{id}', 'PackageController@show')->name('package.show');
+        Route::get('/{id}', 'PackageController@show')->name('package.index');
         //填充包裹信息
         Route::put('fill-package', 'PackageController@fillWeightInfo');
     });
@@ -258,14 +258,14 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'MaterialController@index')->name('material.index');
         //获取详情
-        Route::get('/{id}', 'MaterialController@show')->name('material.show');
+        Route::get('/{id}', 'MaterialController@show')->name('material.index');
     });
 
     Route::prefix('additional-package')->group(function () {
         //列表查询
         Route::get('/', 'AdditionalPackageController@index')->name('additional-package.index');
         //获取详情
-        Route::get('/{id}', 'AdditionalPackageController@show')->name('additional-package.show');
+        Route::get('/{id}', 'AdditionalPackageController@show')->name('additional-package.index');
     });
 
     //运单管理
@@ -279,7 +279,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'TrackingOrderController@index')->name('tracking-order.index');
         //获取详情
-        Route::get('/{id}', 'TrackingOrderController@show')->name('tracking-order.show');
+        Route::get('/{id}', 'TrackingOrderController@show')->name('tracking-order.index');
         //运单轨迹
         Route::get('/{tracking_order_no}/trail', 'TrackingOrderTrailController@index')->name('tracking-order.trail');
         //获取可分配路线日期
@@ -446,7 +446,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //站点查询
         Route::get('/', 'BatchController@index')->name('batch.index');
         //批次详情
-        Route::get('/{id}', 'BatchController@show')->name('batch.show');
+        Route::get('/{id}', 'BatchController@show')->name('batch.index');
         //取消取派
         Route::put('/{id}/cancel', 'BatchController@cancel')->name('batch.cancel');
         //获取可分配路线日期
@@ -471,7 +471,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'BatchExceptionController@index')->name('batch-exception.index');
         //获取详情
-        Route::get('/{id}', 'BatchExceptionController@show')->name('batch-exception.show');
+        Route::get('/{id}', 'BatchExceptionController@show')->name('batch-exception.index');
         //处理
         Route::put('/{id}/deal', 'BatchExceptionController@deal')->name('batch-exception.deal');
     });
@@ -487,7 +487,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //线路任务详情
         Route::get('/{id}', 'TourController@show')->name('tour.index');
         //获取详情
-        Route::get('/report/{id}', 'ReportController@show')->name('tour.show');
+        Route::get('/report/{id}', 'ReportController@show')->name('tour.index');
         //分配司机
         Route::put('/{id}/assign-driver', 'TourController@assignDriver')->name('assign-driver|tour.cancel-driver');
         //取消分配司机
@@ -532,7 +532,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'ReportController@index')->name('report.index');
         //获取详情
-        Route::get('/{id}', 'ReportController@show')->name('report.show');
+        Route::get('/{id}', 'ReportController@show')->name('report.index');
         //导出任务报告
         Route::get('/{id}/tour-excel', 'TourController@tourExport')->name('report.report-excel');
     });
@@ -616,9 +616,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //公司配置
     Route::prefix('company-config')->group(function () {
         //获取详情
-        Route::get('/show', 'CompanyConfigController@show');
+        Route::get('/show', 'CompanyConfigController@show')->name('company-config.index');
         //获取地址模板列表
-        Route::get('/address-template', 'CompanyConfigController@getAddressTemplateList')->name('company-config.show');
+        Route::get('/address-template', 'CompanyConfigController@getAddressTemplateList')->name('company-config.index');
         //修改
         Route::put('/update', 'CompanyConfigController@update')->name('company-config.update');
         //计量单位设置
@@ -631,7 +631,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     Route::prefix('special-scenes-config')->group(function () {
         //获取详情
-        Route::get('/show', 'CompanyConfigController@show')->name('special-scenes-config.show');
+        Route::get('/show', 'CompanyConfigController@show')->name('special-scenes-config.index');
         //修改
         Route::put('/update', 'CompanyConfigController@update')->name('special-scenes-config.update');
     });
@@ -907,9 +907,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //打印模板
     Route::prefix('print-template')->group(function () {
         //初始化
-        Route::get('/init', 'PrintTemplateController@init')->name('print-template.show');
+        Route::get('/init', 'PrintTemplateController@init')->name('print-template.index');
         //详情
-        Route::get('/show', 'PrintTemplateController@show')->name('print-template.show');
+        Route::get('/show', 'PrintTemplateController@show')->name('print-template.index');
         //修改
         Route::put('/update', 'PrintTemplateController@update')->name('print-template.update');
     });
@@ -917,9 +917,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //订单打印模板
     Route::prefix('order-bill-template')->group(function () {
         //初始化
-        Route::get('/', 'OrderTemplateController@index')->name('print-template.show');
+        Route::get('/', 'OrderTemplateController@index')->name('print-template.index');
         //详情
-        Route::get('/{id}', 'OrderTemplateController@show')->name('print-template.show');
+        Route::get('/{id}', 'OrderTemplateController@show')->name('print-template.index');
         //修改
         Route::put('/{id}', 'OrderTemplateController@update')->name('print-template.update');
         //设置默认
@@ -977,7 +977,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/', 'ApiTimesController@index');
     });
 
-    //充值管理
+    //第三方充值管理
     Route::prefix('recharge')->group(function () {
         //充值统计查询
         Route::get('/statistics', 'RechargeStatisticsController@index')->name('recharge.index');
@@ -986,7 +986,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //充值查询
         Route::get('/', 'RechargeController@index')->name('recharge.index');
         //充值详情
-        Route::get('/{id}', 'RechargeController@show')->name('recharge.show');
+        Route::get('/{id}', 'RechargeController@show')->name('recharge.index');
         //充值审核
         Route::put('/statistics/{id}', 'RechargeStatisticsController@verify')->name('recharge.verify');
     });
@@ -1038,7 +1038,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //新增（扫描）
         Route::post('/', 'BagController@store')->name('bag.store');
         //详情
-        Route::get('/{id}', 'BagController@show')->name('bag.show');
+        Route::get('/{id}', 'BagController@show')->name('bag.index');
         //修改（扫描）
         Route::put('/{id}', 'BagController@update')->name('bag.update');
         //删除
@@ -1052,7 +1052,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //新增（扫描）
         Route::post('/', 'BagController@store')->name('bag.store');
         //详情
-        Route::get('/{id}', 'BagController@show')->name('bag.show');
+        Route::get('/{id}', 'BagController@show')->name('bag.index');
         //修改（扫描）
         Route::put('/{id}', 'BagController@update')->name('bag.update');
         //删除
@@ -1072,19 +1072,23 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //修改
         Route::post('/{id}', 'LedgerController@update')->name('ledger.update');
         //日志
-        Route::get('/{id}/log', 'LedgerController@log')->name('ledger.update');
+        Route::get('/{id}/log', 'LedgerController@log')->name('ledger.log');
     });
 
     //账单
     Route::prefix('bill')->group(function () {
         //列表
         Route::get('/', 'BillController@index')->name('bill.index');
+        //详情
+        Route::get('/{id}', 'BillController@show')->name('bill.index');
         //充值
         Route::post('/merchant-recharge', 'BillController@merchantRecharge')->name('bill.merchant-recharge');
-        //列表
+        //充值列表
+        Route::get('/merchant-recharge', 'BillController@index')->name('bill.merchant-index');
+        //充值详情
+        Route::get('/merchant-recharge', 'BillController@index')->name('bill.merchant-index');
+        //充值审核
         Route::post('/{id}/verify', 'BillController@verify')->name('bill.verify');
-        //列表
-        Route::get('/{id}', 'BillController@show')->name('bill.show');
     });
 
     //对账单
@@ -1095,14 +1099,15 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}', 'BillVerifyController@show')->name('bill-verify.index');
         //新增
         Route::post('/', 'BillVerifyController@store')->name('bill-verify.store');
+        //自动生成
+        Route::post('/auto/{id}', 'BillVerifyController@autoStore')->name('bill-verify.store');
 //        //修改审核单
 //        Route::put('/{id}', 'BillVerifyController@updateById')->name('bill-verify.update');
         //审核
         Route::post('/{id}/verify', 'BillVerifyController@verify')->name('bill-verify.verify');
         //删除
         Route::delete('/{id}', 'BillVerifyController@destroy')->name('bill-verify.destroy');
-        //删除
-        Route::post('/auto/{id}', 'BillVerifyController@autoStore')->name('bill-verify.store');
+
     });
 
     //流水
