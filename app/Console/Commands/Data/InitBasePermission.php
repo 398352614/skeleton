@@ -11,6 +11,7 @@ namespace App\Console\Commands\Data;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class InitBasePermission extends Command
 {
@@ -22,21 +23,18 @@ class InitBasePermission extends Command
     {
 
         try {
-            $command = empty($this->option('id'))
-                ? 'init:permission'
-                : 'init:permission --id=' . $this->option('id');
-
             DB::table('permissions')->delete();
-
             $permissionList = json_decode(file_get_contents(config('tms.permission_path')));
             foreach ($permissionList as $k => $v) {
                 $permissionList[$k] = collect($v)->toArray();
             }
-
             DB::table('permissions')->insert($permissionList);
+            Log::info('权限基础表已更新完成');
 
+            $command = empty($this->option('id'))
+                ? 'init:permission'
+                : 'init:permission --id=' . $this->option('id');
             Artisan::call($command);
-
             $this->info('successful');
         } catch (\Exception $e) {
             $this->error($e->getMessage());

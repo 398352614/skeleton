@@ -59,9 +59,9 @@ class InitPermission extends Command
                 if (empty($role)) {
                     //新建管理员权限组
                     $role = Role::create([
-                        'company_id'    => $company['id'],
-                        'name'          => '管理员组',
-                        'is_admin'      => 1,
+                        'company_id' => $company['id'],
+                        'name' => '管理员组',
+                        'is_admin' => 1,
                     ]);
                     $employee = Employee::query()->where('company_id', $company['id'])->orderBy('id')->first();
                     if (empty(DB::table('model_has_roles')->where('employee_id', $employee['id'])->first())) {
@@ -70,14 +70,17 @@ class InitPermission extends Command
                     }
                 }
                 //给管理员权限组补齐权限
-                if ($this->option('mode') == 1) {
-                    //重置修改
-                    $role->syncPermissions($basePermissionList);
-                } else {
-                    //增量修改
-                    $oldPermissionList = collect($role->getAllPermissions())->pluck('id')->toArray();
-                    $addPermissionList = array_diff($basePermissionList, $oldPermissionList);
-                    $role->givePermissionTo($addPermissionList);
+                $roleList = Role::query()->where('company_id', $company['id'])->get();
+                foreach ($roleList as $k => $v) {
+                    if ($this->option('mode') == 1) {
+                        //重置修改
+                        $v->syncPermissions($basePermissionList);
+                    } else {
+                        //增量修改
+                        $oldPermissionList = collect($v->getAllPermissions())->pluck('id')->toArray();
+                        $addPermissionList = array_diff($basePermissionList, $oldPermissionList);
+                        $v->givePermissionTo($addPermissionList);
+                    }
                 }
             }
             $this->info('successful');
