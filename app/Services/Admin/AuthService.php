@@ -6,27 +6,27 @@
  * Time: 13:41
  */
 
-namespace App\Services\Merchant;
+namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Merchant\MerchantResource;
+use App\Http\Resources\Api\Admin\EmployeeResource;
 use App\Models\Employee;
-use App\Models\Merchant;
+use App\Models\Role;
+use App\Services\BaseConstService;
+use App\Services\TreeService;
 use App\Traits\CompanyTrait;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+
 
 class AuthService extends BaseService
 {
     /**
      * AuthService constructor.
-     * @param Merchant $model
+     * @param Employee $model
      */
-    public function __construct(Merchant $model)
+    public function __construct(Employee $model)
     {
-        parent::__construct($model, MerchantResource::class, MerchantResource::class);
+        parent::__construct($model, EmployeeResource::class, EmployeeResource::class);
     }
 
     /**
@@ -42,7 +42,7 @@ class AuthService extends BaseService
             'password' => $params['password']
         ];
 
-        if (empty(Merchant::query()->where($this->username(), $params['username'])->first())) {
+        if (empty(Employee::query()->where($this->username(), $params['username'])->first())) {
             throw new BusinessLogicException('邮箱未注册，请先注册');
         }
 
@@ -50,13 +50,13 @@ class AuthService extends BaseService
             throw new BusinessLogicException('用户名或密码错误！');
         }
 
-        if (auth('merchant')->user()->status === 2) {
-            auth('merchant')->logout();
+        if (auth('admin')->user()->status === 2) {
+            auth('admin')->logout();
 
             throw new BusinessLogicException('暂时无法登录，请联系管理员！');
         }
 
-        auth('merchant')->user()->is_api = false;
+        auth('admin')->user()->is_api = false;
 
         return $this->respondWithToken($token);
     }
@@ -87,7 +87,7 @@ class AuthService extends BaseService
      */
     protected function guard()
     {
-        return Auth::guard('merchant');
+        return Auth::guard('admin');
     }
 
     /**
@@ -97,15 +97,23 @@ class AuthService extends BaseService
      */
     protected function respondWithToken($token)
     {
+        /** @var Role $role */
+        $role = auth('admin')->user()->roles->first();
+        if (empty($role)) {
+            $permissionAuth = 2;
+        } else {
+            $rolePermissionList = $role->getAllPermissions();
+            $permissionAuth = $rolePermissionList->isEmpty() ? 2 : 1;
+            unset($rolePermissionList);
+        }
         return [
-            'username' => auth('merchant')->user()->name,
-            'company_id' => auth('merchant')->user()->company_id,
+            'username' => auth('admin')->user()->fullname,
+            'company_id' => auth('admin')->user()->company_id,
             'access_token' => $token,
             'token_type' => 'bearer',
-            'settlement_type' => auth('merchant')->user()->settlement_type,
-            'contacter' => \auth('merchant')->user()->contacter,
-            'expires_in' => auth('merchant')->factory()->getTTL() * 60,
-            'company_config' => CompanyTrait::getCompany(auth('merchant')->user()->company_id)
+            'expires_in' => auth('admin')->factory()->getTTL() * 60,
+            'is_permission' => $permissionAuth,
+            'company_config' => CompanyTrait::getCompany(auth('admin')->user()->company_id)
         ];
     }
 
@@ -124,7 +132,7 @@ class AuthService extends BaseService
      */
     public function logout()
     {
-        auth('merchant')->logout();
+        auth('admin')->logout();
 
         return __('注销成功');
     }
@@ -135,7 +143,29 @@ class AuthService extends BaseService
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth('merchant')->refresh());
+        return $this->respondWithToken(auth('admin')->refresh());
+    }
+
+    /**
+     * 获取当前用户权限
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getPermission()
+    {
+        /**@var Role $role */
+        $role = auth('admin')->user()->roles->first();
+        if (empty($role)) return [];
+        $rolePermissionList = $role->getAllPermissions();
+        if ($rolePermissionList->isEmpty()) return [];
+        $rolePermissionList = $rolePermissionList->map(function ($permission, $key) {
+            return $permission->only(['id', 'parent_id', 'name', 'route_as', 'type']);
+        });
+        $rolePermissionList = array_create_group_index($rolePermissionList->toArray(), 'type');
+        return [
+            'permission_list' => $rolePermissionList[BaseConstService::PERMISSION_TYPE_2],
+            'menu_list' => TreeService::makeTree($rolePermissionList[BaseConstService::PERMISSION_TYPE_1])
+        ];
     }
 
     /**
@@ -146,13 +176,14 @@ class AuthService extends BaseService
      */
     public function updatePassword($params)
     {
-        $merchant = \auth('merchant')->user();
-        if (!password_verify($params['origin_password'], $merchant->password)) {
+        /** @var Employee $admin */
+        $admin = auth('admin')->user();
+        if (!password_verify($params['origin_password'], $admin->password)) {
             throw new BusinessLogicException('原密码不正确');
         }
-        $res = $merchant->update(['password' => bcrypt($params['new_password'])]);
+        $res = $admin->update(['password' => bcrypt($params['new_password'])]);
         if ($res) {
-            auth('merchant')->logout();
+            auth('admin')->logout();
         }
         return success();
     }
@@ -168,7 +199,7 @@ class AuthService extends BaseService
         if (empty($params['timezone'])) {
             throw new BusinessLogicException('时区 必填');
         }
-        $res = Merchant::query()->where('id', auth()->user()->id)->update(['timezone' => $params['timezone']]);
+        $res = Employee::query()->where('id', auth()->user()->id)->update(['timezone' => $params['timezone']]);
         if ($res == false) {
             throw new BusinessLogicException('切换时区失败');
         }
