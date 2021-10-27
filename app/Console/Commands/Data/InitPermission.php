@@ -50,9 +50,7 @@ class InitPermission extends Command
             $companyList = empty($this->option('id'))
                 ? Company::query()->get(['id'])->toArray()
                 : Company::query()->where('id', $this->option('id'))->get(['id'])->toArray();
-
             $basePermissionList = self::getPermissionList();
-
             foreach ($companyList as $company) {
                 $this->info($company['id']);
                 $role = Role::query()->where('company_id', $company['id'])->where('is_admin', 1)->first();
@@ -69,7 +67,7 @@ class InitPermission extends Command
                         $this->addPermission($employee, $role);
                     }
                 }
-                //给管理员权限组补齐权限
+                //给所有权限组补齐权限
                 $roleList = Role::query()->where('company_id', $company['id'])->get();
                 foreach ($roleList as $k => $v) {
                     if ($this->option('mode') == 1) {
