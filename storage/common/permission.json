@@ -3429,7 +3429,7 @@
     {
         "id": 366,
         "parent_id": 29,
-        "name": "物流跟踪查询",
+        "name": "包裹跟踪查询",
         "route": "",
         "route_as": "package-trail.index",
         "level": 3,
@@ -3437,18 +3437,6 @@
         "type": 2,
         "is_show": 2
     },
-    {
-        "id": 367,
-        "parent_id": 29,
-        "name": "物流跟踪查询",
-        "route": "",
-        "route_as": "package-trail.index",
-        "level": 3,
-        "sort_id": 1,
-        "type": 2,
-        "is_show": 2
-    },
-
 
     {
         "id": 368,
