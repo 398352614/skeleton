@@ -622,11 +622,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //修改
         Route::put('/update', 'CompanyConfigController@update')->name('company-config.update');
         //计量单位设置
-        Route::get('/unit', 'CompanyConfigController@unit_show')->name('company-config.unit');
-        Route::put('/unit', 'CompanyConfigController@unit_update')->name('company-config.unit');
+        Route::get('/unit', 'CompanyConfigController@unit_show')->name('company-config.unit-index');
+        Route::put('/unit', 'CompanyConfigController@unit_update')->name('company-config.unit-update');
         //调度规则
-        Route::get('/rule', 'CompanyConfigController@rule_show')->name('company-config.rule');
-        Route::put('/rule', 'CompanyConfigController@rule_update')->name('company-config.rule');
+        Route::get('/rule', 'CompanyConfigController@rule_show')->name('company-config.rule-index');
+        Route::put('/rule', 'CompanyConfigController@rule_update')->name('company-config.rule-update');
     });
 
     Route::prefix('special-scenes-config')->group(function () {

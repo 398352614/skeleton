@@ -1499,17 +1499,6 @@
         "is_show": 2
     },
     {
-        "id": 160,
-        "parent_id": 157,
-        "name": "新增",
-        "route": "",
-        "route_as": "order-no-rule.store",
-        "level": 4,
-        "sort_id": 1,
-        "type": 2,
-        "is_show": 1
-    },
-    {
         "id": 161,
         "parent_id": 157,
         "name": "编辑",
@@ -1519,17 +1508,6 @@
         "sort_id": 1,
         "type": 2,
         "is_show": 2
-    },
-    {
-        "id": 162,
-        "parent_id": 157,
-        "name": "删除",
-        "route": "",
-        "route_as": "order-no-rule.destroy",
-        "level": 4,
-        "sort_id": 1,
-        "type": 2,
-        "is_show": 1
     },
     {
         "id": 163,
@@ -2927,7 +2905,7 @@
         "parent_id": 309,
         "name": "查看",
         "route": "",
-        "route_as": "company-config.rule",
+        "route_as": "company-config.rule-index",
         "level": 5,
         "sort_id": 1,
         "type": 2,
@@ -2938,7 +2916,7 @@
         "parent_id": 309,
         "name": "编辑",
         "route": "",
-        "route_as": "company-config.rule",
+        "route_as": "company-config.rule-update",
         "level": 5,
         "sort_id": 1,
         "type": 2,
@@ -3137,7 +3115,7 @@
         "parent_id": 336,
         "name": "查看",
         "route": "",
-        "route_as": "company-config.unit",
+        "route_as": "company-config.unit-index",
         "level": 5,
         "sort_id": 1,
         "type": 2,
@@ -3148,7 +3126,7 @@
         "parent_id": 336,
         "name": "修改",
         "route": "",
-        "route_as": "company-config.unit",
+        "route_as": "company-config.unit-update",
         "level": 5,
         "sort_id": 1,
         "type": 2,
