@@ -16,8 +16,8 @@ class RoleValidate extends BaseValidate
 
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:roles,id,company_id',
-        'permission_id_list' => 'required|string|checkIdList:400',
-        'employee_id_list' => 'required|string|checkIdList:300',
+        'permission_id_list' => 'required|string',
+        'employee_id_list' => 'required|string',
     ];
 
     public $scene = [
