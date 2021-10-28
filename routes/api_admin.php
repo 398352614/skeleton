@@ -1010,9 +1010,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //地图配置
     Route::prefix('company-customize')->group(function () {
         //详情
-        Route::get('/', 'CompanyCustomizeController@show')->name('company-config.update');
+        Route::get('/', 'CompanyCustomizeController@show')->name('company-customize.index');
         //修改
-        Route::put('/', 'CompanyCustomizeController@update')->name('company-config.update');
+        Route::put('/', 'CompanyCustomizeController@update')->name('company-customize.update');
     });
 
     //邮件模板

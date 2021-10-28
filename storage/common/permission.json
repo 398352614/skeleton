@@ -2077,7 +2077,7 @@
         "name": "修改密码",
         "route": "",
         "route_as": "employees.reset-password",
-        "level": 5,
+        "level": ,
         "sort_id": 1,
         "type": 2,
         "is_show": 2
@@ -2967,6 +2967,17 @@
         "is_show": 2
     },
     {
+        "id": 321,
+        "parent_id": 320,
+        "name": "修改密码",
+        "route": "",
+        "route_as": "",
+        "level": 4,
+        "sort_id": 1,
+        "type": 1,
+        "is_show": 2
+    },
+    {
         "id": 322,
         "parent_id": 303,
         "name": "邮件配置",
@@ -3436,6 +3447,40 @@
         "route": "",
         "route_as": "package-trail.index",
         "level": 4,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+
+    {
+        "id": 374,
+        "parent_id": 130,
+        "name": "自定义界面",
+        "route": "",
+        "route_as": "",
+        "level": 4,
+        "sort_id": 1,
+        "type": 1,
+        "is_show": 2
+    },
+    {
+        "id": 375,
+        "parent_id": 374,
+        "name": "查看",
+        "route": "",
+        "route_as": "company-customize.index",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 375,
+        "parent_id": 374,
+        "name": "查看",
+        "route": "",
+        "route_as": "company-customize.update",
+        "level": 5,
         "sort_id": 1,
         "type": 2,
         "is_show": 2
