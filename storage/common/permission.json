@@ -2958,17 +2958,7 @@
         "type": 1,
         "is_show": 2
     },
-    {
-        "id": 321,
-        "parent_id": 320,
-        "name": "修改密码",
-        "route": "",
-        "route_as": "",
-        "level": 4,
-        "sort_id": 1,
-        "type": 1,
-        "is_show": 2
-    },
+
     {
         "id": 322,
         "parent_id": 303,
@@ -3433,7 +3423,7 @@
     },
     {
         "id": 374,
-        "parent_id": 130,
+        "parent_id": 320,
         "name": "自定义界面",
         "route": "",
         "route_as": "",
