@@ -22,7 +22,6 @@ class InitBasePermission extends Command
     public function handle()
     {
 
-        try {
             DB::table('permissions')->delete();
             $permissionList = json_decode(file_get_contents(config('tms.permission_path')));
             foreach ($permissionList as $k => $v) {
@@ -36,9 +35,7 @@ class InitBasePermission extends Command
                 : 'init:permission --id=' . $this->option('id');
             Artisan::call($command);
             $this->info('successful');
-        } catch (\Exception $e) {
-            $this->error($e->getMessage());
-        }
+
     }
 
 }
