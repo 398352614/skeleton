@@ -3454,9 +3454,9 @@
         "is_show": 2
     },
     {
-        "id": 375,
+        "id": 376,
         "parent_id": 374,
-        "name": "查看",
+        "name": "修改",
         "route": "",
         "route_as": "company-customize.update",
         "level": 5,
