@@ -597,8 +597,6 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/line', 'WareHouseController@getLineList')->name('warehouse.line-index');
         //查看可选线路
         Route::get('/{id}/all-line', 'WareHouseController@getAbleLineList')->name('warehouse.line-index');
-        //加入线路
-        Route::post('/{id}/line', 'WareHouseController@addLineList')->name('warehouse.line-update');
         //移除线路
         Route::delete('/{id}/all-line', 'WareHouseController@removeLineList')->name('warehouse.line-destroy');
         //新增线路

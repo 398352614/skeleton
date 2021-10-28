@@ -3438,17 +3438,7 @@
         "type": 2,
         "is_show": 2
     },
-    {
-        "id": 370,
-        "parent_id": 136,
-        "name": "线路修改",
-        "route": "",
-        "route_as": "warehouse.line-update",
-        "level": 4,
-        "sort_id": 1,
-        "type": 2,
-        "is_show": 2
-    },
+
     {
         "id": 371,
         "parent_id": 136,
