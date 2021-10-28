@@ -614,11 +614,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //公司配置
     Route::prefix('company-config')->group(function () {
         //获取详情
-        Route::get('/show', 'CompanyConfigController@show')->name('company-config.index');
+        Route::get('/show', 'CompanyConfigController@show');
         //获取地址模板列表
         Route::get('/address-template', 'CompanyConfigController@getAddressTemplateList')->name('company-config.index');
         //修改
-        Route::put('/update', 'CompanyConfigController@update')->name('company-config.update');
+        Route::put('/update', 'CompanyConfigController@update');
         //计量单位设置
         Route::get('/unit', 'CompanyConfigController@unit_show')->name('company-config.unit-index');
         Route::put('/unit', 'CompanyConfigController@unit_update')->name('company-config.unit-update');

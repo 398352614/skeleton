@@ -1268,28 +1268,6 @@
         "is_show": 2
     },
     {
-        "id": 134,
-        "parent_id": 133,
-        "name": "查看",
-        "route": "",
-        "route_as": "company-config.index",
-        "level": 4,
-        "sort_id": 1,
-        "type": 2,
-        "is_show": 2
-    },
-    {
-        "id": 135,
-        "parent_id": 133,
-        "name": "编辑",
-        "route": "",
-        "route_as": "company-config.update",
-        "level": 4,
-        "sort_id": 1,
-        "type": 2,
-        "is_show": 2
-    },
-    {
         "id": 136,
         "parent_id": 304,
         "name": "网点地址设置",
@@ -2984,17 +2962,6 @@
         "route": "",
         "route_as": "",
         "level": 3,
-        "sort_id": 1,
-        "type": 1,
-        "is_show": 2
-    },
-    {
-        "id": 321,
-        "parent_id": 320,
-        "name": "修改密码",
-        "route": "",
-        "route_as": "",
-        "level": 4,
         "sort_id": 1,
         "type": 1,
         "is_show": 2
