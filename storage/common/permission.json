@@ -269,10 +269,10 @@
         "parent_id": 29,
         "name": "物流跟踪查询",
         "route": "",
-        "route_as": "trail.index",
+        "route_as": "",
         "level": 3,
         "sort_id": 1,
-        "type": 2,
+        "type": 1,
         "is_show": 2
     },
     {
@@ -1272,7 +1272,7 @@
         "parent_id": 133,
         "name": "查看",
         "route": "",
-        "route_as": "company-config.show",
+        "route_as": "company-config.index",
         "level": 4,
         "sort_id": 1,
         "type": 2,
@@ -2505,7 +2505,7 @@
     {
         "id": 272,
         "parent_id": 279,
-        "name": "入库",
+        "name": "新增",
         "route": "",
         "route_as": "spare-parts.createStock",
         "level": 4,
@@ -2516,7 +2516,7 @@
     {
         "id": 273,
         "parent_id": 279,
-        "name": "列表",
+        "name": "查看",
         "route": "",
         "route_as": "spare-parts.stock",
         "level": 4,
@@ -2526,7 +2526,7 @@
     },
     {
         "id": 274,
-        "parent_id": 280,
+        "parent_id": 279,
         "name": "领用",
         "route": "",
         "route_as": "spare-parts.createRecord",
@@ -2538,7 +2538,7 @@
     {
         "id": 275,
         "parent_id": 280,
-        "name": "记录",
+        "name": "查看",
         "route": "",
         "route_as": "spare-parts.record",
         "level": 4,
@@ -3361,7 +3361,7 @@
     },
     {
         "id": 362,
-        "parent_id": 351,
+        "parent_id": 359,
         "name": "删除",
         "route": "",
         "route_as": "bill-verify.destroy",
@@ -3409,10 +3409,10 @@
         "parent_id": 29,
         "name": "包裹跟踪查询",
         "route": "",
-        "route_as": "package-trail.index",
+        "route_as": "",
         "level": 3,
         "sort_id": 1,
-        "type": 2,
+        "type": 1,
         "is_show": 2
     },
 
@@ -3455,6 +3455,29 @@
         "name": "线路删除",
         "route": "",
         "route_as": "warehouse.line-destroy",
+        "level": 4,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+
+    {
+        "id": 372,
+        "parent_id": 30,
+        "name": "物流跟踪查询",
+        "route": "",
+        "route_as": "trail.index",
+        "level": 4,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 373,
+        "parent_id": 366,
+        "name": "包裹跟踪查询",
+        "route": "",
+        "route_as": "package-trail.index",
         "level": 4,
         "sort_id": 1,
         "type": 2,
