@@ -68,7 +68,12 @@ class UpdateDriverCountTime implements ShouldQueue
             $driverLocation = $event->location;
             $nextBatchNo = $event->nextBatchNo;
             $queue = $event->queue;
-            TourOptimizationService::getOpInstance($tour->company_id)->updateDriverLocation($tour, $driverLocation, $nextBatchNo, $queue);
+            if (empty($tour->company_id)) {
+                $companyId = $tour['company_id'];
+            } else {
+                $companyId = $tour->company_id;
+            }
+            TourOptimizationService::getOpInstance($companyId)->updateDriverLocation($tour, $driverLocation, $nextBatchNo, $queue);
             //通知下一个站点事件
             if ($event->notifyNextBatch == true) {
                 event(new NextBatch($tour->toArray(), ['batch_no' => $nextBatchNo]));

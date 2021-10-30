@@ -69,7 +69,12 @@ class UpdateLineCountTime implements ShouldQueue
     public function handle()
     {
         Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '更新线路开始');
-        TourOptimizationService::getOpInstance($this->tour->company_id)->updateTour($this->tour, $this->nextBatchCode);
+        if (empty($this->tour->company_id)) {
+            $companyId = $this->tour['company_id'];
+        } else {
+            $companyId = $this->tour->company_id;
+        }
+        TourOptimizationService::getOpInstance($companyId)->updateTour($this->tour, $this->nextBatchCode);
     }
 
 }
