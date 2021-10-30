@@ -74,6 +74,7 @@ class UpdateLineCountTime implements ShouldQueue
         } else {
             $companyId = $this->tour->company_id;
         }
+        Log::info($companyId);
         TourOptimizationService::getOpInstance($companyId)->updateTour($this->tour, $this->nextBatchCode);
     }
 

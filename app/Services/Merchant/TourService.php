@@ -318,7 +318,12 @@ class TourService extends BaseService
             'action' => BaseConstService::TOUR_LOG_UPDATE_LINE,
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
-
+        if (empty($tour->company_id)) {
+            $companyId = $tour['company_id'];
+        } else {
+            $companyId = $tour->company_id;
+        }
+        Log::info($companyId);
         TourOptimizationService::getOpInstance($tour->company_id)->autoUpdateTour($tour);
 
         return '修改线路成功';

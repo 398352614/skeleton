@@ -716,6 +716,12 @@ class TourService extends BaseService
         ]);
         $this->getApiTimesService()->timesCount('actual_directions_times', $tour->company_id);
 
+        if (empty($tour->company_id)) {
+            $companyId = $tour['company_id'];
+        } else {
+            $companyId = $tour->company_id;
+        }
+        Log::info($companyId);
         TourOptimizationService::getOpInstance($tour->company_id)->autoUpdateTour($tour);
 
         return '修改线路成功';
