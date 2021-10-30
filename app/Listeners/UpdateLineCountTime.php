@@ -22,12 +22,7 @@ class UpdateLineCountTime
     public function handle(AfterTourUpdated $event)
     {
         Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '更新线路出发事件');
-        if (empty($event->tour->company_id)) {
-            $companyId = $event->tour['company_id'];
-        } else {
-            $companyId = $event->tour->company_id;
-        }
-        Log::info($companyId);
+
         TourOptimizationService::getOpInstance($event->tour->company_id)->updateTour($event->tour, $event->nextBatch);
     }
 }

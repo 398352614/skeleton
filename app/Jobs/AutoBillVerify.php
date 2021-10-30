@@ -70,12 +70,9 @@ class AutoBillVerify implements ShouldQueue
         auth()->setUser($employee);
         Log::info(auth()->user()->company_id);
         try {
-            Log::info(4);
             $billVerifyService = FactoryInstanceTrait::getInstance(BillVerifyService::class);
             /** @var $billVerifyService BillVerifyService */
-            Log::info(5);
             $billVerifyService->autoStore($this->merchantId);
-            Log::info(6);
         } catch (BusinessLogicException $e) {
             Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
                 'file' => $e->getFile(),
@@ -90,7 +87,6 @@ class AutoBillVerify implements ShouldQueue
             ]);
         }
         Merchant::query()->where('id', $this->merchantId)->update(['last_settlement_date' => today()->format('Y-m-d')]);
-        Log::info(8);
     }
 
 }

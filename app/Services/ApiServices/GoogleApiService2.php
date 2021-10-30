@@ -132,7 +132,7 @@ class GoogleApiService2
             $wayPointList[] = $tour->warehouse_lat . ',' . $tour->warehouse_lon;
             $nowTime = time();
             $key = 0;
-            $res = $this->getDistance2($wayPointList);
+            $res = $this->getDistance2($wayPointList,$tour);
             $totalDistance = $totalTime = 0;
             foreach ($res as $k => $v) {
                 $totalDistance += $v['distance'];
@@ -277,7 +277,7 @@ class GoogleApiService2
      * @return mixed|null
      * @throws BusinessLogicException
      */
-    protected function getDistance2($wayPointList)
+    protected function getDistance2($wayPointList,$tour)
     {
         foreach ($wayPointList as &$point) {
             $point = is_array($point) ? implode(',', $point) : $point;
@@ -290,7 +290,7 @@ class GoogleApiService2
             } else {
                 $array = $v;
             }
-            $res = array_merge($res, $this->getDistanceByGroup($array));
+            $res = array_merge($res, $this->getDistanceByGroup($array,$tour));
         }
         return $res;
     }
@@ -301,7 +301,7 @@ class GoogleApiService2
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function getDistanceByGroup($wayPointList)
+    public function getDistanceByGroup($wayPointList,$tour)
     {
         //["5.55,6,66","5.56,6,56","5,55,6,66"]
         $origin = $wayPointList[0];
@@ -329,7 +329,7 @@ class GoogleApiService2
             throw new BusinessLogicException('google-api请求报错');
         }
         $result = [];
-        $stopTime = CompanyTrait::getCompany()['stop_time'];
+        $stopTime = CompanyTrait::getCompany($tour['company_id'])['stop_time'];
         foreach ($res['routes'][0]['legs'] as $k => $v) {
             $result[] = [
                 'distance' => $v['distance']['value'],

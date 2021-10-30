@@ -280,7 +280,7 @@ class TourService extends BaseService
         // * @apiParam {String}   tour_no                    在途编号
         // set_time_limit(240);
 
-        app('log')->info('更新线路传入的参数为:', $this->formData);
+        Log::channel('info')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . '更新线路传入的参数', $this->formData);
 
         $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
 
@@ -318,14 +318,7 @@ class TourService extends BaseService
             'action' => BaseConstService::TOUR_LOG_UPDATE_LINE,
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
-        if (empty($tour->company_id)) {
-            $companyId = $tour['company_id'];
-        } else {
-            $companyId = $tour->company_id;
-        }
-        Log::info($companyId);
         TourOptimizationService::getOpInstance($tour->company_id)->autoUpdateTour($tour);
-
         return '修改线路成功';
     }
 

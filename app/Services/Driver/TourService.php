@@ -1247,7 +1247,6 @@ class TourService extends BaseService
      */
     public function updateBatchIndex($params, $value = BaseConstService::NO)
     {
-        Log::info('1', $params['batch_ids']);
         if ($value == BaseConstService::YES && (is_object($params['batch_ids']))) {
             $params['batch_ids'] = json_decode($params['batch_ids'], true);
         }
@@ -1255,7 +1254,7 @@ class TourService extends BaseService
         // * @apiParam {String}   tour_no                    在途编号
         set_time_limit(240);
 
-        Log::channel('info')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . '更新线路传入的参数', $params);
+        Log::channel('info')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . '更新线路传入的参数', $params);
 
         $tour = Tour::where('tour_no', $params['tour_no'])->firstOrFail();
         throw_if(
