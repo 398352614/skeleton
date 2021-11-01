@@ -32,6 +32,9 @@ trait LocationTrait
         try {
             $value = Cache::rememberForever($key, self::getLocationDetail($country, $city, $street, $houseNumber, $postCode));
         } catch (BusinessLogicException $e) {
+            if($postCode == $houseNumber){
+                throw new BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
+            }
             $value = Cache::rememberForever($key, self::getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode));
         }
         return $value;
