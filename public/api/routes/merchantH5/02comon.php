@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * @api {get} /admin/common/dictionary 对照表
  * @apiName 对照表
- * @apiGroup 05
+ * @apiGroup 02common
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiSuccess {string} code

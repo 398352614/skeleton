@@ -100,7 +100,7 @@ Route::put('password/reset', 'RegisterController@resetPassword');
 /**
  * @api {post} /merchant_h5/register 注册
  * @apiName 注册
- * @apiGroup 00
+ * @apiGroup 01auth
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} email 邮箱
@@ -122,7 +122,7 @@ Route::put('password/reset', 'RegisterController@resetPassword');
 /**
  * @api {post} /merchant_h5/register/apply 注册验证码
  * @apiName 注册-验证码
- * @apiGroup 00
+ * @apiGroup 01auth
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} email 邮箱
