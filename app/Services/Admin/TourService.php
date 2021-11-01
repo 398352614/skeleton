@@ -1080,6 +1080,9 @@ class TourService extends BaseService
             $trackingOrderList[$k]['place_address'] = $trackingOrderList[$k]['place_street'] . ' ' . $trackingOrderList[$k]['place_house_number'];
             $trackingOrderList[$k]['material_code_list'] = implode("\r", collect($materialList)->where('order_no', $v['order_no'])->pluck('code')->toArray());
             $trackingOrderList[$k]['material_expect_quantity_list'] = implode("\r", collect($materialList)->where('order_no', $v['order_no'])->pluck('expect_quantity')->toArray());
+            if(empty(collect($batchList)->where('batch_no', $v['batch_no'])->first())){
+                unset($trackingOrderList[$k]);
+            }
         }
         $trackingOrderList = array_values(collect($trackingOrderList)->sortBy('sort_id')->toArray());
         for ($i = 0, $j = count($trackingOrderList); $i < $j; $i++) {
