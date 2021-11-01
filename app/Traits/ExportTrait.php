@@ -97,7 +97,7 @@ trait ExportTrait
         }
         return [
             'name' => md5($name) . '.xlsx',
-            'path' => Storage::disk('admin_excel_public')->url($subPath . DIRECTORY_SEPARATOR . md5($name) . '.xlsx')
+            'path' => Storage::disk('admin_excel_public')->url($subPath . DIRECTORY_SEPARATOR . md5($name.now()) . '.xlsx')
         ];
     }
 
