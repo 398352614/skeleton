@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * @api {get} /merchant_h5/bill-recharge 充值记录查询
  * @apiName 账单查询
- * @apiGroup 53
+ * @apiGroup 11recharge
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} begin_date 起始时间
@@ -76,7 +76,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * @api {get} /merchant_h5/bill-recharge/{id} 充值记录详情
  * @apiName 账单详情
- * @apiGroup 53
+ * @apiGroup 11recharge
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} id 账单ID
@@ -114,7 +114,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * @api {post} /merchant_h5/bill/merchant-recharge 充值
  * @apiName 货主充值开单
- * @apiGroup 53
+ * @apiGroup 11recharge
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} merchant_id 货主ID

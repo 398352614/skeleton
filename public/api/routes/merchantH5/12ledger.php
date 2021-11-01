@@ -20,13 +20,13 @@ use Illuminate\Support\Facades\Route;
  */
 
 /**
- * @apiDefine 11recharge 财务账户管理
+ * @apiDefine 11recharge 财务管理
  */
 
 /**
- * @api {get} /admin/ledger 财务账户详情
+ * @api {get} /admin/ledger 财务详情
  * @apiName 分户账簿查询
- * @apiGroup 52
+ * @apiGroup 11recharge
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} begin_date 起始时间

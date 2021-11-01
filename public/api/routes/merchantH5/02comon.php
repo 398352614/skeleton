@@ -82,7 +82,7 @@ Route::put('company', 'CompanyController@show');
 /**
  * @api {get} /merchant_h5/customize 通过url获取自定义界面
  * @apiName 通过url获取自定义界面
- * @apiGroup 58
+ * @apiGroup 02common
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} url 路由

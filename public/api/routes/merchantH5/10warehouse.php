@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * @api {get} /merchant_h5/warehouse 网点查询
  * @apiName 网点查询
- * @apiGroup 01
+ * @apiGroup 10warehouse
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} country 国家
@@ -168,7 +168,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * @api {get} /merchant_h5/warehouse/{id} 网点详情
  * @apiName 网点详情
- * @apiGroup 01
+ * @apiGroup 10warehouse
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} id 网点ID

@@ -4,7 +4,7 @@
     "url": "/merchant_h5/register",
     "title": "注册",
     "name": "注册",
-    "group": "00",
+    "group": "01auth",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -82,7 +82,7 @@
       ]
     },
     "filename": "public/api/routes/merchantH5/01auth.php",
-    "groupTitle": "00",
+    "groupTitle": "用户认证",
     "sampleRequest": [
       {
         "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/register"
@@ -121,7 +121,7 @@
     "url": "/merchant_h5/register/apply",
     "title": "注册验证码",
     "name": "注册-验证码",
-    "group": "00",
+    "group": "01auth",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -171,7 +171,7 @@
       ]
     },
     "filename": "public/api/routes/merchantH5/01auth.php",
-    "groupTitle": "00",
+    "groupTitle": "用户认证",
     "sampleRequest": [
       {
         "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/register/apply"
@@ -662,485 +662,6 @@
     }
   },
   {
-    "type": "get",
-    "url": "/merchant_h5/warehouse",
-    "title": "网点查询",
-    "name": "网点查询",
-    "group": "01",
-    "version": "1.0.0",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "country",
-            "description": "<p>国家</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "acceptance_type",
-            "description": "<p>网点功能1-取-2派3-仓配一体</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "code",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.id",
-            "description": "<p>网点ID</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.name",
-            "description": "<p>网点名</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.contacter",
-            "description": "<p>联系人</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.phone",
-            "description": "<p>电话</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.country",
-            "description": "<p>国家</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.post_code",
-            "description": "<p>邮编</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.house_number",
-            "description": "<p>门牌号</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.city",
-            "description": "<p>城市</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.street",
-            "description": "<p>街道</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.address",
-            "description": "<p>地址</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.lon",
-            "description": "<p>经度</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.lat",
-            "description": "<p>纬度</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.created_at",
-            "description": "<p>创建时间</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.updated_at",
-            "description": "<p>更新时间</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.links",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.links.first",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.links.last",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.links.prev",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.links.next",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.meta",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.meta.current_page",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.meta.from",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.meta.last_page",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.meta.path",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.meta.per_page",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.meta.to",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.meta.total",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "msg",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.data.warehouse_name",
-            "description": "<p>网点名</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "{\n\"code\": 200,\n\"data\": {\n\"data\": [\n{\n\"id\": 12,\n\"name\": \"麓谷企业广场6\",\n\"contacter\": \"胡洋铭\",\n\"phone\": \"17570715315\",\n\"country\": \"NL\",\n\"post_code\": \"1\",\n\"house_number\": \"808\",\n\"city\": \"长沙\",\n\"street\": \"岳麓区\",\n\"address\": \"C3\",\n\"lon\": \"\",\n\"lat\": \"\",\n\"created_at\": \"2019-12-26 05:32:31\",\n\"updated_at\": \"2019-12-27 03:11:02\"\n},\n{\n\"name\": \"麓谷企业广场1\",\n\"contacter\": \"胡洋铭\",\n\"phone\": \"17570715315\",\n\"country\": \"NL\",\n\"post_code\": \"1\",\n\"house_number\": \"808\",\n\"city\": \"长沙\",\n\"street\": \"岳麓区\",\n\"address\": \"C3\",\n\"lon\": \"\",\n\"lat\": \"\",\n\"created_at\": \"2019-12-26 06:36:50\",\n\"updated_at\": \"2019-12-26 06:36:50\"\n},\n{\n\"name\": \"麓谷企业广场\",\n\"contacter\": \"胡洋铭\",\n\"phone\": \"17570715315\",\n\"country\": \"NL\",\n\"post_code\": \"1\",\n\"house_number\": \"808\",\n\"city\": \"长沙\",\n\"street\": \"岳麓区\",\n\"address\": \"C3\",\n\"lon\": \"\",\n\"lat\": \"\",\n\"created_at\": \"2019-12-26 10:05:44\",\n\"updated_at\": \"2019-12-26 10:05:44\"\n},\n{\n\"name\": \"麓谷企业广场5\",\n\"contacter\": \"胡洋铭\",\n\"phone\": \"17570715315\",\n\"country\": \"NL\",\n\"post_code\": \"1\",\n\"house_number\": \"808\",\n\"city\": \"长沙\",\n\"street\": \"岳麓区\",\n\"address\": \"C3\",\n\"lon\": \"\",\n\"lat\": \"\",\n\"created_at\": \"2019-12-27 02:54:11\",\n\"updated_at\": \"2019-12-27 02:54:11\"\n},\n{\n\"name\": \"麓谷企业广场7\",\n\"contacter\": \"胡洋铭\",\n\"phone\": \"17570715315\",\n\"country\": \"NL\",\n\"post_code\": \"1000\",\n\"house_number\": \"808\",\n\"city\": \"长沙\",\n\"street\": \"岳麓区\",\n\"address\": \"C3\",\n\"lon\": \"\",\n\"lat\": \"\",\n\"created_at\": \"2019-12-27 03:04:25\",\n\"updated_at\": \"2019-12-27 03:04:25\"\n}\n],\n\"links\": {\n\"first\": \"http://tms-api.test/api/admin/warehouse?page=1\",\n\"last\": \"http://tms-api.test/api/admin/warehouse?page=1\",\n\"prev\": null,\n\"next\": null\n},\n\"meta\": {\n\"current_page\": 1,\n\"from\": 1,\n\"last_page\": 1,\n\"path\": \"http://tms-api.test/api/admin/warehouse\",\n\"per_page\": 15,\n\"to\": 5,\n\"total\": 5\n}\n},\n\"msg\": \"successful\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "public/api/routes/merchantH5/10warehouse.php",
-    "groupTitle": "01",
-    "sampleRequest": [
-      {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/warehouse"
-      }
-    ],
-    "header": {
-      "fields": {
-        "Header": [
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "language",
-            "description": "<p>语言cn-中文en-英文。</p>"
-          },
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "Authorization",
-            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Header-Example:",
-          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
-          "type": "json"
-        }
-      ]
-    }
-  },
-  {
-    "type": "get",
-    "url": "/merchant_h5/warehouse/{id}",
-    "title": "网点详情",
-    "name": "网点详情",
-    "group": "01",
-    "version": "1.0.0",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "id",
-            "description": "<p>网点ID</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "code",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.name",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.contacter",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.phone",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.country",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.post_code",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.house_number",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.city",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.street",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.address",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.lon",
-            "description": "<p>经度</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.lat",
-            "description": "<p>纬度</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.created_at",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.updated_at",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "msg",
-            "description": ""
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "{\n\"code\": 200,\n\"data\": {\n\"name\": \"麓谷企业广场6\",\n\"contacter\": \"胡洋铭\",\n\"phone\": \"17570715315\",\n\"country\": \"NL\",\n\"post_code\": \"1\",\n\"house_number\": \"808\",\n\"city\": \"长沙\",\n\"street\": \"岳麓区\",\n\"address\": \"C3\",\n\"lon\": \"\",\n\"lat\": \"\",\n\"created_at\": \"2019-12-26 05:32:31\",\n\"updated_at\": \"2019-12-27 03:11:02\"\n},\n\"msg\": \"successful\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "public/api/routes/merchantH5/10warehouse.php",
-    "groupTitle": "01",
-    "sampleRequest": [
-      {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/warehouse/{id}"
-      }
-    ],
-    "header": {
-      "fields": {
-        "Header": [
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "language",
-            "description": "<p>语言cn-中文en-英文。</p>"
-          },
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "Authorization",
-            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Header-Example:",
-          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
-          "type": "json"
-        }
-      ]
-    }
-  },
-  {
     "type": "put",
     "url": "/merchant_h5/timezone",
     "title": "切换时区",
@@ -1206,6 +727,75 @@
     "sampleRequest": [
       {
         "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/timezone"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          },
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/admin/common/dictionary",
+    "title": "对照表",
+    "name": "对照表",
+    "group": "02common",
+    "version": "1.0.0",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "msg",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "filename": "public/api/routes/merchantH5/02comon.php",
+    "groupTitle": "公共接口",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms-api.nle-tech.com/api/admin/common/dictionary"
       }
     ],
     "header": {
@@ -1401,6 +991,186 @@
     "sampleRequest": [
       {
         "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/company"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          },
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/merchant_h5/customize",
+    "title": "通过url获取自定义界面",
+    "name": "通过url获取自定义界面",
+    "group": "02common",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "url",
+            "description": "<p>路由</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "msg",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.company_id",
+            "description": "<p>公司ID,</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.status",
+            "description": "<p>状态1-是2-否,</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.admin_url",
+            "description": "<p>管理员端域名,</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.admin_login_background",
+            "description": "<p>管理员端登录背景,</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.admin_login_title",
+            "description": "<p>管理员端登录标题,</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.admin_main_logo",
+            "description": "<p>管理员端主界面logo,</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.merchant_url",
+            "description": "<p>货主端域名,</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.merchant_login_background",
+            "description": "<p>货主端登录背景,</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.merchant_login_title",
+            "description": "<p>货主端登录标题,</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.merchant_main_logo",
+            "description": "<p>货主端主界面logo,</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.driver_login_title",
+            "description": "<p>司机端主界面logo,</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.consumer_url",
+            "description": "<p>客户端域名,</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.consumer_login_title",
+            "description": "<p>货主端主界面logo,</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\"code\": 200,\n\"data\": {\n\"id\": 3,\n\"status\": 1,\n\"company_id\": 3,\n\"admin_url\": \"tms-api.test:14280/api\",\n\"admin_login_background\": \"\",\n\"admin_login_title\": \"\",\n\"admin_main_logo\": \"\",\n\"merchant_url\": \"\",\n\"merchant_login_background\": \"\",\n\"merchant_login_title\": \"\",\n\"merchant_main_logo\": \"\",\n\"driver_login_title\": \"\",\n\"consumer_url\": \"\",\n\"consumer_login_title\": \"\",\n\"created_at\": \"2021-10-20 14:46:37\",\n\"updated_at\": \"2021-10-20 15:08:34\",\n\"status_name\": \"是\"\n},\n\"msg\": \"successful\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantH5/02comon.php",
+    "groupTitle": "公共接口",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/customize"
       }
     ],
     "header": {
@@ -6741,75 +6511,6 @@
     }
   },
   {
-    "type": "get",
-    "url": "/admin/common/dictionary",
-    "title": "对照表",
-    "name": "对照表",
-    "group": "05",
-    "version": "1.0.0",
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "code",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "msg",
-            "description": ""
-          }
-        ]
-      }
-    },
-    "filename": "public/api/routes/merchantH5/02comon.php",
-    "groupTitle": "05",
-    "sampleRequest": [
-      {
-        "url": "https://dev-tms-api.nle-tech.com/api/admin/common/dictionary"
-      }
-    ],
-    "header": {
-      "fields": {
-        "Header": [
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "language",
-            "description": "<p>语言cn-中文en-英文。</p>"
-          },
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "Authorization",
-            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Header-Example:",
-          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
-          "type": "json"
-        }
-      ]
-    }
-  },
-  {
     "type": "put",
     "url": "/merchant_h5/address/{id}",
     "title": "地址修改",
@@ -8032,10 +7733,489 @@
   },
   {
     "type": "get",
+    "url": "/merchant_h5/warehouse",
+    "title": "网点查询",
+    "name": "网点查询",
+    "group": "10warehouse",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "country",
+            "description": "<p>国家</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "acceptance_type",
+            "description": "<p>网点功能1-取-2派3-仓配一体</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.id",
+            "description": "<p>网点ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.name",
+            "description": "<p>网点名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.contacter",
+            "description": "<p>联系人</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.phone",
+            "description": "<p>电话</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.country",
+            "description": "<p>国家</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.post_code",
+            "description": "<p>邮编</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.house_number",
+            "description": "<p>门牌号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.city",
+            "description": "<p>城市</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.street",
+            "description": "<p>街道</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.address",
+            "description": "<p>地址</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.lon",
+            "description": "<p>经度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.lat",
+            "description": "<p>纬度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.created_at",
+            "description": "<p>创建时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.updated_at",
+            "description": "<p>更新时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.links",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.links.first",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.links.last",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.links.prev",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.links.next",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.meta",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.meta.current_page",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.meta.from",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.meta.last_page",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.meta.path",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.meta.per_page",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.meta.to",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.meta.total",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "msg",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.data.warehouse_name",
+            "description": "<p>网点名</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\"code\": 200,\n\"data\": {\n\"data\": [\n{\n\"id\": 12,\n\"name\": \"麓谷企业广场6\",\n\"contacter\": \"胡洋铭\",\n\"phone\": \"17570715315\",\n\"country\": \"NL\",\n\"post_code\": \"1\",\n\"house_number\": \"808\",\n\"city\": \"长沙\",\n\"street\": \"岳麓区\",\n\"address\": \"C3\",\n\"lon\": \"\",\n\"lat\": \"\",\n\"created_at\": \"2019-12-26 05:32:31\",\n\"updated_at\": \"2019-12-27 03:11:02\"\n},\n{\n\"name\": \"麓谷企业广场1\",\n\"contacter\": \"胡洋铭\",\n\"phone\": \"17570715315\",\n\"country\": \"NL\",\n\"post_code\": \"1\",\n\"house_number\": \"808\",\n\"city\": \"长沙\",\n\"street\": \"岳麓区\",\n\"address\": \"C3\",\n\"lon\": \"\",\n\"lat\": \"\",\n\"created_at\": \"2019-12-26 06:36:50\",\n\"updated_at\": \"2019-12-26 06:36:50\"\n},\n{\n\"name\": \"麓谷企业广场\",\n\"contacter\": \"胡洋铭\",\n\"phone\": \"17570715315\",\n\"country\": \"NL\",\n\"post_code\": \"1\",\n\"house_number\": \"808\",\n\"city\": \"长沙\",\n\"street\": \"岳麓区\",\n\"address\": \"C3\",\n\"lon\": \"\",\n\"lat\": \"\",\n\"created_at\": \"2019-12-26 10:05:44\",\n\"updated_at\": \"2019-12-26 10:05:44\"\n},\n{\n\"name\": \"麓谷企业广场5\",\n\"contacter\": \"胡洋铭\",\n\"phone\": \"17570715315\",\n\"country\": \"NL\",\n\"post_code\": \"1\",\n\"house_number\": \"808\",\n\"city\": \"长沙\",\n\"street\": \"岳麓区\",\n\"address\": \"C3\",\n\"lon\": \"\",\n\"lat\": \"\",\n\"created_at\": \"2019-12-27 02:54:11\",\n\"updated_at\": \"2019-12-27 02:54:11\"\n},\n{\n\"name\": \"麓谷企业广场7\",\n\"contacter\": \"胡洋铭\",\n\"phone\": \"17570715315\",\n\"country\": \"NL\",\n\"post_code\": \"1000\",\n\"house_number\": \"808\",\n\"city\": \"长沙\",\n\"street\": \"岳麓区\",\n\"address\": \"C3\",\n\"lon\": \"\",\n\"lat\": \"\",\n\"created_at\": \"2019-12-27 03:04:25\",\n\"updated_at\": \"2019-12-27 03:04:25\"\n}\n],\n\"links\": {\n\"first\": \"http://tms-api.test/api/admin/warehouse?page=1\",\n\"last\": \"http://tms-api.test/api/admin/warehouse?page=1\",\n\"prev\": null,\n\"next\": null\n},\n\"meta\": {\n\"current_page\": 1,\n\"from\": 1,\n\"last_page\": 1,\n\"path\": \"http://tms-api.test/api/admin/warehouse\",\n\"per_page\": 15,\n\"to\": 5,\n\"total\": 5\n}\n},\n\"msg\": \"successful\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantH5/10warehouse.php",
+    "groupTitle": "网点",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/warehouse"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          },
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/merchant_h5/warehouse/{id}",
+    "title": "网点详情",
+    "name": "网点详情",
+    "group": "10warehouse",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "id",
+            "description": "<p>网点ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.name",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.contacter",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.phone",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.country",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.post_code",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.house_number",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.city",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.street",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.address",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.lon",
+            "description": "<p>经度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.lat",
+            "description": "<p>纬度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.created_at",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.updated_at",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "msg",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\"code\": 200,\n\"data\": {\n\"name\": \"麓谷企业广场6\",\n\"contacter\": \"胡洋铭\",\n\"phone\": \"17570715315\",\n\"country\": \"NL\",\n\"post_code\": \"1\",\n\"house_number\": \"808\",\n\"city\": \"长沙\",\n\"street\": \"岳麓区\",\n\"address\": \"C3\",\n\"lon\": \"\",\n\"lat\": \"\",\n\"created_at\": \"2019-12-26 05:32:31\",\n\"updated_at\": \"2019-12-27 03:11:02\"\n},\n\"msg\": \"successful\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantH5/10warehouse.php",
+    "groupTitle": "网点",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/warehouse/{id}"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          },
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
     "url": "/admin/ledger",
-    "title": "财务账户详情",
+    "title": "财务详情",
     "name": "分户账簿查询",
-    "group": "52",
+    "group": "11recharge",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -8176,7 +8356,7 @@
       ]
     },
     "filename": "public/api/routes/merchantH5/12ledger.php",
-    "groupTitle": "52",
+    "groupTitle": "财务管理",
     "sampleRequest": [
       {
         "url": "https://dev-tms-api.nle-tech.com/api/admin/ledger"
@@ -8215,7 +8395,7 @@
     "url": "/merchant_h5/bill-recharge",
     "title": "充值记录查询",
     "name": "账单查询",
-    "group": "53",
+    "group": "11recharge",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -8489,7 +8669,7 @@
       ]
     },
     "filename": "public/api/routes/merchantH5/11recharge.php",
-    "groupTitle": "53",
+    "groupTitle": "财务管理",
     "sampleRequest": [
       {
         "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/bill-recharge"
@@ -8528,7 +8708,7 @@
     "url": "/merchant_h5/bill-recharge/{id}",
     "title": "充值记录详情",
     "name": "账单详情",
-    "group": "53",
+    "group": "11recharge",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -8725,7 +8905,7 @@
       ]
     },
     "filename": "public/api/routes/merchantH5/11recharge.php",
-    "groupTitle": "53",
+    "groupTitle": "财务管理",
     "sampleRequest": [
       {
         "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/bill-recharge/{id}"
@@ -8764,7 +8944,7 @@
     "url": "/merchant_h5/bill/merchant-recharge",
     "title": "充值",
     "name": "货主充值开单",
-    "group": "53",
+    "group": "11recharge",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -8842,190 +9022,10 @@
       ]
     },
     "filename": "public/api/routes/merchantH5/11recharge.php",
-    "groupTitle": "53",
+    "groupTitle": "财务管理",
     "sampleRequest": [
       {
         "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/bill/merchant-recharge"
-      }
-    ],
-    "header": {
-      "fields": {
-        "Header": [
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "language",
-            "description": "<p>语言cn-中文en-英文。</p>"
-          },
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "Authorization",
-            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Header-Example:",
-          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
-          "type": "json"
-        }
-      ]
-    }
-  },
-  {
-    "type": "get",
-    "url": "/merchant_h5/customize",
-    "title": "通过url获取自定义界面",
-    "name": "通过url获取自定义界面",
-    "group": "58",
-    "version": "1.0.0",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "url",
-            "description": "<p>路由</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "code",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "msg",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.company_id",
-            "description": "<p>公司ID,</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.status",
-            "description": "<p>状态1-是2-否,</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.admin_url",
-            "description": "<p>管理员端域名,</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.admin_login_background",
-            "description": "<p>管理员端登录背景,</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.admin_login_title",
-            "description": "<p>管理员端登录标题,</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.admin_main_logo",
-            "description": "<p>管理员端主界面logo,</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.merchant_url",
-            "description": "<p>货主端域名,</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.merchant_login_background",
-            "description": "<p>货主端登录背景,</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.merchant_login_title",
-            "description": "<p>货主端登录标题,</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.merchant_main_logo",
-            "description": "<p>货主端主界面logo,</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.driver_login_title",
-            "description": "<p>司机端主界面logo,</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.consumer_url",
-            "description": "<p>客户端域名,</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.consumer_login_title",
-            "description": "<p>货主端主界面logo,</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "{\n\"code\": 200,\n\"data\": {\n\"id\": 3,\n\"status\": 1,\n\"company_id\": 3,\n\"admin_url\": \"tms-api.test:14280/api\",\n\"admin_login_background\": \"\",\n\"admin_login_title\": \"\",\n\"admin_main_logo\": \"\",\n\"merchant_url\": \"\",\n\"merchant_login_background\": \"\",\n\"merchant_login_title\": \"\",\n\"merchant_main_logo\": \"\",\n\"driver_login_title\": \"\",\n\"consumer_url\": \"\",\n\"consumer_login_title\": \"\",\n\"created_at\": \"2021-10-20 14:46:37\",\n\"updated_at\": \"2021-10-20 15:08:34\",\n\"status_name\": \"是\"\n},\n\"msg\": \"successful\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "public/api/routes/merchantH5/02comon.php",
-    "groupTitle": "58",
-    "sampleRequest": [
-      {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/customize"
       }
     ],
     "header": {
