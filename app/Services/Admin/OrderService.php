@@ -715,7 +715,7 @@ class OrderService extends BaseService
         $params['expect_total_amount'] = 0;
         if (!empty($params['bill_list'])) {
             foreach ($params['bill_list'] as $v) {
-                $params['expect_total_amount'] += $v['expect_amount'] ?? 0;
+                $params['expect_total_amount'] = $params['expect_total_amount'] + $v['expect_amount'] ?? 0;
             }
         }
         //验证取件网点及派件网点是否承接取件/派件
