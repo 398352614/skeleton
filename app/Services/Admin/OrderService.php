@@ -712,10 +712,10 @@ class OrderService extends BaseService
             $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
         }
         $params = $this->getTransportPriceService()->priceCount($params);        //若存在包裹列表,则新增包裹列表
-        $params['expect_total_amount']=0;
-        if(!empty($params['bill_list'])){
+        $params['expect_total_amount'] = 0;
+        if (!empty($params['bill_list'])) {
             foreach ($params['bill_list'] as $v) {
-                $params['expect_total_amount'] += $v['expect_amount'];
+                $params['expect_total_amount'] += $v['expect_amount'] ?? 0;
             }
         }
         //验证取件网点及派件网点是否承接取件/派件
