@@ -46,7 +46,7 @@ class Events extends BaseEvents
             }
             Gateway::closeClient($clientId);
         } catch (\Exception $e) {
-            Log::channel('work')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+            Log::channel('worker')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'message' => $e->getMessage()
@@ -75,7 +75,7 @@ class Events extends BaseEvents
             list($type, $data, $toId) = [$message['type'], json_encode($message['data'] ?? [], JSON_UNESCAPED_UNICODE), $message['to_id'] ?? null];
             is_null($toId) ? self::$type(Gateway::getSession($clientId), $data) : self::$type(Gateway::getSession($clientId), $data, $toId);
         } catch (\Exception $e) {
-            Log::channel('work')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+            Log::channel('worker')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'message' => $e->getMessage()

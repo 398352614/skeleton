@@ -94,7 +94,6 @@ class SendNotify2Merchant2 implements ShouldQueue
                 list($pushStatus, $msg) = $this->postData($merchantList[$merchantId]['url'], $postData);
                 ThirdPartyLogService::storeAll($merchantId, $data, $notifyType, $event->getThirdPartyContent($pushStatus, $msg));
             }
-            Log::info(2);
         } catch (\ErrorException $ex) {
             Log::channel('job-daily')->error($ex->getMessage());
         } catch (\Exception $ex) {

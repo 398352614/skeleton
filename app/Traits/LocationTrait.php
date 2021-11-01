@@ -28,18 +28,14 @@ trait LocationTrait
      */
     public static function getLocation($country, $city, $street, $houseNumber, $postCode)
     {
-        $address2 = [
-            'country' => $country,
-            'street_number' => $houseNumber,
-            'postal_code' => $postCode,
-            'locality' => '',//administrative_area_level_2
-            'route' => $street,
-        ];
         $key = sprintf("%s:%s-%s-%s", 'location', $country, $postCode, $houseNumber);
         try {
             $value = Cache::rememberForever($key, self::getLocationDetail($country, $city, $street, $houseNumber, $postCode));
         } catch (BusinessLogicException $e) {
-            $value = Cache::rememberForever($key, self::getLocationDetailThird($address2));
+            if($postCode == $houseNumber){
+                throw new BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
+            }
+            $value = Cache::rememberForever($key, self::getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode));
         }
         return $value;
     }
@@ -86,7 +82,7 @@ trait LocationTrait
         if ($country == 'NL') {
             return self::getLocationDetailFirst($country, $houseNumber, $postCode);
         } else {
-            return self::getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode);
+            return self::getLocationDetailThird($address);
         }
     }
 

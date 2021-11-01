@@ -83,7 +83,7 @@ class UpdateDriverCountTime implements ShouldQueue
             }
             Log::channel('worker')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '司机位置和各站点预计耗时和里程更新成功');
         } catch (\Exception $e) {
-            Log::channel('work')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+            Log::channel('worker')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'message' => $e->getMessage()

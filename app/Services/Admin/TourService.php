@@ -675,7 +675,7 @@ class TourService extends BaseService
         // * @apiParam {String}   batch_ids                  有序的批次数组
         // * @apiParam {String}   tour_no                    在途编号
         // set_time_limit(240);
-        Log::channel('info')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . '更新线路传入的参数', $data);
+        Log::channel('info')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . '更新线路传入的参数', $data);
         $tour = Tour::where('tour_no', $data['tour_no'])->firstOrFail();
 
         throw_if(
@@ -715,7 +715,6 @@ class TourService extends BaseService
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
         $this->getApiTimesService()->timesCount('actual_directions_times', $tour->company_id);
-
         TourOptimizationService::getOpInstance($tour->company_id)->autoUpdateTour($tour);
 
         return '修改线路成功';
