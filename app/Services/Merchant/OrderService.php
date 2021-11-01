@@ -776,10 +776,10 @@ class OrderService extends BaseService
             $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
         }
         $params = $this->getTransportPriceService()->priceCount($params);
-        $params['expect_total_amount'] = $params['settlement_amount'];
+        $params['expect_total_amount'] = 0;
         if (!empty($params['bill_list'])) {
             foreach ($params['bill_list'] as $v) {
-                $params['expect_total_amount'] += $v['expect_amount'];
+                $params['expect_total_amount'] += floatval($v['expect_amount']);
             }
         }
         return $params;
