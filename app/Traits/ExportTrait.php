@@ -74,7 +74,7 @@ trait ExportTrait
         }
         $headings = $this->translate($headings, $dir);
         $subPath = auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
-        $path = 'public\\admin\\excel\\' . $subPath . DIRECTORY_SEPARATOR . md5($name) . '.xlsx';
+        $path = 'public\\admin\\excel\\' . $subPath . DIRECTORY_SEPARATOR . md5($name.now()) . '.xlsx';
         try {
             if ($dir == 'plan') {
                 $rowCount = Excel::store(new PlanExport($data, $headings, $name, $dir, $params), $path);
