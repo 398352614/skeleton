@@ -58,7 +58,7 @@ class AssignBatch extends ATourNotify
         foreach ($batchList as $merchantId => $batch) {
             Log::info($merchantId);
             if($merchantId == config('tms.erp_merchant_id')){
-                $batch['pay_type'] = 1;
+                $batch['pay_type'] = 3;
             }
             Log::info($batch['pay_type']);
             $batch['additional_package_list'] = $additionalPackageList[$merchantId] ?? [];
