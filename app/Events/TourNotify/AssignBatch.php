@@ -56,6 +56,9 @@ class AssignBatch extends ATourNotify
         }
         $tourList = [];
         foreach ($batchList as $merchantId => $batch) {
+            if($merchantId == config('tms.erp_merchant_id')){
+                $batch['pay_type'] = 1;
+            }
             $batch['additional_package_list'] = $additionalPackageList[$merchantId] ?? [];
             $batch['delivery_count'] += !empty($additionalPackageList[$merchantId]) ? array_sum(array_column($additionalPackageList[$merchantId], 'delivery_count')) : 0;
             $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch' => $batch]);
