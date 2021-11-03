@@ -72,7 +72,6 @@ class HomeController extends BaseController
      */
     public function periodCount()
     {
-        dd(1);
         return $this->service->periodCount($this->data);
     }
 
