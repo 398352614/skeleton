@@ -94,7 +94,7 @@ class HomeService extends BaseService
     public function periodCount($params)
     {
         $countInfo = [];
-        $orderList = parent::getList(['status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]]], ['*'], false);
+        $orderList = parent::getList(['status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]]], ['execution_date'], false);
         dd($orderList);
         //总计
         $day = \Illuminate\Support\Carbon::create($params['begin_date']);
