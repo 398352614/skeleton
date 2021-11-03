@@ -77,7 +77,7 @@ class OrderValidate extends BaseValidate
         'material_list.*.expect_quantity' => 'required_with:material_list|integer|gte:0',
         'material_list.*.remark' => 'nullable|string|max:250',
         'distance' => 'nullable|integer|gte:0',
-        'id_list' => 'required|string|checkIdList:100',
+        'id_list' => 'required|checkIdList:100',
         'tour_no' => 'nullable|string|max:50',
         'receipt_type' => 'nullable|integer|in:1',
         'receipt_count' => 'nullable|integer|gte:0',
