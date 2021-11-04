@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Services\Admin\CompanyCustomizeService;
 use App\Services\Merchant\JournalService;
 use App\Services\Merchant\BaseLineService;
 use App\Services\Merchant\BaseWarehouseService;
@@ -11,6 +12,7 @@ use App\Services\Merchant\CountryService;
 use App\Services\Merchant\FeeService;
 use App\Services\Merchant\LedgerLogService;
 use App\Services\Merchant\LedgerService;
+use App\Services\Merchant\MerchantApiService;
 use App\Services\Merchant\OrderAmountService;
 use App\Services\Merchant\OrderDefaultConfigService;
 use App\Services\Merchant\OrderTemplateService;
@@ -55,7 +57,23 @@ Trait MerchantServiceTrait
     public function getBaseWarehouseService()
     {
         return self::getInstance(BaseWarehouseService::class);
+    }
 
+    /**
+     * @return CompanyCustomizeService
+     */
+    public function getCompanyCustomizeService()
+    {
+        return self::getInstance(CompanyCustomizeService::class);
+
+    }
+
+    /**
+     * @return MerchantApiService
+     */
+    public function getMerchantApiService()
+    {
+        return self::getInstance(MerchantApiService::class);
     }
 
     /**
