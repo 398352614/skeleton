@@ -30,6 +30,7 @@ use App\Traits\CountryTrait;
 use App\Traits\ExportTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
+use App\Traits\OrderRedisLockTrait;
 use App\Traits\PrintTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
@@ -1372,6 +1373,7 @@ class OrderService extends BaseService
      * 同步订单状态列表
      * @param $idList
      * @param bool $stockException
+     * @throws BusinessLogicException
      */
     public function synchronizeStatusList($idList, $stockException = false)
     {
@@ -1379,6 +1381,13 @@ class OrderService extends BaseService
         $idList = explode_id_string($idList);
         $orderList = parent::getList(['id' => ['in', $idList]], ['*'], false)->toArray();
         $orderNoList = array_column($orderList, 'order_no');
+        foreach ($orderNoList as $v){
+            if(empty(OrderRedisLockTrait::getOrderLock($v))){
+                OrderRedisLockTrait::setOrderLock($v);
+            }else{
+                throw new BusinessLogicException('同步任务正在进行中，请稍后重试');
+            }
+        }
         //获取运单列表
         $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => ['in', $orderNoList]], ['id', 'order_no', 'out_order_no', 'batch_no', 'tour_no', 'type', 'status'], false, [], ['id' => 'asc'])->toArray();
         //这里只会得到订单的最新运单

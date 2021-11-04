@@ -62,6 +62,7 @@ class TourController extends BaseController
     }
 
     /**
+     * @throws \App\Exceptions\BusinessLogicException
      * @api {GET}  api/admin/tour/{tour} 管理员端:查看具体任务
      * @apiName show
      * @apiGroup admin-tour
@@ -126,6 +127,7 @@ class TourController extends BaseController
     }
 
     /**
+     * @throws \App\Exceptions\BusinessLogicException
      * @api {POST}  api/admin/tour/auto-op-tour 管理员端:自动优化线路任务
      * @apiName auto-op-tour
      * @apiGroup admin
@@ -276,7 +278,12 @@ class TourController extends BaseController
         return $this->service->planExport($id);
     }
 
-
+    /**
+     * @param $id
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function batchPng($id)
     {
         return $this->service->batchPng($id);
