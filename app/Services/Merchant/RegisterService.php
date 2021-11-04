@@ -13,6 +13,7 @@ use App\Mail\SendResetCode;
 use App\Models\Merchant;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Vinkla\Hashids\Facades\Hashids;
 
@@ -35,19 +36,22 @@ class RegisterService extends BaseService
      */
     public function register($data)
     {
+        self::verifyCode($data, 'REGISTER');
         throw_if(
             $this->query->where('email', $data['email'])->count(),
             new BusinessLogicException('邮箱已注册，请直接登录')
         );
-        throw_if(
-            $this->query->where('name', $data['name'])->count(),
-            new BusinessLogicException('名称已注册，请直接登录')
-        );
-        $companyId = $this->getCompanyCustomizeService()->getList();
+        if (!empty($data['name']) && $this->query->where('name', $data['name'])->count()) {
+            throw new BusinessLogicException('名称已注册，请直接登录');
+        }
+        $company = $this->getCompanyCustomizeService()->getInfo(['consumer_url' => $data['url']], ['*'], false);
+        if (empty($company)) {
+            $company['id'] = config('tms.default_company_id') ?? null;
+        }
         $merchant = parent::create([
-            'company_id' => $companyId,
-            'name' => $data['name'],
+            'company_id' => $company['id'],
             'email' => $data['email'],
+            'name' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
         $id = $merchant->id;
@@ -110,9 +114,9 @@ class RegisterService extends BaseService
      */
     public function resetPassword($data)
     {
-        self::verifyResetCode($data);
+        self::verifyCode($data,'RESET');
         self::deleteVerifyCode($data['email'], 'RESET');
-        $row = $this->update(['email'=>$data['email']],[
+        $row = $this->update(['email' => $data['email']], [
             'password' => bcrypt($data['new_password']),
         ]);
         if ($row === false) {
@@ -122,12 +126,13 @@ class RegisterService extends BaseService
 
     /**
      * @param $data
+     * @param string $use
      * @return array
      * @throws BusinessLogicException
      */
-    public function verifyResetCode($data)
+    public function verifyCode($data, $use = 'REGISTER')
     {
-        if ($data['code'] !== self::getVerifyCode($data['email'], 'RESET')) {
+        if ($data['code'] !== self::getVerifyCode($data['email'], $use)) {
             throw new BusinessLogicException('验证码错误');
         }
         return success();
@@ -143,6 +148,7 @@ class RegisterService extends BaseService
     {
         $verifyCode = mt_rand(100000, 999999);
         Cache::put('VERIFY_CODE:' . $use . ':' . $mail, $verifyCode, 300);
+        Log::info($verifyCode);
         return $verifyCode;
     }
 

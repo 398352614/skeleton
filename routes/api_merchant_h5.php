@@ -21,7 +21,7 @@ Route::namespace('Api\Merchant')->group(function () {
     //修改密码
     Route::post('password/code', 'RegisterController@applyOfReset');
     //注册
-    Route::post('register', 'RegisterController@store');
+    Route::post('register', 'RegisterController@register');
     //注册验证码
     Route::post('register/apply', 'RegisterController@applyOfRegister');
     //重置验证码

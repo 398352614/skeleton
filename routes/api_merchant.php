@@ -20,9 +20,11 @@ Route::namespace('Api\Merchant')->group(function () {
     Route::put('password/reset', 'RegisterController@resetPassword');
     //修改密码
     Route::post('password/code', 'RegisterController@applyOfReset');
-    //Route::post('register', 'RegisterController@store');
-    //Route::post('register/apply', 'RegisterController@applyOfRegister');
-    //Route::put('password-reset/verify', 'RegisterController@verifyResetCode');
+    //注册
+    Route::post('register', 'RegisterController@register');
+    //注册验证码
+    Route::post('register/apply', 'RegisterController@applyOfRegister');
+
 });
 
 //认证

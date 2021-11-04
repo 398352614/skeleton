@@ -20,14 +20,15 @@ class RegisterValidate extends BaseValidate
         'code' => 'required|string|digits:6',
         'new_password' => 'required|string|between:8,20',
         'confirm_new_password' => 'required|string|same:new_password',
-        'name' => 'required|string|max:50|uniqueIgnore:company,id',
-        'company_code' => 'required|string'
+        'name' => '|string|max:50|uniqueIgnore:company,id',
+        'company_code' => '|string',
+        'url' => 'nullable|string'
     ];
 
     public $scene = [
-        'store' => ['name', 'email', 'password', 'confirm_password', 'company_code'],
+        'register' => ['email', 'password', 'confirm_password', 'code', 'url'],
         'applyOfRegister' => ['email'],
         'applyOfReset' => ['email'],
-        'resetPassword' => ['new_password', 'confirm_new_password', 'code', 'email'],
+        'resetPassword' => ['new_password', 'confirm_new_password', 'code', 'url', 'email'],
     ];
 }
