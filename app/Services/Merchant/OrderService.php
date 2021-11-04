@@ -965,7 +965,7 @@ class OrderService extends BaseService
      */
     private function addAmountList($params)
     {
-        if ($params['settlement_amount'] !== 0) {
+        if (!empty($params['settlement_amount']) && $params['settlement_amount'] !== 0) {
             $transportPrice = $this->getTransportPriceService()->getInfo(['id' => $params['transport_price_id']], ['*'], false);
             if (empty($transportPrice)) {
                 throw new BusinessLogicException('费用不存在');

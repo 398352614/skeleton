@@ -82,11 +82,13 @@ class BaseValidate
     public function checkIdList($attribute, $value, $parameters, $validator)
     {
         $maxCount = $parameters[0] ?? 100;
-        $list = explode(',', $value);
-        if (count($list) > $maxCount) return false;
-        $id = Arr::first($list, function ($v) {
-            return !is_numeric($v);
-        });
+        if(is_string($value)){
+            $list = explode(',', $value);
+            if (count($list) > $maxCount) return false;
+            $id = Arr::first($list, function ($v) {
+                return !is_numeric($v);
+            });
+        }
         return empty($id) ? true : false;
     }
 
