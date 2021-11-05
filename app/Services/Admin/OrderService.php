@@ -901,7 +901,7 @@ class OrderService extends BaseService
      */
     public function updateById($id, $data)
     {
-        unset($data['order_no'], $data['tour_no'], $data['batch_no'],$data['type']);
+        unset($data['order_no'], $data['tour_no'], $data['batch_no']);
         //获取信息
         $dbOrder = $this->getInfoOfStatus(['id' => $id], true);
 //        if ($this->updateBaseInfo($dbOrder, $data) == true) {
@@ -910,6 +910,9 @@ class OrderService extends BaseService
 //        if (intval($dbOrder['source']) === BaseConstService::ORDER_SOURCE_3) {
 //            throw new BusinessLogicException('第三方订单不能修改');
 //        }
+        if ($dbOrder['status'] > BaseConstService::ORDER_STATUS_1) {
+            $data['type'] = $dbOrder['type'];
+        }
         //验证
         $this->check($data, $dbOrder['order_no']);
         /*************************************************订单修改******************************************************/
@@ -1374,10 +1377,10 @@ class OrderService extends BaseService
         $idList = explode_id_string($idList);
         $orderList = parent::getList(['id' => ['in', $idList]], ['*'], false)->toArray();
         $orderNoList = array_column($orderList, 'order_no');
-        foreach ($orderNoList as $v){
-            if(empty(OrderRedisLockTrait::getOrderLock($v))){
+        foreach ($orderNoList as $v) {
+            if (empty(OrderRedisLockTrait::getOrderLock($v))) {
                 OrderRedisLockTrait::setOrderLock($v);
-            }else{
+            } else {
                 throw new BusinessLogicException('同步任务正在进行中，请稍后重试');
             }
         }
