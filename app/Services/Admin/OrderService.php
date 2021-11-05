@@ -901,7 +901,7 @@ class OrderService extends BaseService
      */
     public function updateById($id, $data)
     {
-        unset($data['order_no'], $data['tour_no'], $data['batch_no']);
+        unset($data['order_no'], $data['tour_no'], $data['batch_no'],$data['type']);
         //获取信息
         $dbOrder = $this->getInfoOfStatus(['id' => $id], true);
 //        if ($this->updateBaseInfo($dbOrder, $data) == true) {
@@ -910,7 +910,6 @@ class OrderService extends BaseService
 //        if (intval($dbOrder['source']) === BaseConstService::ORDER_SOURCE_3) {
 //            throw new BusinessLogicException('第三方订单不能修改');
 //        }
-        unset($data['type']);
         //验证
         $this->check($data, $dbOrder['order_no']);
         /*************************************************订单修改******************************************************/
