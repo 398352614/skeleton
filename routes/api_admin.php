@@ -1076,7 +1076,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //账单
     Route::prefix('bill')->group(function () {
         //列表
-        Route::get('/', 'BillController@index')->name('bill.index');
+        Route::get('/', 'BillController@index');
         //详情
         Route::get('/{id}', 'BillController@show')->name('bill.index');
         //充值
