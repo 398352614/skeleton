@@ -37,6 +37,9 @@ trait LocationTrait
             }
             $value = Cache::rememberForever($key, self::getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode));
         }
+        if($country !== $value['country'] && CountryTrait::getCountryName($country,'en') !== $value['country']){
+            throw new BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
+        }
         return $value;
     }
 
