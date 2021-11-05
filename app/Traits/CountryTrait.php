@@ -43,12 +43,16 @@ trait CountryTrait
     /**
      * 通过简称,获取国家名称
      * @param $short
+     * @param string $lang
      * @return string
      */
-    public static function getCountryName($short)
+    public static function getCountryName($short, $lang = 'cn')
     {
         $countryList = self::getCountryList();
         $locate = (\Illuminate\Support\Facades\App::getLocale() !== 'cn') ? 'en' : 'cn';
+        if ($lang == 'en') {
+            $locate = 'en';
+        }
         $value = $countryList[$short][$locate . '_name'] ?? $short;
         unset($countryList);
         return $value;
