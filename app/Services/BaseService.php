@@ -19,16 +19,19 @@ class BaseService
     use SearchTrait, FactoryInstanceTrait;
 
     /**
+     * 请求
      * @var Request
      */
     public $request;
 
     /**
+     * 查询构造器
      * @var Builder $query
      */
     public $query;
 
     /**
+     * 模型
      * @var BaseModel|Builder
      */
     public $model;
@@ -56,11 +59,13 @@ class BaseService
     public $filterRules = [];
 
     /**
+     * 排序
      * @var array
      */
     public $orderBy = [];
 
     /**
+     * 每页条数
      * @var int
      */
     public $per_page = 10;
@@ -191,13 +196,16 @@ class BaseService
     }
 
     /**
+     * 锁定
      * @return $this
      */
     protected function locked()
     {
+        //如果是编号，更新锁
         if ($this->model instanceof OrderNoRule) {
             $this->query->lockForUpdate();
         } else {
+            //共享锁
             $this->query->sharedLock();
         }
 
@@ -337,6 +345,11 @@ class BaseService
         return $data;
     }
 
+    /**
+     * 新增
+     * @param $data
+     * @return Builder|Model
+     */
     public function create($data)
     {
         $this->query = $this->model::query();
@@ -344,6 +357,11 @@ class BaseService
         return $this->query->create(Arr::only($data, $this->model->getFillable()));
     }
 
+    /**
+     * 批量插入
+     * @param $data
+     * @return bool
+     */
     public function insertAll($data)
     {
         $fields = $this->model->getFillable();
@@ -353,7 +371,11 @@ class BaseService
         return $this->model->insertAll($data);
     }
 
-
+    /**
+     * 通过ID插入
+     * @param $data
+     * @return int
+     */
     public function insertGetId($data)
     {
         $this->query = $this->model::query();
@@ -399,23 +421,6 @@ class BaseService
     }
 
     /**
-     * 通过ID,指定字段自增
-     * @param $id
-     * @param $field
-     * @param $data
-     * @return int
-     */
-    public function incrementById($id, $field, $data)
-    {
-        $this->query = $this->model::query();
-        $query = $this->query->findOrFail($id);
-        $rowCount = $query->increment($field, $data[$field], Arr::except($data, $data[$field]));
-        $this->query = $this->model::query();
-
-        return $rowCount;
-    }
-
-    /**
      * 指定字段自增
      * @param $where
      * @param $field
@@ -450,7 +455,11 @@ class BaseService
         return 'true';
     }
 
-
+    /**
+     * 删除
+     * @param $where
+     * @return mixed
+     */
     public function delete($where)
     {
         $this->query = $this->model::query();
@@ -482,7 +491,11 @@ class BaseService
         return $rowCount;
     }
 
-
+    /**
+     * 统计数量
+     * @param array $where
+     * @return int
+     */
     public function count($where = [])
     {
         if (!empty($where)) {
@@ -494,6 +507,12 @@ class BaseService
         return empty($count) ? 0 : $count;
     }
 
+    /**
+     * 字段加总
+     * @param $field
+     * @param array $where
+     * @return int|mixed
+     */
     public function sum($field, $where = [])
     {
         if (!empty($where)) {
@@ -528,6 +547,7 @@ class BaseService
     }
 
     /**
+     * 创建或新增
      * @param array $where
      * @param array $data
      * @return Builder|Model
@@ -538,6 +558,7 @@ class BaseService
     }
 
     /**
+     * 调用service
      * @param $name
      * @param $arguments
      * @return null|mixed
