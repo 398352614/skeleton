@@ -85,7 +85,7 @@ define({ "api": [
     "groupTitle": "用户认证",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/register"
+        "url": "https://api.rrtms.com/api/merchant_h5/register"
       }
     ],
     "header": {
@@ -174,7 +174,7 @@ define({ "api": [
     "groupTitle": "用户认证",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/register/apply"
+        "url": "https://api.rrtms.com/api/merchant_h5/register/apply"
       }
     ],
     "header": {
@@ -431,7 +431,7 @@ define({ "api": [
     "groupTitle": "用户认证",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/login"
+        "url": "https://api.rrtms.com/api/merchant_h5/login"
       }
     ],
     "header": {
@@ -541,7 +541,7 @@ define({ "api": [
     "groupTitle": "用户认证",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/password/reset"
+        "url": "https://api.rrtms.com/api/merchant_h5/password/reset"
       }
     ],
     "header": {
@@ -630,7 +630,7 @@ define({ "api": [
     "groupTitle": "用户认证",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/password/code"
+        "url": "https://api.rrtms.com/api/merchant_h5/password/code"
       }
     ],
     "header": {
@@ -726,7 +726,7 @@ define({ "api": [
     "groupTitle": "公共接口",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/timezone"
+        "url": "https://api.rrtms.com/api/merchant_h5/timezone"
       }
     ],
     "header": {
@@ -795,7 +795,7 @@ define({ "api": [
     "groupTitle": "公共接口",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/admin/common/dictionary"
+        "url": "https://api.rrtms.com/api/admin/common/dictionary"
       }
     ],
     "header": {
@@ -990,7 +990,7 @@ define({ "api": [
     "groupTitle": "公共接口",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/company"
+        "url": "https://api.rrtms.com/api/merchant_h5/company"
       }
     ],
     "header": {
@@ -1170,7 +1170,7 @@ define({ "api": [
     "groupTitle": "公共接口",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/customize"
+        "url": "https://api.rrtms.com/api/merchant_h5/customize"
       }
     ],
     "header": {
@@ -1344,7 +1344,7 @@ define({ "api": [
     "groupTitle": "配置",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant"
+        "url": "https://api.rrtms.com/api/merchant"
       }
     ],
     "header": {
@@ -1454,7 +1454,7 @@ define({ "api": [
     "groupTitle": "配置",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant"
+        "url": "https://api.rrtms.com/api/merchant"
       }
     ],
     "header": {
@@ -1557,7 +1557,7 @@ define({ "api": [
     "groupTitle": "配置",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/password"
+        "url": "https://api.rrtms.com/api/merchant_h5/password"
       }
     ],
     "header": {
@@ -1646,7 +1646,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/order/{id}/remove-batch"
+        "url": "https://api.rrtms.com/api/merchant_h5/order/{id}/remove-batch"
       }
     ],
     "header": {
@@ -2302,7 +2302,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/order/{id}"
+        "url": "https://api.rrtms.com/api/merchant_h5/order/{id}"
       }
     ],
     "header": {
@@ -2391,7 +2391,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/order/{id}"
+        "url": "https://api.rrtms.com/api/merchant_h5/order/{id}"
       }
     ],
     "header": {
@@ -2487,7 +2487,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/order/excel"
+        "url": "https://api.rrtms.com/api/merchant_h5/order/excel"
       }
     ],
     "header": {
@@ -3080,7 +3080,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/order/bill"
+        "url": "https://api.rrtms.com/api/merchant_h5/order/bill"
       }
     ],
     "header": {
@@ -3750,7 +3750,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/order"
+        "url": "https://api.rrtms.com/api/merchant_h5/order"
       }
     ],
     "header": {
@@ -4280,7 +4280,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/order"
+        "url": "https://api.rrtms.com/api/merchant_h5/order"
       }
     ],
     "header": {
@@ -4369,7 +4369,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant"
+        "url": "https://api.rrtms.com/api/merchant"
       }
     ],
     "header": {
@@ -5298,7 +5298,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/order/{id}"
+        "url": "https://api.rrtms.com/api/merchant_h5/order/{id}"
       }
     ],
     "header": {
@@ -5499,7 +5499,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/order/{id}/trail"
+        "url": "https://api.rrtms.com/api/merchant_h5/order/{id}/trail"
       }
     ],
     "header": {
@@ -6176,7 +6176,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/order/price-count"
+        "url": "https://api.rrtms.com/api/merchant_h5/order/price-count"
       }
     ],
     "header": {
@@ -6294,7 +6294,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/order/get-date"
+        "url": "https://api.rrtms.com/api/merchant_h5/order/get-date"
       }
     ],
     "header": {
@@ -6383,7 +6383,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/order/{id}/get-date"
+        "url": "https://api.rrtms.com/api/merchant_h5/order/{id}/get-date"
       }
     ],
     "header": {
@@ -6479,7 +6479,7 @@ define({ "api": [
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/order/{id}/assign-batch"
+        "url": "https://api.rrtms.com/api/merchant_h5/order/{id}/assign-batch"
       }
     ],
     "header": {
@@ -6652,7 +6652,7 @@ define({ "api": [
     "groupTitle": "地址管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/address/{id}"
+        "url": "https://api.rrtms.com/api/merchant_h5/address/{id}"
       }
     ],
     "header": {
@@ -6748,7 +6748,7 @@ define({ "api": [
     "groupTitle": "地址管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/address/{id}"
+        "url": "https://api.rrtms.com/api/merchant_h5/address/{id}"
       }
     ],
     "header": {
@@ -6935,7 +6935,7 @@ define({ "api": [
     "groupTitle": "地址管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/address/{id}"
+        "url": "https://api.rrtms.com/api/merchant_h5/address/{id}"
       }
     ],
     "header": {
@@ -7213,7 +7213,7 @@ define({ "api": [
     "groupTitle": "地址管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/address"
+        "url": "https://api.rrtms.com/api/merchant_h5/address"
       }
     ],
     "header": {
@@ -7428,7 +7428,7 @@ define({ "api": [
     "groupTitle": "地址管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/address/{id}"
+        "url": "https://api.rrtms.com/api/merchant_h5/address/{id}"
       }
     ],
     "header": {
@@ -7700,7 +7700,7 @@ define({ "api": [
     "groupTitle": "运价信息",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/transport-price"
+        "url": "https://api.rrtms.com/api/merchant_h5/transport-price"
       }
     ],
     "header": {
@@ -7999,7 +7999,7 @@ define({ "api": [
     "groupTitle": "网点",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/warehouse"
+        "url": "https://api.rrtms.com/api/merchant_h5/warehouse"
       }
     ],
     "header": {
@@ -8179,7 +8179,7 @@ define({ "api": [
     "groupTitle": "网点",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/warehouse/{id}"
+        "url": "https://api.rrtms.com/api/merchant_h5/warehouse/{id}"
       }
     ],
     "header": {
@@ -8359,7 +8359,7 @@ define({ "api": [
     "groupTitle": "财务管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/admin/ledger"
+        "url": "https://api.rrtms.com/api/admin/ledger"
       }
     ],
     "header": {
@@ -8672,7 +8672,7 @@ define({ "api": [
     "groupTitle": "财务管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/bill-recharge"
+        "url": "https://api.rrtms.com/api/merchant_h5/bill-recharge"
       }
     ],
     "header": {
@@ -8908,7 +8908,7 @@ define({ "api": [
     "groupTitle": "财务管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/bill-recharge/{id}"
+        "url": "https://api.rrtms.com/api/merchant_h5/bill-recharge/{id}"
       }
     ],
     "header": {
@@ -9025,7 +9025,837 @@ define({ "api": [
     "groupTitle": "财务管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/merchant_h5/bill/merchant-recharge"
+        "url": "https://api.rrtms.com/api/merchant_h5/bill/merchant-recharge"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          },
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/admin/carousel",
+    "title": "轮播图查询",
+    "name": "轮播图查询",
+    "group": "13",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "id",
+            "description": "<p>地址ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.company_id",
+            "description": "<p>公司ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.status",
+            "description": "<p>状态1-开启2-禁用</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.name",
+            "description": "<p>图片名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.picture_url",
+            "description": "<p>图片地址</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.sort_id",
+            "description": "<p>排序ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.rolling_time",
+            "description": "<p>滚动时间(秒)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.rolling_time_name",
+            "description": "<p>滚动时间名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.jump_type",
+            "description": "<p>跳转类型1-外部跳转2-内部跳转</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.jump_type_name",
+            "description": "<p>跳转类型名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.inside_jump_type",
+            "description": "<p>内部跳转类型1-新闻通知2-入门教程3-禁运物品4-常见问题</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.outside_jump_url",
+            "description": "<p>外部跳转URL</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.inside_jump_type_name",
+            "description": "<p>内部跳转名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.created_at",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.updated_at",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "msg",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\"code\": 200,\n\"data\": {\n\"data\": [\n{\n\"id\": 6,\n\"company_id\": 3,\n\"status\": 1,\n\"name\": \"\",\n\"picture_url\": \"1\",\n\"sort_id\": \"\",\n\"rolling_time\": 1,\n\"rolling_time_name\": \"1秒\",\n\"jump_type\": 1,\n\"jump_type_name\": \"内部跳转\",\n\"inside_jump_type\": 1,\n\"outside_jump_url\": \"\",\n\"inside_jump_type_name\": \"新闻通知\",\n\"created_at\": \"2021-11-09 10:07:42\",\n\"updated_at\": \"2021-11-09 10:07:42\"\n},\n{\n\"id\": 7,\n\"company_id\": 3,\n\"status\": 1,\n\"name\": \"\",\n\"picture_url\": \"1\",\n\"sort_id\": \"\",\n\"rolling_time\": 1,\n\"rolling_time_name\": \"1秒\",\n\"jump_type\": 1,\n\"jump_type_name\": \"内部跳转\",\n\"inside_jump_type\": 1,\n\"outside_jump_url\": \"\",\n\"inside_jump_type_name\": \"新闻通知\",\n\"created_at\": \"2021-11-09 10:07:44\",\n\"updated_at\": \"2021-11-09 10:07:44\"\n},\n{\n\"id\": 8,\n\"company_id\": 3,\n\"status\": 1,\n\"name\": \"\",\n\"picture_url\": \"1\",\n\"sort_id\": \"\",\n\"rolling_time\": 1,\n\"rolling_time_name\": \"1秒\",\n\"jump_type\": 1,\n\"jump_type_name\": \"内部跳转\",\n\"inside_jump_type\": 1,\n\"outside_jump_url\": \"\",\n\"inside_jump_type_name\": \"新闻通知\",\n\"created_at\": \"2021-11-09 10:07:45\",\n\"updated_at\": \"2021-11-09 10:07:45\"\n},\n{\n\"id\": 9,\n\"company_id\": 3,\n\"status\": 1,\n\"name\": \"\",\n\"picture_url\": \"1\",\n\"sort_id\": \"\",\n\"rolling_time\": 1,\n\"rolling_time_name\": \"1秒\",\n\"jump_type\": 1,\n\"jump_type_name\": \"内部跳转\",\n\"inside_jump_type\": 1,\n\"outside_jump_url\": \"\",\n\"inside_jump_type_name\": \"新闻通知\",\n\"created_at\": \"2021-11-09 10:07:46\",\n\"updated_at\": \"2021-11-09 10:07:46\"\n},\n{\n\"id\": 10,\n\"company_id\": 3,\n\"status\": 1,\n\"name\": \"\",\n\"picture_url\": \"1\",\n\"sort_id\": \"\",\n\"rolling_time\": 1,\n\"rolling_time_name\": \"1秒\",\n\"jump_type\": 1,\n\"jump_type_name\": \"内部跳转\",\n\"inside_jump_type\": 1,\n\"outside_jump_url\": \"\",\n\"inside_jump_type_name\": \"新闻通知\",\n\"created_at\": \"2021-11-09 10:07:47\",\n\"updated_at\": \"2021-11-09 10:07:47\"\n},\n{\n\"id\": 11,\n\"company_id\": 3,\n\"status\": 1,\n\"name\": \"\",\n\"picture_url\": \"1\",\n\"sort_id\": \"\",\n\"rolling_time\": 1,\n\"rolling_time_name\": \"1秒\",\n\"jump_type\": 1,\n\"jump_type_name\": \"内部跳转\",\n\"inside_jump_type\": 1,\n\"outside_jump_url\": \"\",\n\"inside_jump_type_name\": \"新闻通知\",\n\"created_at\": \"2021-11-09 10:07:48\",\n\"updated_at\": \"2021-11-09 10:07:48\"\n},\n{\n\"id\": 12,\n\"company_id\": 3,\n\"status\": 1,\n\"name\": \"\",\n\"picture_url\": \"1\",\n\"sort_id\": \"\",\n\"rolling_time\": 1,\n\"rolling_time_name\": \"1秒\",\n\"jump_type\": 1,\n\"jump_type_name\": \"内部跳转\",\n\"inside_jump_type\": 1,\n\"outside_jump_url\": \"\",\n\"inside_jump_type_name\": \"新闻通知\",\n\"created_at\": \"2021-11-09 10:07:50\",\n\"updated_at\": \"2021-11-09 10:07:50\"\n},\n{\n\"id\": 2,\n\"company_id\": 3,\n\"status\": 1,\n\"name\": \"\",\n\"picture_url\": \"1\",\n\"sort_id\": \"1\",\n\"rolling_time\": 1,\n\"rolling_time_name\": \"1秒\",\n\"jump_type\": 1,\n\"jump_type_name\": \"内部跳转\",\n\"inside_jump_type\": 1,\n\"outside_jump_url\": \"1\",\n\"inside_jump_type_name\": \"新闻通知\",\n\"created_at\": \"2021-11-08 12:56:45\",\n\"updated_at\": \"2021-11-09 09:55:14\"\n}\n],\n\"links\": {\n\"first\": \"http://tms-api.test:14280/api/admin/carousel?page=1\",\n\"last\": \"http://tms-api.test:14280/api/admin/carousel?page=1\",\n\"prev\": null,\n\"next\": null\n},\n\"meta\": {\n\"current_page\": 1,\n\"from\": 1,\n\"last_page\": 1,\n\"path\": \"http://tms-api.test:14280/api/admin/carousel\",\n\"per_page\": 200,\n\"to\": 8,\n\"total\": 8\n}\n},\n\"msg\": \"successful\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantH5/13carousel.php",
+    "groupTitle": "轮播图配置",
+    "sampleRequest": [
+      {
+        "url": "https://api.rrtms.com/api/admin/carousel"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          },
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/admin/article",
+    "title": "文章查询",
+    "name": "文章查询",
+    "group": "14",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "id",
+            "description": "<p>地址ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.company_id",
+            "description": "<p>公司ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.tittle",
+            "description": "<p>文章标题</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.text",
+            "description": "<p>文章正文</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.type",
+            "description": "<p>类型1-新闻通知2-入门教程3-禁运物品4-常见问题</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.type_name",
+            "description": "<p>类型名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.operator_name",
+            "description": "<p>操作人名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.operator_id",
+            "description": "<p>操作人ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.created_at",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.updated_at",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "msg",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\"code\": 200,\n\"data\": {\n\"data\": [\n{\n\"id\": 4,\n\"company_id\": 3,\n\"tittle\": \"1\",\n\"text\": \"2\",\n\"type\": 2,\n\"type_name\": \"入门教程\",\n\"operator_name\": \"tms@nle-tech.com\",\n\"operator_id\": 3,\n\"created_at\": \"2021-11-09 09:01:31\",\n\"updated_at\": \"2021-11-09 09:01:31\"\n},\n{\n\"id\": 3,\n\"company_id\": 3,\n\"tittle\": \"1\",\n\"text\": \"2\",\n\"type\": 1,\n\"type_name\": \"新闻通知\",\n\"operator_name\": \"tms@nle-tech.com\",\n\"operator_id\": 3,\n\"created_at\": \"2021-11-09 09:00:29\",\n\"updated_at\": \"2021-11-09 09:00:29\"\n},\n{\n\"id\": 2,\n\"company_id\": 3,\n\"tittle\": \"1\",\n\"text\": \"2\",\n\"type\": 1,\n\"type_name\": \"新闻通知\",\n\"operator_name\": \"tms@nle-tech.com\",\n\"operator_id\": 3,\n\"created_at\": \"2021-11-09 08:58:55\",\n\"updated_at\": \"2021-11-09 08:58:55\"\n}\n],\n\"links\": {\n\"first\": \"http://tms-api.test:14280/api/admin/article?page=1\",\n\"last\": \"http://tms-api.test:14280/api/admin/article?page=1\",\n\"prev\": null,\n\"next\": null\n},\n\"meta\": {\n\"current_page\": 1,\n\"from\": 1,\n\"last_page\": 1,\n\"path\": \"http://tms-api.test:14280/api/admin/article\",\n\"per_page\": 200,\n\"to\": 3,\n\"total\": 3\n}\n},\n\"msg\": \"successful\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantH5/14article.php",
+    "groupTitle": "文章配置",
+    "sampleRequest": [
+      {
+        "url": "https://api.rrtms.com/api/admin/article"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          },
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/admin/article/{id}",
+    "title": "文章详情",
+    "name": "文章详情",
+    "group": "14",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "id",
+            "description": "<p>地址ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.company_id",
+            "description": "<p>公司ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.tittle",
+            "description": "<p>文章标题</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.text",
+            "description": "<p>文章正文</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.type",
+            "description": "<p>类型1-新闻通知2-入门教程3-禁运物品4-常见问题</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.type_name",
+            "description": "<p>类型名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.operator_name",
+            "description": "<p>操作人名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.operator_id",
+            "description": "<p>操作人ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.created_at",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.updated_at",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "msg",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\"code\": 200,\n\"data\": {\n\"id\": 3,\n\"company_id\": 3,\n\"tittle\": \"1\",\n\"text\": \"2\",\n\"type\": 1,\n\"type_name\": \"新闻通知\",\n\"operator_name\": \"tms@nle-tech.com\",\n\"operator_id\": 3,\n\"created_at\": \"2021-11-09 09:00:29\",\n\"updated_at\": \"2021-11-09 09:00:29\"\n},\n\"msg\": \"successful\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantH5/14article.php",
+    "groupTitle": "文章配置",
+    "sampleRequest": [
+      {
+        "url": "https://api.rrtms.com/api/admin/article/{id}"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          },
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/admin/service-agreement",
+    "title": "条款查询",
+    "name": "条款查询",
+    "group": "15",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "id",
+            "description": "<p>地址ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.company_id",
+            "description": "<p>公司ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.tittle",
+            "description": "<p>条款标题</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.text",
+            "description": "<p>条款正文</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.type",
+            "description": "<p>类型1-注册服务条款2-快递服务条款</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.type_name",
+            "description": "<p>类型名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.operator_name",
+            "description": "<p>操作人名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.operator_id",
+            "description": "<p>操作人ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.created_at",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.updated_at",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "msg",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\"code\": 200,\n\"data\": {\n\"data\": [\n{\n\"id\": 4,\n\"company_id\": 3,\n\"tittle\": \"1\",\n\"text\": \"2\",\n\"type\": 2,\n\"type_name\": \"入门教程\",\n\"operator_name\": \"tms@nle-tech.com\",\n\"operator_id\": 3,\n\"created_at\": \"2021-11-09 09:01:31\",\n\"updated_at\": \"2021-11-09 09:01:31\"\n},\n{\n\"id\": 3,\n\"company_id\": 3,\n\"tittle\": \"1\",\n\"text\": \"2\",\n\"type\": 1,\n\"type_name\": \"新闻通知\",\n\"operator_name\": \"tms@nle-tech.com\",\n\"operator_id\": 3,\n\"created_at\": \"2021-11-09 09:00:29\",\n\"updated_at\": \"2021-11-09 09:00:29\"\n},\n{\n\"id\": 2,\n\"company_id\": 3,\n\"tittle\": \"1\",\n\"text\": \"2\",\n\"type\": 1,\n\"type_name\": \"新闻通知\",\n\"operator_name\": \"tms@nle-tech.com\",\n\"operator_id\": 3,\n\"created_at\": \"2021-11-09 08:58:55\",\n\"updated_at\": \"2021-11-09 08:58:55\"\n}\n],\n\"links\": {\n\"first\": \"http://tms-api.test:14280/api/admin/service-agreement?page=1\",\n\"last\": \"http://tms-api.test:14280/api/admin/service-agreement?page=1\",\n\"prev\": null,\n\"next\": null\n},\n\"meta\": {\n\"current_page\": 1,\n\"from\": 1,\n\"last_page\": 1,\n\"path\": \"http://tms-api.test:14280/api/admin/service-agreement\",\n\"per_page\": 200,\n\"to\": 3,\n\"total\": 3\n}\n},\n\"msg\": \"successful\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantH5/15serviceAgreement.php",
+    "groupTitle": "条款配置",
+    "sampleRequest": [
+      {
+        "url": "https://api.rrtms.com/api/admin/service-agreement"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          },
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/admin/service-agreement/{id}",
+    "title": "条款详情",
+    "name": "条款详情",
+    "group": "15",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "id",
+            "description": "<p>地址ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.company_id",
+            "description": "<p>公司ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.tittle",
+            "description": "<p>条款标题</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.text",
+            "description": "<p>条款正文</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.type",
+            "description": "<p>类型1-注册服务条款2-快递服务条款</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.type_name",
+            "description": "<p>类型名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.operator_name",
+            "description": "<p>操作人名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.operator_id",
+            "description": "<p>操作人ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.created_at",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.updated_at",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "msg",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\"code\": 200,\n\"data\": {\n\"id\": 3,\n\"company_id\": 3,\n\"tittle\": \"1\",\n\"text\": \"2\",\n\"type\": 1,\n\"type_name\": \"新闻通知\",\n\"operator_name\": \"tms@nle-tech.com\",\n\"operator_id\": 3,\n\"created_at\": \"2021-11-09 09:00:29\",\n\"updated_at\": \"2021-11-09 09:00:29\"\n},\n\"msg\": \"successful\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantH5/15serviceAgreement.php",
+    "groupTitle": "条款配置",
+    "sampleRequest": [
+      {
+        "url": "https://api.rrtms.com/api/admin/service-agreement/{id}"
       }
     ],
     "header": {

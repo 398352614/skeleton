@@ -13,6 +13,8 @@ use App\Http\Resources\Api\Admin\ArticleResource;
 use App\Http\Resources\Api\Admin\ServiceAgreementResource;
 use App\Models\Article;
 use App\Models\ServiceAgreement;
+use App\Services\BaseConstService;
+use App\Traits\UserTrait;
 
 
 class ServiceAgreementService extends BaseService
@@ -53,7 +55,8 @@ class ServiceAgreementService extends BaseService
      */
     public function store($params)
     {
-        $params['merchant_id'] = auth()->user()->id;
+        $params['operator_id'] = auth()->user()->id;
+        $params['operator_name'] = UserTrait::get(auth()->user()->id,BaseConstService::USER_ADMIN)['name'];
         $rowCount = parent::create($params);
         if ($rowCount === false) {
             throw new BusinessLogicException('新增失败，请重新操作');
@@ -69,6 +72,8 @@ class ServiceAgreementService extends BaseService
      */
     public function updateById($id, $data)
     {
+        $data['operator_id'] = auth()->user()->id;
+        $data['operator_name'] = UserTrait::get(auth()->user()->id,BaseConstService::USER_ADMIN)['name'];
         $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');

@@ -181,6 +181,14 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/', 'OrderDefaultConfigController@update')->name('order-default-config.update');
     });
 
+    //订单默认配置
+    Route::prefix('pay-config')->group(function () {
+        //获取配置
+        Route::get('/', 'PayConfigController@show')->name('pay-config.index');
+        //更新配置
+        Route::put('/', 'PayConfigController@update')->name('pay-config.update');
+    });
+
     //订单费用管理
     Route::prefix('order-amount')->group(function () {
         //查询

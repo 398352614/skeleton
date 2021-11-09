@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
+use Carbon\CarbonInterval;
 
 /**
  * 轮播图
@@ -62,6 +63,7 @@ class PayConfig extends BaseModel
     protected $appends = [
         'paypal_status_name',
         'paypal_sandbox_mode_name',
+        'waiting_time_human'
     ];
 
     /**
@@ -80,5 +82,15 @@ class PayConfig extends BaseModel
     {
         return empty($this->paypal_sandbox_mode) ? null : ConstTranslateTrait::paypalSandboxModeList($this->paypal_sandbox_mode);
     }
+
+    /**
+     * @return string|null
+     * @throws \Exception
+     */
+    public function getWaitingTimeHumanAttribute()
+    {
+        return empty($this->waiting_time) ? null : CarbonInterval::second($this->waiting_time)->cascade()->forHumans();
+    }
+
 
 }

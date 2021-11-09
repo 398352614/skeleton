@@ -11,13 +11,15 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\ArticleResource;
 use App\Models\Article;
+use App\Services\BaseConstService;
+use App\Traits\UserTrait;
 
 
 class ArticleService extends BaseService
 {
     public function __construct(Article $address)
     {
-        parent::__construct($address, ArticleResource::class );
+        parent::__construct($address, ArticleResource::class);
     }
 
     public $filterRules = [
@@ -51,7 +53,8 @@ class ArticleService extends BaseService
      */
     public function store($params)
     {
-        $params['merchant_id'] = auth()->user()->id;
+        $params['operator_id'] = auth()->user()->id;
+        $params['operator_name'] = UserTrait::get(auth()->user()->id,BaseConstService::USER_ADMIN)['name'];
         $rowCount = parent::create($params);
         if ($rowCount === false) {
             throw new BusinessLogicException('新增失败，请重新操作');
@@ -67,6 +70,8 @@ class ArticleService extends BaseService
      */
     public function updateById($id, $data)
     {
+        $data['operator_id'] = auth()->user()->id;
+        $data['operator_name'] = UserTrait::get(auth()->user()->id,BaseConstService::USER_ADMIN)['name'];
         $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
@@ -100,6 +105,12 @@ class ArticleService extends BaseService
         foreach ($ids as $k => $v) {
             parent::updateById($v, ['sort_id' => $k]);
         }
+    }
+
+    public function index()
+    {
+        $data= parent::getPageList();
+        return $data;
     }
 
 }

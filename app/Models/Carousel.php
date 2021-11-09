@@ -81,7 +81,7 @@ class Carousel extends BaseModel
         return empty($this->status) ? null : ConstTranslateTrait::bagStatusList($this->status);
     }
 
-    public function getJumpTypeAttribute()
+    public function getJumpTypeNameAttribute()
     {
         return empty($this->jump_type) ? null : ConstTranslateTrait::carouselJumpTypeList($this->jump_type);
     }

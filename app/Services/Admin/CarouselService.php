@@ -54,7 +54,9 @@ class CarouselService extends BaseService
      */
     public function store($params)
     {
-        $params['merchant_id'] = auth()->user()->id;
+        if($this->count() > 9){
+            throw new BusinessLogicException('最多不得超过9张');
+        }
         $rowCount = parent::create($params);
         if ($rowCount === false) {
             throw new BusinessLogicException('新增失败，请重新操作');

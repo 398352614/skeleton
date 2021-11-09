@@ -151,7 +151,7 @@ use Illuminate\Support\Facades\App;
  * @method static serviceAgreementTypeList($args = null)
  * @method static carouselRollingTimeList($args = null)
  * @method static paypalSandboxModeList($args = null)
-
+ * @method static articleTypeList($args = null)
  */
 trait ConstTranslateTrait
 {

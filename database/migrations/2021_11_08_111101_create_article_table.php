@@ -16,7 +16,7 @@ class CreateArticleTable extends Migration
         Schema::create('article', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
-            $table->string('type')->default('')->nullable()->comment('类型');
+            $table->tinyInteger('type')->default(1)->nullable()->comment('类型');
             $table->text('text')->default('')->nullable()->comment('正文');
             $table->string('tittle')->default('')->nullable()->comment('标题');
             $table->integer('operator_id')->default(null)->nullable()->comment('操作人ID');

@@ -6,26 +6,26 @@
  * Time: 13:38
  */
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Merchant;
 
 use App\Http\Controllers\BaseController;
-use App\Services\Admin\ArticleService;
+use App\Services\Admin\ServiceAgreementService;
 
 /**
  * Class AddressController
  * @package App\Http\Controllers\Api\Merchant
- * @property ArticleService $service
+ * @property ServiceAgreementService $service
  */
-class ArticleController extends BaseController
+class ServiceAgreementController extends BaseController
 {
-    public function __construct(ArticleService $service, $exceptMethods = [])
+    public function __construct(ServiceAgreementService $service, $exceptMethods = [])
     {
         parent::__construct($service, $exceptMethods);
     }
 
     public function index()
     {
-        return $this->service->index();
+        return $this->service->getPageList();
     }
 
     /**

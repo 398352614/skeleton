@@ -76,7 +76,7 @@ class ServiceAgreement extends BaseModel
         return empty($this->status) ? null : ConstTranslateTrait::bagStatusList($this->status);
     }
 
-    public function getTypeAttribute()
+    public function getTypeNameAttribute()
     {
         return empty($this->type) ? null : ConstTranslateTrait::serviceAgreementTypeList($this->type);
     }

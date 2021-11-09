@@ -21,32 +21,23 @@ class PayConfigController extends BaseController
     }
 
     /**
-     * 查询
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function index()
-    {
-        return $this->service->getPageList();
-    }
-
-    /**
      * 详情
-     * @param $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
-     * @throws BusinessLogicException
+     * @return array
      */
-    public function show($id)
+    public function show()
     {
-        return $this->service->show($id);
+        $info = $this->service->getInfo(['company_id' => auth()->user()->company_id], ['*'], false);
+        return empty($info) ? [] : $info->toArray();
     }
 
     /**
-     * 新增
+     * @return bool|int|void
      * @throws BusinessLogicException
      */
-    public function store()
+    public function update()
     {
-        return $this->service->store($this->data);
+        $info = $this->service->getInfo(['company_id' => auth()->user()->company_id], ['*'], false);
+        return $this->service->updateById($info['id'],$this->data);
     }
 
 

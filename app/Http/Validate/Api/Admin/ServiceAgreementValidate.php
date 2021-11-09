@@ -4,17 +4,16 @@ namespace App\Http\Validate\Api\Admin;
 
 use App\Http\Validate\BaseValidate;
 
-class ArticleValidate extends BaseValidate
+class ServiceAgreementValidate extends BaseValidate
 {
     public $customAttributes = [
 
     ];
 
     public $rules = [
-        'type' => 'required|string|in:1,2,3,4',
+        'type' => 'required|string|in:1,2',
         'tittle' => 'nullable|string|max:50',
         'text' => 'nullable|string',
-
     ];
 
     public $scene = [
