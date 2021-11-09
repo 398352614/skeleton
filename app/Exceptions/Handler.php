@@ -8,7 +8,6 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 class Handler extends ExceptionHandler

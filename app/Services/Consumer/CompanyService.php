@@ -2,11 +2,9 @@
 
 namespace App\Services\Consumer;
 
-use App\Exceptions\BusinessLogicException;
 use App\Models\Company;
 use App\Models\Scope\CompanyScope;
 use App\Services\BaseService;
-use Illuminate\Support\Facades\Artisan;
 
 /**
  * 公司配置服务

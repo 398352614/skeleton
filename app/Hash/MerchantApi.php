@@ -4,7 +4,6 @@ namespace App\Hash;
 
 use Illuminate\Contracts\Hashing\Hasher as HasherContract;
 use Illuminate\Hashing\AbstractHasher;
-use Illuminate\Support\Facades\Log;
 
 class MerchantApi extends AbstractHasher implements HasherContract
 {

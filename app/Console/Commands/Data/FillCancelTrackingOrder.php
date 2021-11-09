@@ -9,7 +9,6 @@ use App\Models\Tour;
 use App\Models\TrackingOrder;
 use App\Models\TrackingOrderMaterial;
 use App\Models\TrackingOrderPackage;
-use App\Services\BaseConstService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;

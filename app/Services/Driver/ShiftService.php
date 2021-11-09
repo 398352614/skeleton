@@ -8,12 +8,10 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Driver\ShiftResource;
 use App\Models\Shift;
 use App\Services\BaseConstService;
-use App\Services\Driver\BaseService;
 use App\Services\PackageTrailService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Arr;
 
 class ShiftService extends BaseService

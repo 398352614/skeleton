@@ -9,10 +9,8 @@
 
 namespace App\Http\Controllers\Api\Driver;
 
-use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Driver\TrackingPackageService;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class OrderController

@@ -3,7 +3,6 @@
 namespace App\Console\Commands\Data;
 
 use App\Models\Company;
-use App\Models\Fee;
 use App\Models\MapConfig;
 use App\Services\BaseConstService;
 use Illuminate\Console\Command;

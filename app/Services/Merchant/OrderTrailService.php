@@ -10,8 +10,8 @@ namespace App\Services\Merchant;
 
 use App\Http\Resources\Api\OrderTrailResource;
 use App\Models\OrderTrail;
+use App\Services\Admin\BaseService;
 use App\Services\BaseConstService;
-use \App\Services\Admin\BaseService;
 
 class OrderTrailService extends BaseService
 {

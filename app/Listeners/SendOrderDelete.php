@@ -2,7 +2,6 @@
 
 namespace App\Listeners;
 
-use App\Events\OrderCancel;
 use App\Events\OrderDelete;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;

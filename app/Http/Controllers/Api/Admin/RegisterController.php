@@ -9,7 +9,6 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Mail\SendRegisterCode;
 use App\Mail\SendResetCode;
-use App\Models\Bill;
 use App\Models\Company;
 use App\Models\CompanyConfig;
 use App\Models\CompanyCustomize;

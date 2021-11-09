@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 
 /**

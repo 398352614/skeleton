@@ -9,23 +9,9 @@
 namespace App\Services\Driver;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\AddressResource;
-use App\Http\Validate\Api\Admin\AddressImportValidate;
-use App\Http\Validate\BaseValidate;
-use App\Models\Address;
 use App\Models\Ledger;
 use App\Services\BaseConstService;
-use App\Services\CommonService;
-use App\Traits\AddressTrait;
-use App\Traits\CompanyTrait;
-use App\Traits\ConstTranslateTrait;
-use App\Traits\CountryTrait;
-use App\Traits\ExportTrait;
-use App\Traits\ImportTrait;
-use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 
 class LedgerService extends BaseService
 {

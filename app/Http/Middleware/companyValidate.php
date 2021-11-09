@@ -5,12 +5,10 @@ namespace App\Http\Middleware;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Models\MapConfig;
 use App\Traits\CompanyTrait;
 use Closure;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 
 class companyValidate extends Middleware
 {

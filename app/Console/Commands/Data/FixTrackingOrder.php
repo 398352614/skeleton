@@ -3,15 +3,11 @@
 namespace App\Console\Commands\Data;
 
 use App\Exceptions\BusinessLogicException;
-use App\Services\Admin\TrackingOrderService;
 use App\Services\BaseConstService;
 use App\Traits\AlphaTrait;
-use App\Traits\FactoryInstanceTrait;
-use Doctrine\DBAL\Schema\Schema;
 use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class FixTrackingOrder extends Command
 {

@@ -3,17 +3,11 @@
 namespace App\Console\Commands\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Models\Batch;
-use App\Models\Order;
-use App\Models\Tour;
 use App\Services\Admin\TourService;
-use App\Services\ApiServices\TourOptimizationService;
 use App\Services\BaseConstService;
 use App\Traits\FactoryInstanceTrait;
-use Doctrine\Common\Cache\Cache;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redis;
 
 class RetryRoute extends Command
 {

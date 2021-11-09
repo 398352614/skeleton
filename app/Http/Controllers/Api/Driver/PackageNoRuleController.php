@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\Driver;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Resources\Api\PackageNoRuleResource;
 use App\Services\PackageNoRuleService;
 
 /**

@@ -13,7 +13,6 @@ use App\Models\LineRange;
 use App\Services\BaseConstService;
 use App\Traits\CountryTrait;
 use Illuminate\Support\Facades\DB;
-use WebSocket\Base;
 
 class LineRangeService extends BaseService
 {

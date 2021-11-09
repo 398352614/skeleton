@@ -3,12 +3,9 @@
 namespace App\Console\Commands\Data;
 
 use App\Models\Company;
-use App\Models\CompanyConfig;
 use App\Models\CompanyCustomize;
 use App\Services\BaseConstService;
 use Illuminate\Console\Command;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class FixCompanyCustomize extends Command
 {

@@ -2,8 +2,6 @@
 
 namespace App\Http\Validate\Api\Consumer;
 
-use App\Http\Validate\BaseValidate;
-
 class PackageTrailValidate
 {
 

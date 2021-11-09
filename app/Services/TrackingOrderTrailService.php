@@ -4,10 +4,9 @@ namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\TrackingOrderTrailResource;
+use App\Jobs\AddData;
 use App\Models\TrackingOrder;
 use App\Models\TrackingOrderTrail;
-use App\Jobs\AddData;
-use Illuminate\Support\Facades\Log;
 
 class TrackingOrderTrailService extends \App\Services\Admin\BaseService
 {

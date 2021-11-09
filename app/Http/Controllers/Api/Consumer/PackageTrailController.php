@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Consumer;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
-use App\Services\Admin\PackageService;
 use App\Services\Consumer\PackageTrailService;
 
 /**

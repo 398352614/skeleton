@@ -2,7 +2,6 @@
 
 namespace App\Manager\ExcelExport;
 
-use App\Models\Merchant;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
 use Maatwebsite\Excel\Concerns\FromArray;

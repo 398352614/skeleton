@@ -6,9 +6,7 @@ use App\Models\Company;
 use App\Models\Driver;
 use App\Models\OrderTemplate;
 use App\Models\Warehouse;
-use App\Services\BaseConstService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class FixDriver extends Command
 {

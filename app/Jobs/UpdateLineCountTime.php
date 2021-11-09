@@ -2,10 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\OrderTrail;
 use App\Models\Tour;
-use App\Models\TourDriverEvent;
-use App\Models\TrackingOrderTrail;
 use App\Services\ApiServices\TourOptimizationService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

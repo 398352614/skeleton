@@ -21,8 +21,8 @@ use App\Listeners\UpdateLineCountTime;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Laravel\Telescope\Telescope;
 use Illuminate\Support\Facades\Event;
+use Laravel\Telescope\Telescope;
 
 class EventServiceProvider extends ServiceProvider
 {

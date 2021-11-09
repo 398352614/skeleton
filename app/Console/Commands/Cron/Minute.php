@@ -3,11 +3,9 @@
 namespace App\Console\Commands\Cron;
 
 use App\Jobs\AutoBillVerify;
-use App\Models\BillVerify;
 use App\Models\Merchant;
 use App\Services\BaseConstService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 
 class Minute extends Command

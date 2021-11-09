@@ -14,7 +14,6 @@ use App\Http\Resources\Api\PackageNoRuleResource;
 use App\Models\PackageNoRule;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class PackageNoRuleService extends BaseService
 {

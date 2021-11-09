@@ -13,7 +13,6 @@ use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class TrackingOrderService

@@ -11,8 +11,6 @@ namespace App\Services\Merchant;
 use App\Exceptions\BusinessLogicException;
 use App\Models\OrderTemplate;
 use App\Services\BaseConstService;
-use App\Traits\ConstTranslateTrait;
-use Illuminate\Support\Facades\Storage;
 
 
 class OrderTemplateService extends BaseService

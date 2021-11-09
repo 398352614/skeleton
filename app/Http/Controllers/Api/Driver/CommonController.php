@@ -9,7 +9,6 @@
 namespace App\Http\Controllers\Api\Driver;
 
 use App\Services\CommonService;
-use Illuminate\Http\Request;
 
 /**
  * Class CommonController

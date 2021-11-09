@@ -20,7 +20,6 @@ use App\Traits\LocationTrait;
 use App\Traits\TourRedisLockTrait;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 

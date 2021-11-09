@@ -11,7 +11,6 @@ use App\Http\Controllers\Api\Admin\RegisterController;
 use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\Driver;
-use App\Models\Employee;
 use App\Models\Fee;
 use App\Models\Warehouse;
 use App\Services\BaseConstService;

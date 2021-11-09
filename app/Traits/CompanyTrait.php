@@ -10,7 +10,6 @@ namespace App\Traits;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 trait CompanyTrait
 {

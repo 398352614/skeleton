@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use App\Models\Journal;
 use App\Services\Admin\AdditionalPackageService;
 use App\Services\Admin\AddressService;
 use App\Services\Admin\AddressTemplateService;
@@ -52,12 +51,11 @@ use App\Services\Admin\TourService;
 use App\Services\Admin\TrackingOrderMaterialService;
 use App\Services\Admin\TrackingOrderPackageService;
 use App\Services\Admin\TrackingOrderService;
+use App\Services\Admin\TrackingPackageService;
 use App\Services\Admin\TransportPriceService;
 use App\Services\Admin\UploadService;
 use App\Services\Admin\WareHouseService;
 use App\Services\ApiServices\GoogleApiService;
-use App\Services\Admin\TrackingPackageService;
-use App\Services\BaseConstService;
 use App\Services\OrderNoRuleService;
 use App\Services\PackageNoRuleService;
 use App\Services\TrackingOrderTrailService;

@@ -951,4 +951,34 @@ class BaseConstService
     const BILL_STATUS_2 = 2;
     const BILL_STATUS_3 = 3;
 
+    //跳转类型1-内部跳转2-外部跳转
+    const CAROUSEL_JUMP_TYPE_1 = 1;
+    const CAROUSEL_JUMP_TYPE_2 = 2;
+
+    //跳转类型1-新闻通知2-入门教程3-禁运物品4-常见问题
+    const CAROUSEL_INSIDE_JUMP_TYPE_1 = 1;
+    const CAROUSEL_INSIDE_JUMP_TYPE_2 = 2;
+    const CAROUSEL_INSIDE_JUMP_TYPE_3 = 3;
+    const CAROUSEL_INSIDE_JUMP_TYPE_4 = 4;
+
+    //跳转类型1-新闻通知2-入门教程3-禁运物品4-常见问题
+    const ARTICLE_TYPE_1 = 1;
+    const ARTICLE_TYPE_2 = 2;
+    const ARTICLE_TYPE_3 = 3;
+    const ARTICLE_TYPE_4 = 4;
+
+    //条款类型1-注册服务条款2-快递服务条款
+    const SERVICE_AGREEMENT_TYPE_1 = 1;
+    const SERVICE_AGREEMENT_TYPE_2 = 2;
+
+    //滚动时间
+    const ROLLING_TIME_1 = 1;
+    const ROLLING_TIME_2 = 2;
+    const ROLLING_TIME_3 = 3;
+    const ROLLING_TIME_4 = 4;
+    const ROLLING_TIME_5 = 5;
+
+    //是否开启沙盒模式1-开启2-关闭
+    const PAYPAL_SANDBOX_MODE_1=1;
+    const PAYPAL_SANDBOX_MODE_2=2;
 }

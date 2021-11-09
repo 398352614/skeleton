@@ -9,7 +9,6 @@
 namespace App\Events\TourNotify2;
 
 
-use App\Events\Interfaces\ATourNotify;
 use App\Events\Interfaces\ATourNotify2;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;

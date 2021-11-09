@@ -7,7 +7,6 @@ use App\Http\Resources\Api\Admin\DriverResource;
 use App\Models\Driver;
 use App\Models\Tour;
 use App\Services\BaseConstService;
-use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 

@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Jiaxincui\ClosureTable\Traits\ClosureTable;
 use App\Traits\ConstTranslateTrait;
+use Jiaxincui\ClosureTable\Traits\ClosureTable;
 
 /**
  * 线路表

@@ -15,7 +15,6 @@ use App\Models\SpecialTimeCharging;
 use App\Models\TransportPrice;
 use App\Models\WeightCharging;
 use App\Services\BaseConstService;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class TransportPriceService

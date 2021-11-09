@@ -5,7 +5,6 @@ namespace App\Console\Commands\Data;
 use App\Models\Company;
 use App\Models\OrderTemplate;
 use App\Services\BaseConstService;
-use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Console\Command;
 
 class ResetOrderTemplate extends Command

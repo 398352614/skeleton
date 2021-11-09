@@ -7,10 +7,9 @@ use App\Http\Controllers\Api\Admin\OrderController;
 use App\Models\Address;
 use App\Models\Merchant;
 use Carbon\Carbon;
+use Faker\Factory;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
-use Faker\Factory;
 
 class CreateOrder extends Command
 {

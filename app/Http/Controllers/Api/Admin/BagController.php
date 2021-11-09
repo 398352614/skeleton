@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
-use App\Services\Admin\BatchService;
 
 /**
  * Class BagController

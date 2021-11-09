@@ -2,10 +2,8 @@
 
 namespace App\Events\TourNotify2;
 
-use App\Events\Interfaces\ATourNotify;
 use App\Events\Interfaces\ATourNotify2;
 use App\Services\BaseConstService;
-use Illuminate\Support\Arr;
 
 /**
  * 司机出库事件

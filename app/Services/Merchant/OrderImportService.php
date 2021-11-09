@@ -13,7 +13,6 @@ use App\Http\Resources\Api\Admin\OrderImportInfoResource;
 use App\Http\Resources\Api\Admin\OrderImportResource;
 use App\Http\Validate\Api\Merchant\OrderImportValidate;
 use App\Http\Validate\BaseValidate;
-use App\Models\Merchant;
 use App\Models\OrderImportLog;
 use App\Models\Package;
 use App\Services\ApiServices\TourOptimizationService;
@@ -26,10 +25,8 @@ use App\Traits\CountryTrait;
 use App\Traits\ExportTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
-use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class OrderImportService extends BaseService
 {

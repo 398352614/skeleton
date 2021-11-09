@@ -4,13 +4,12 @@ namespace App\Providers;
 
 use App\Channels\Notifications\JPushChannel;
 use App\Services\RedisService;
-use Illuminate\Notifications\ChannelManager;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Tymon\JWTAuth\JWTGuard;
 use JPush\Client as JPushClient;
+use Tymon\JWTAuth\JWTGuard;
 
 class AppServiceProvider extends ServiceProvider
 {

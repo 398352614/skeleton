@@ -2,9 +2,6 @@
 
 namespace App\Exports;
 
-use App\Models\Merchant;
-use App\Traits\ConstTranslateTrait;
-use App\Traits\CountryTrait;
 use App\Traits\FactoryInstanceTrait;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithEvents;

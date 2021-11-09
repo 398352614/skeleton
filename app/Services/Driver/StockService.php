@@ -14,12 +14,9 @@ use App\Models\Stock;
 use App\Services\BaseConstService;
 use App\Services\PackageTrailService;
 use App\Traits\CompanyTrait;
-use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use WebSocket\Base;
 
 class StockService extends BaseService
 {

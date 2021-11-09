@@ -9,8 +9,8 @@
 namespace App\Exceptions;
 
 use App\Traits\ResponseTrait;
-use Illuminate\Support\Facades\Cache;
 use Exception;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 

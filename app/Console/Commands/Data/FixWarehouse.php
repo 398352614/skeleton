@@ -5,11 +5,9 @@ namespace App\Console\Commands\Data;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Line;
-use App\Models\MapConfig;
 use App\Models\Warehouse;
 use App\Services\BaseConstService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class FixWarehouse extends Command
 {

@@ -11,7 +11,6 @@ namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\MapConfig;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\MessageInterface;
 

@@ -8,12 +8,9 @@
 
 namespace App\Events\TourNotify2;
 
-use App\Events\Interfaces\ATourNotify;
 use App\Events\Interfaces\ATourNotify2;
-use App\Models\Batch;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
-use Illuminate\Support\Facades\Log;
 
 class NextBatch extends ATourNotify2
 {

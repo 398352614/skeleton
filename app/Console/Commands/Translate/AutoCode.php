@@ -5,9 +5,6 @@ namespace App\Console\Commands\translate\Translate;
 
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class AutoCode extends Command

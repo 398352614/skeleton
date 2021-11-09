@@ -7,8 +7,6 @@ namespace App\Services\ApiServices;
 use App\Exceptions\BusinessLogicException;
 use App\Models\MapConfig;
 use App\Services\BaseConstService;
-use App\Traits\CompanyTrait;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 
 class GoogleApiDistanceService

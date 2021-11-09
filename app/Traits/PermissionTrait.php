@@ -9,8 +9,6 @@
 namespace App\Traits;
 
 
-use App\Models\Employee;
-use App\Models\Role;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 

@@ -2,11 +2,10 @@
 
 namespace App\Listeners;
 
-use App\Events\Interfaces\ATourNotify;
 use App\Events\Interfaces\ATourNotify2;
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\api\MerchantApi\OrderResource;
 use App\Http\Resources\api\MerchantApi\OrderInfoResource;
+use App\Http\Resources\api\MerchantApi\OrderResource;
 use App\Models\MerchantApi;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;

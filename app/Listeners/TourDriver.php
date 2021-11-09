@@ -4,7 +4,6 @@ namespace App\Listeners;
 
 use App\Events\Interfaces\ITourDriver;
 use App\Jobs\AddData;
-use App\Models\TourDriverEvent;
 
 class TourDriver
 {

@@ -146,9 +146,69 @@ use Illuminate\Support\Facades\App;
  * @method static billTypeList($args = null)
  * @method static feePayTypeList($args = null)
  * @method static feePayeeTypeList($args = null)
+ * @method static carouselJumpTypeList($args = null)
+ * @method static carouselInsideJumpTypeList($args = null)
+ * @method static serviceAgreementTypeList($args = null)
+ * @method static carouselRollingTimeList($args = null)
+ * @method static paypalSandboxModeList($args = null)
+
  */
 trait ConstTranslateTrait
 {
+    public static $paypalSandboxModeList = [
+        BaseConstService::PAYPAL_SANDBOX_MODE_1 => '开启',
+        BaseConstService::PAYPAL_SANDBOX_MODE_2 => '关闭',
+    ];
+
+    public static $carouselRollingTimeList = [
+        BaseConstService::ROLLING_TIME_1 => '1秒',
+        BaseConstService::ROLLING_TIME_2 => '2秒',
+        BaseConstService::ROLLING_TIME_3 => '3秒',
+        BaseConstService::ROLLING_TIME_4 => '4秒',
+        BaseConstService::ROLLING_TIME_5 => '5秒'
+    ];
+
+    /**
+     * 条款类型
+     * @var array
+     */
+    public static $serviceAgreementTypeList = [
+        BaseConstService::SERVICE_AGREEMENT_TYPE_1 => '注册服务条款',
+        BaseConstService::SERVICE_AGREEMENT_TYPE_2 => '快递服务条款',
+
+    ];
+
+    /**
+     * 跳转类型
+     * @var array
+     */
+    public static $carouselJumpTypeList = [
+        BaseConstService::CAROUSEL_JUMP_TYPE_1 => '内部跳转',
+        BaseConstService::CAROUSEL_JUMP_TYPE_2 => '外部跳转'
+    ];
+
+    /**
+     * 内部跳转类型
+     * @var array
+     */
+    public static $carouselInsideJumpTypeList = [
+        BaseConstService::CAROUSEL_INSIDE_JUMP_TYPE_1 => '新闻通知',
+        BaseConstService::CAROUSEL_INSIDE_JUMP_TYPE_2 => '入门教程',
+        BaseConstService::CAROUSEL_INSIDE_JUMP_TYPE_3 => '禁运物品',
+        BaseConstService::CAROUSEL_INSIDE_JUMP_TYPE_4 => '常见问题'
+    ];
+
+    /**
+     * 文章类型
+     * @var array
+     */
+    public static $articleTypeList = [
+        BaseConstService::ARTICLE_TYPE_1 => '新闻通知',
+        BaseConstService::ARTICLE_TYPE_2 => '入门教程',
+        BaseConstService::ARTICLE_TYPE_3 => '禁运物品',
+        BaseConstService::ARTICLE_TYPE_4 => '常见问题'
+    ];
+
     //状态1-是2-否
     public static $statusList = [
         BaseConstService::YES => '是',

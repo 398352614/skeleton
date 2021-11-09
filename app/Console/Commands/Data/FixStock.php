@@ -3,15 +3,11 @@
 namespace App\Console\Commands\Data;
 
 use App\Models\Company;
-use App\Models\Driver;
-use App\Models\OrderTemplate;
 use App\Models\Stock;
 use App\Models\StockInLog;
 use App\Models\StockOutLog;
 use App\Models\Warehouse;
-use App\Services\BaseConstService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class FixStock extends Command
 {

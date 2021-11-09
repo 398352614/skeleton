@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Resources\Api\Admin\CompanyInfoResource;
 use App\Services\Merchant\CompanyService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 
 /**
  * 公司管理

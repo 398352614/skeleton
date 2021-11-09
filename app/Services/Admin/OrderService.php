@@ -16,7 +16,6 @@ use App\Http\Resources\Api\Admin\OrderAgainResource;
 use App\Http\Resources\Api\Admin\OrderInfoResource;
 use App\Http\Resources\Api\Admin\OrderResource;
 use App\Models\Order;
-use App\Models\OrderImportLog;
 use App\Models\TrackingOrder;
 use App\Services\ApiServices\TourOptimizationService;
 use App\Services\BaseConstService;
@@ -34,9 +33,7 @@ use App\Traits\OrderRedisLockTrait;
 use App\Traits\PrintTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use mysql_xdevapi\Exception;
 
 /**
  * Class OrderService

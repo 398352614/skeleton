@@ -9,13 +9,9 @@
 namespace App\Events\TourNotify2;
 
 
-use App\Events\Interfaces\ATourNotify;
 use App\Events\Interfaces\ATourNotify2;
-use App\Models\Order;
-use App\Models\Package;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
-use Illuminate\Support\Arr;
 
 class CancelBatch extends ATourNotify2
 {

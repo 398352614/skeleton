@@ -15,14 +15,12 @@ use App\Events\TourDriver\BatchDepart;
 use App\Events\TourDriver\OutWarehouse;
 use App\Jobs\ActualOutWarehouse;
 use App\Models\Batch;
-use App\Models\PackageTrail;
 use App\Models\Tour;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
 use App\Services\PackageTrailService;
 use App\Services\TrackingOrderTrailService;
-use phpseclib3\Math\BigInteger\Engines\BCMath\Base;
 
 trait TourTrait
 {

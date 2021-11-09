@@ -5,10 +5,8 @@ namespace App\Console\Commands\Data;
 
 
 use App\Models\Company;
-use App\Models\OrderNoRule;
 use App\Models\OrderTemplate;
 use App\Services\BaseConstService;
-use App\Traits\ConstTranslateTrait;
 use Illuminate\Console\Command;
 
 class InitOrderTemplate extends Command

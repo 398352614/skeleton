@@ -16,7 +16,6 @@ use App\Models\Fee;
 use App\Models\Warehouse;
 use App\Services\BaseConstService;
 use App\Services\FeeService;
-use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 

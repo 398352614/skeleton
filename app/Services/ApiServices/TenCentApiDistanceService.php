@@ -5,14 +5,9 @@ namespace App\Services\ApiServices;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Models\Batch;
 use App\Models\MapConfig;
-use App\Models\Tour;
-use App\Services\Admin\ApiTimesService;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
-use App\Traits\CompanyTrait;
-use App\Traits\FactoryInstanceTrait;
 use Illuminate\Support\Facades\Log;
 
 class TenCentApiDistanceService

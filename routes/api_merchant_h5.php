@@ -140,4 +140,28 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant_h5'])->group(functi
         Route::get('/{id}', 'FeeController@show')->name('fee.index');
     });
 
+    //轮播图管理
+    Route::prefix('carousel')->group(function () {
+        //列表查询
+        Route::get('/', 'CarouselController@index')->name('carousel.index');
+        //详情
+        Route::get('/{id}', 'CarouselController@show')->name('carousel.index');
+    });
+
+    //文章管理
+    Route::prefix('article')->group(function () {
+        //列表查询
+        Route::get('/', 'ArticleController@index')->name('article.index');
+        //详情
+        Route::get('/{id}', 'ArticleController@show')->name('article.index');
+    });
+
+    //条款管理
+    Route::prefix('service-agreement')->group(function () {
+        //列表查询
+        Route::get('/', 'ServiceAgreementController@index')->name('service-agreement.index');
+        //详情
+        Route::get('/{id}', 'ServiceAgreementController@show')->name('service-agreement.index');
+    });
+
 });

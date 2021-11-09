@@ -7,7 +7,6 @@ namespace App\Console\Commands\Data;
 use App\Models\Package;
 use App\Services\BaseConstService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class FixPackage extends Command
 {

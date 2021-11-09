@@ -20,7 +20,6 @@ use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class BaseLineService extends BaseService

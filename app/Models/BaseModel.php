@@ -11,7 +11,6 @@ namespace App\Models;
 
 use App\Models\Scope\CompanyScope;
 use App\Models\Scope\HasCompanyId;
-use App\Traits\CompanyTrait;
 use App\Traits\CountryTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;

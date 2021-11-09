@@ -3,19 +3,12 @@
 namespace App\Console\Commands\Data;
 
 use App\Models\Material;
-use App\Models\Order;
 use App\Models\Package;
-use App\Models\Tour;
-use App\Models\TrackingOrder;
 use App\Models\TrackingOrderMaterial;
 use App\Models\TrackingOrderPackage;
 use App\Services\BaseConstService;
-use App\Services\OrderNoRuleService;
-use App\Traits\FactoryInstanceTrait;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class InitTrackingOrder extends Command
 {

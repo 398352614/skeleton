@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
-use Carbon\CarbonInterval;
 
 /**
  * bag 袋，转运过程中的包裹集合，相当于取派过程中的订单。

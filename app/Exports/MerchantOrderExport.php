@@ -2,10 +2,8 @@
 
 namespace App\Exports;
 
-use App\Models\Merchant;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithEvents;

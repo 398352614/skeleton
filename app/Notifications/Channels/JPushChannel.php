@@ -9,7 +9,6 @@
 namespace App\Notifications\Channels;
 
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 use JPush\Client as JPushClient;
 
 class JPushChannel

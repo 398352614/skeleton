@@ -3463,5 +3463,227 @@
         "sort_id": 1,
         "type": 2,
         "is_show": 2
+    },
+    {
+        "id": 377,
+        "parent_id": 303,
+        "name": "H5配置",
+        "route": "",
+        "route_as": "",
+        "level": 3,
+        "sort_id": 1,
+        "type": 1,
+        "is_show": 2
+    },
+    {
+        "id": 378,
+        "parent_id": 377,
+        "name": "支付配置",
+        "route": "",
+        "route_as": "",
+        "level": 4,
+        "sort_id": 1,
+        "type": 1,
+        "is_show": 2
+    },
+
+    {
+        "id": 379,
+        "parent_id": 378,
+        "name": "查看",
+        "route": "",
+        "route_as": "pay_config.index",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id":380 ,
+        "parent_id": 378,
+        "name": "修改",
+        "route": "",
+        "route_as": "pay_config.update",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+
+    {
+        "id": 381,
+        "parent_id": 377,
+        "name": "轮播图配置",
+        "route": "",
+        "route_as": "",
+        "level": 4,
+        "sort_id": 1,
+        "type": 1,
+        "is_show": 2
+    },
+    {
+        "id": 382,
+        "parent_id": 379,
+        "name": "查看",
+        "route": "",
+        "route_as": "carousel.index",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 383,
+        "parent_id": 379,
+        "name": "新增",
+        "route": "",
+        "route_as": "carousel.store",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 384,
+        "parent_id": 379,
+        "name": "修改",
+        "route": "",
+        "route_as": "carousel.update",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 385,
+        "parent_id": 379,
+        "name": "删除",
+        "route": "",
+        "route_as": "carousel.destroy",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 386,
+        "parent_id": 379,
+        "name": "排序",
+        "route": "",
+        "route_as": "carousel.sort",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 387,
+        "parent_id": 377,
+        "name": "文章配置",
+        "route": "",
+        "route_as": "",
+        "level": 4,
+        "sort_id": 1,
+        "type": 1,
+        "is_show": 2
+    },
+    {
+        "id": 388,
+        "parent_id": 385,
+        "name": "查看",
+        "route": "",
+        "route_as": "article.index",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 389,
+        "parent_id": 385,
+        "name": "新增",
+        "route": "",
+        "route_as": "article.store",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 390,
+        "parent_id": 385,
+        "name": "修改",
+        "route": "",
+        "route_as": "article.update",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 391,
+        "parent_id": 385,
+        "name": "删除",
+        "route": "",
+        "route_as": "article.destroy",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 392,
+        "parent_id": 377,
+        "name": "条款配置",
+        "route": "",
+        "route_as": "",
+        "level": 4,
+        "sort_id": 1,
+        "type": 1,
+        "is_show": 2
+    },
+    {
+        "id": 393,
+        "parent_id": 390,
+        "name": "查看",
+        "route": "",
+        "route_as": "service-agreement.index",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 394,
+        "parent_id": 390,
+        "name": "新增",
+        "route": "",
+        "route_as": "service-agreement.store",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 395,
+        "parent_id": 390,
+        "name": "修改",
+        "route": "",
+        "route_as": "service-agreement.update",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
+    },
+    {
+        "id": 396,
+        "parent_id": 390,
+        "name": "删除",
+        "route": "",
+        "route_as": "service-agreement.destroy",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2
     }
 ]

@@ -20,7 +20,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-use Location\Formatter\Coordinate\DecimalDegrees;
 
 class BaseLineService extends BaseService
 {

@@ -11,7 +11,6 @@ namespace App\Services\ApiServices;
 use App\Services\BaseConstService;
 use App\Traits\CompanyTrait;
 use App\Traits\FactoryInstanceTrait;
-use Illuminate\Support\Facades\Log;
 
 class TourOptimizationService
 {

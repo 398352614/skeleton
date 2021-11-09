@@ -15,7 +15,6 @@ use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
 use Carbon\Carbon;
-use Doctrine\DBAL\Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;

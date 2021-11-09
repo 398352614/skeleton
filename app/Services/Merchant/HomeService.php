@@ -2,7 +2,6 @@
 
 namespace App\Services\Merchant;
 
-use App\Exceptions\BusinessLogicException;
 use App\Models\Order;
 use App\Services\BaseConstService;
 use Carbon\Carbon;

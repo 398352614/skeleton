@@ -4,9 +4,6 @@ namespace App\Http\Middleware;
 
 use App\Exceptions\BusinessLogicException;
 use Closure;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 class Permission
 {

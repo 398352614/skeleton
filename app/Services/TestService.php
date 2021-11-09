@@ -13,7 +13,6 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\Driver;
 use App\Models\Permission;
 use App\Models\Test;
-use App\Models\Tour;
 use App\Notifications\OrderChange;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;

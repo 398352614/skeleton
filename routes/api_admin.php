@@ -1112,6 +1112,50 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     Route::prefix('journal')->group(function () {
         //列表
         Route::get('/', 'JournalController@index')->name('journal.index');
+    });
 
+    //轮播图管理
+    Route::prefix('carousel')->group(function () {
+        //列表查询
+        Route::get('/', 'CarouselController@index')->name('carousel.index');
+        //详情
+        Route::get('/{id}', 'CarouselController@show')->name('carousel.index');
+        //新增
+        Route::post('/', 'CarouselController@store')->name('carousel.store');
+        //修改
+        Route::put('/{id}', 'CarouselController@update')->name('carousel.update');
+        //排序
+        Route::put('/sort', 'CarouselController@updateSort')->name('carousel.update');
+        //删除
+        Route::delete('/{id}', 'CarouselController@destroy')->name('carousel.destroy');
+
+    });
+
+    //文章管理
+    Route::prefix('article')->group(function () {
+        //列表查询
+        Route::get('/', 'ArticleController@index')->name('article.index');
+        //详情
+        Route::get('/{id}', 'ArticleController@show')->name('article.index');
+        //新增
+        Route::post('/', 'ArticleController@store')->name('article.store');
+        //修改
+        Route::put('/{id}', 'ArticleController@update')->name('article.update');
+        //删除
+        Route::delete('/{id}', 'ArticleController@destroy')->name('article.destroy');
+    });
+
+    //条款管理
+    Route::prefix('service-agreement')->group(function () {
+        //列表查询
+        Route::get('/', 'ServiceAgreementController@index')->name('service-agreement.index');
+        //详情
+        Route::get('/{id}', 'ServiceAgreementController@show')->name('service-agreement.index');
+        //新增
+        Route::post('/', 'ServiceAgreementController@store')->name('service-agreement.store');
+        //修改
+        Route::put('/{id}', 'ServiceAgreementController@update')->name('service-agreement.update');
+        //删除
+        Route::delete('/{id}', 'ServiceAgreementController@destroy')->name('service-agreement.destroy');
     });
 });

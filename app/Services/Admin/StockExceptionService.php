@@ -10,7 +10,6 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\StockExceptionResource;
-use App\Models\BatchException;
 use App\Models\StockException;
 use App\Services\BaseConstService;
 use Illuminate\Support\Carbon;

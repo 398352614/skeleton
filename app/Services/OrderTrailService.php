@@ -11,11 +11,9 @@ namespace App\Services;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\OrderTrailResource;
 use App\Jobs\AddData;
-use App\Models\Order;
 use App\Models\OrderTrail;
 use App\Models\TrackingOrder;
-use Illuminate\Support\Facades\Log;
-use \App\Services\Admin\BaseService;
+use App\Services\Admin\BaseService;
 
 class OrderTrailService extends BaseService
 {

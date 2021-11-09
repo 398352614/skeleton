@@ -10,13 +10,9 @@ namespace App\Services\Merchant;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Merchant\MerchantResource;
-use App\Models\Employee;
 use App\Models\Merchant;
 use App\Traits\CompanyTrait;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class AuthService extends BaseService
 {

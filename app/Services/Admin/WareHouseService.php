@@ -10,7 +10,6 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\WareHouseResource;
-use App\Models\Institution;
 use App\Models\Warehouse;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;

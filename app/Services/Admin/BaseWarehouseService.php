@@ -9,18 +9,12 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Models\Line;
 use App\Models\Warehouse;
 use App\Services\BaseConstService;
-use App\Traits\CompanyTrait;
-use App\Traits\ConstTranslateTrait;
 use App\Traits\ImportTrait;
-use App\Traits\MapAreaTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
 
 class BaseWarehouseService extends BaseService
 {

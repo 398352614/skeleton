@@ -10,8 +10,8 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\MerchantGroupResource;
-use App\Models\MerchantGroupFeeConfig;
 use App\Models\MerchantGroup;
+use App\Models\MerchantGroupFeeConfig;
 use App\Services\BaseConstService;
 use Illuminate\Support\Arr;
 

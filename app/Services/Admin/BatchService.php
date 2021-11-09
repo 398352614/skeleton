@@ -2,7 +2,6 @@
 
 namespace App\Services\Admin;
 
-use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\BatchInfoResource;
 use App\Http\Resources\Api\Admin\BatchResource;
@@ -11,7 +10,6 @@ use App\Models\Batch;
 use App\Models\Driver;
 use App\Models\Tour;
 use App\Notifications\CancelBatch;
-use App\Notifications\TourAddTrackingOrder;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
@@ -19,7 +17,6 @@ use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
-use WebSocket\Base;
 
 class BatchService extends BaseService
 {

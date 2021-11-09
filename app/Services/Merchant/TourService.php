@@ -273,6 +273,8 @@ class TourService extends BaseService
 
     /**
      * 更新批次配送顺序
+     * @throws BusinessLogicException
+     * @throws \Throwable
      */
     public function updateBatchIndex()
     {

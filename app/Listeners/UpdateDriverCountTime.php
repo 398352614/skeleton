@@ -6,17 +6,13 @@ use App\Events\AfterDriverLocationUpdated;
 use App\Events\TourNotify\NextBatch;
 use App\Exceptions\BusinessLogicException;
 use App\Models\RouteRetry;
-use App\Services\Admin\ApiTimesService;
 use App\Services\ApiServices\TourOptimizationService;
-use App\Traits\FactoryInstanceTrait;
 use App\Traits\UpdateTourTimeAndDistanceTrait;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redis;
 
 class UpdateDriverCountTime implements ShouldQueue
 {

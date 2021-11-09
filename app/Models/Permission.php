@@ -3,13 +3,10 @@
 namespace App\Models;
 
 use App\Exceptions\BusinessLogicException;
-use App\Traits\ConstTranslateTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
 use Spatie\Permission\Contracts\Permission as PermissionContract;
-use Spatie\Permission\Exceptions\GuardDoesNotMatch;
-use Spatie\Permission\PermissionRegistrar;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Traits\RefreshesPermissionCache;
 

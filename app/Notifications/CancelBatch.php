@@ -2,18 +2,13 @@
 
 namespace App\Notifications;
 
-use App\Models\TrackingOrderMaterial;
-use App\Models\TrackingOrderPackage;
 use App\Notifications\Channels\JPushChannel;
 use App\Services\BaseConstService;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 use JPush\PushPayload;
 
 class CancelBatch extends Notification implements ShouldQueue

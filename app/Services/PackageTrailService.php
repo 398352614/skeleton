@@ -4,16 +4,11 @@ namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\TrackingOrderTrailResource;
-use App\Models\Order;
-use App\Models\Package;
-use App\Models\PackageTrail;
-use App\Models\TrackingOrder;
-use App\Models\TrackingOrderPackage;
-use App\Models\TrackingOrderTrail;
 use App\Jobs\AddData;
+use App\Models\PackageTrail;
+use App\Models\TrackingOrderPackage;
 use App\Models\TrackingPackage;
 use App\Traits\ConstTranslateTrait;
-use Illuminate\Support\Facades\Log;
 
 class PackageTrailService extends \App\Services\Admin\BaseService
 {

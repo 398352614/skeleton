@@ -8,7 +8,6 @@ use App\Models\Employee;
 use App\Models\Role;
 use App\Services\BaseConstService;
 use App\Traits\HasLoginControlTrait;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class EmployeeService extends BaseService

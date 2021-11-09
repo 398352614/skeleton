@@ -2,12 +2,9 @@
 
 namespace App\Services\Driver;
 
-use App\Exceptions\BusinessLogicException;
 use App\Models\Order;
 use App\Services\BaseConstService;
-use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class HomeService extends BaseService
 {

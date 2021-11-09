@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Api\Admin;
 
-use App\Models\Role;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class EmployeeResource extends JsonResource

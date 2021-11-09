@@ -10,18 +10,13 @@
 
 namespace App\Services\Admin;
 
-use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\TrackingOrderInfoResource;
 use App\Http\Resources\Api\Admin\TrackingOrderResource;
-use App\Jobs\AddOrderPush;
 use App\Models\Driver;
 use App\Models\Order;
-use App\Models\Tour;
 use App\Models\TrackingOrder;
 use App\Notifications\TourAddTrackingOrder;
-use App\Services\ApiServices\GoogleApiService;
-use App\Services\ApiServices\TourOptimizationService;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
 use App\Services\PackageTrailService;
@@ -30,10 +25,7 @@ use App\Traits\AddressTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
-use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 

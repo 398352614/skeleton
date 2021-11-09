@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\Merchant;
 
-use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Merchant\OrderImportService;
 

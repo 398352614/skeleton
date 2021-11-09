@@ -6,8 +6,6 @@ use App\Models\Company;
 use App\Models\CompanyConfig;
 use App\Services\BaseConstService;
 use Illuminate\Console\Command;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class FixCompanyConfig extends Command
 {

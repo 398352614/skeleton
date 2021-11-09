@@ -6,10 +6,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\Company;
 use App\Models\Package;
 use App\Models\PackageTrail;
-use App\Models\Scope\CompanyScope;
 use App\Services\BaseService;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Artisan;
 
 /**
  * 公司配置服务

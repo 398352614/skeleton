@@ -9,7 +9,6 @@
 
 namespace App\Http\Resources\Api\Merchant;
 
-use App\Models\MerchantGroup;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MerchantResource extends JsonResource

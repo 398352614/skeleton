@@ -2,11 +2,9 @@
 
 namespace App\Services\Merchant;
 
-use App\Exceptions\BusinessLogicException;
 use App\Models\Company;
 use App\Models\Scope\CompanyScope;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Artisan;
 
 /**
  * 公司配置服务

@@ -8,11 +8,7 @@
 
 namespace App\Services\Merchant;
 
-use App\Exceptions\BusinessLogicException;
 use App\Models\MerchantGroupLine;
-use App\Services\BaseConstService;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 
 class MerchantGroupLineService extends BaseService
 {

@@ -3,10 +3,8 @@
 namespace App\Console\Commands\Data;
 
 use App\Models\OrderNoRule;
-use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 
 class ResetTrackingNoStartIndex extends Command
 {

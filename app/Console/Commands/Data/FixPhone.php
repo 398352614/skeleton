@@ -3,7 +3,6 @@
 namespace App\Console\Commands\Data;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 class FixPhone extends Command
