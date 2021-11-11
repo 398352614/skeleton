@@ -66,6 +66,10 @@ return [
             'driver' => 'merchant_api',
             'provider' => 'merchants_api',
         ],
+        'merchant_h5' => [
+            'driver' => 'merchant_h5',
+            'provider' => 'merchants_h5',
+        ],
     ],
 
     /*

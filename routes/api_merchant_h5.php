@@ -29,7 +29,7 @@ Route::namespace('Api\Merchant')->group(function () {
 });
 
 //认证
-Route::namespace('Api\Merchant')->middleware(['auth:merchant_h5'])->group(function () {
+Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function () {
     //个人信息
     Route::get('', 'AuthController@me');
     //登出
