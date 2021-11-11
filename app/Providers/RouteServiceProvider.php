@@ -47,6 +47,8 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapMerchantApiRoute();
         //货主API授权
         $this->mapMerchantApiApiRoute();
+        //货主H5
+        $this->mapMerchantH5ApiRoute();
         //客户端
         $this->mapConsumerApiRoute();
     }
@@ -126,5 +128,13 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/api_consumer.php'));
+    }
+
+    public function mapMerchantH5ApiRoute()
+    {
+        Route::prefix('api/merchant_h5')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/api_merchant_h5.php'));
     }
 }

@@ -52,7 +52,6 @@
  * @apiGroup 59
  * @apiVersion 1.0.0
  * @apiUse auth
- * @apiParam {string} id 收件人ID
  * @apiParam {string} data.waiting_time 等待时间（秒）
  * @apiParam {string} data.paypal_sandbox_mode 沙盒模式1-开启2-关闭
  * @apiParam {string} data.paypal_client_id paypal应用ID

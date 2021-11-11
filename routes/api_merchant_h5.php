@@ -164,4 +164,25 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant_h5'])->group(functi
         Route::get('/{id}', 'ServiceAgreementController@show')->name('service-agreement.index');
     });
 
+    //支付管理
+    Route::prefix('payment')->group(function () {
+        //列表查询
+        Route::get('/', 'PaymentController@index')->name('payment.index');
+        //详情
+        Route::get('/{id}', 'PaymentController@show')->name('payment.index');
+        //新增
+        Route::post('/', 'PaymentController@store')->name('payment.store');
+        //支付
+        Route::post('/{id}', 'PaymentController@pay')->name('payment.pay');
+        //取消
+        Route::put('/{id}', 'PaymentController@cancel')->name('payment.cancel');
+    });
+
+    //支付管理
+    Route::prefix('payment-paypal')->group(function () {
+        //列表查询
+        Route::get('/', 'ServiceAgreementController@index')->name('service-agreement.index');
+        //详情
+        Route::get('/{id}', 'ServiceAgreementController@show')->name('service-agreement.index');
+    });
 });
