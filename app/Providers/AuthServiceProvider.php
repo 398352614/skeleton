@@ -48,5 +48,9 @@ class AuthServiceProvider extends ServiceProvider
             return new EloquentAdminApiProvider(new \App\Hash\MerchantApi(), $config['model']);
         });
 
+        Auth::extend('merchant_h5', function ($app, $name, array $config) {
+            // Return an instance of Illuminate\Contracts\Auth\Guard...
+            return new MerchantApiGuard(Auth::createUserProvider($config['provider']), $this->app['request']);
+        });
     }
 }
