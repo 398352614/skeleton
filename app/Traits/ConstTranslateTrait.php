@@ -152,6 +152,7 @@ use Illuminate\Support\Facades\App;
  * @method static carouselRollingTimeList($args = null)
  * @method static paypalSandboxModeList($args = null)
  * @method static articleTypeList($args = null)
+ * @method static currencyUnitTypeShortList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -1060,6 +1061,13 @@ trait ConstTranslateTrait
         BaseConstService::CURRENCY_UNIT_TYPE_1 => '人民币',
         BaseConstService::CURRENCY_UNIT_TYPE_2 => '美元',
         BaseConstService::CURRENCY_UNIT_TYPE_3 => '欧元',
+    ];
+
+    //货币单位缩写
+    public static $currencyUnitTypeShortList=[
+        BaseConstService::CURRENCY_UNIT_TYPE_1 => 'CNY',
+        BaseConstService::CURRENCY_UNIT_TYPE_2 => 'USD',
+        BaseConstService::CURRENCY_UNIT_TYPE_3 => 'EUR',
     ];
 
     //货币单位符号

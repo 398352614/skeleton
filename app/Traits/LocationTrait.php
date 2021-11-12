@@ -32,12 +32,12 @@ trait LocationTrait
         try {
             $value = Cache::rememberForever($key, self::getLocationDetail($country, $city, $street, $houseNumber, $postCode));
         } catch (BusinessLogicException $e) {
-            if($postCode == $houseNumber){
+            if ($postCode == $houseNumber) {
                 throw new BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
             }
             $value = Cache::rememberForever($key, self::getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode));
         }
-        if($country !== $value['country'] && CountryTrait::getCountryName($country,'en') !== $value['country']){
+        if ($country !== $value['country'] && CountryTrait::getCountryName($country, 'en') !== $value['country']) {
             throw new BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
         }
         return $value;
@@ -247,8 +247,8 @@ trait LocationTrait
                 'district' => $addressResult['administrative_area_level_4'] ?? '',//相当于是区
                 'province' => $addressResult['administrative_area_level_1'] ?? '',//相当于是区
                 'country' => $addressResult['country'] ?? $address['country'],
-                'city' => $addressResult['locality'] ?? $address['locality'],
-                'street' => $addressResult['route'] ?? $address['route'],
+                'city' => $address['locality'] ?? $addressResult['locality'],
+                'street' => $address['route'] ?? $addressResult['route'],
                 'house_number' => $addressResult['street_number'] ?? $address['street_number'],
                 'post_code' => $addressResult['postal_code'] ?? $address['post_code'],
                 'lon' => $result[0]['geometry']['location']['lng'],

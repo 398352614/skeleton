@@ -60,5 +60,11 @@ return [
     'db_backup' => env('DB_BACKUP'),
     'app_url' => env('APP_URL'),
     'white_list' => env('WHITE_LIST'),
-    'default_company_id' => env('DEFAULT_COMPANY_ID')
+    'default_company_id' => env('DEFAULT_COMPANY_ID'),
+
+    //paypal
+    'paypal_client_secret' => env('PAYPAL_CLIENT_SECRET'),
+    'paypal_client_id' => env('PAYPAL_CLIENT_ID'),
+    'paypal_success_url'=>env('PAYPAL_SUCCESS_URL'),
+    'paypal_cancel_url'=>env('PAYPAL_CANCEL_URL')
 ];
