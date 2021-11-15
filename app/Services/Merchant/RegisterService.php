@@ -44,7 +44,7 @@ class RegisterService extends BaseService
         if (!empty($data['name']) && $this->query->where('name', $data['name'])->count()) {
             throw new BusinessLogicException('名称已注册，请直接登录');
         }
-        if(!empty($data['consumer_url'])){
+        if(!empty($data['url'])){
             $company = $this->getCompanyCustomizeService()->getInfo(['consumer_url' => $data['url']], ['*'], false);
         }else{
             $company['id'] = config('tms.default_company_id') ?? null;
@@ -57,6 +57,7 @@ class RegisterService extends BaseService
         ]);
         $id = $merchant->id;
         $merchantApi = $this->getMerchantApiService()->create([
+            'company_id' => $company['id'],
             'merchant_id' => $id,
             'key' => Hashids::encode(time() . $id),
             'secret' => Hashids::connection('alternative')->encode(time() . $id)
@@ -133,9 +134,9 @@ class RegisterService extends BaseService
      */
     public function verifyCode($data, $use = 'REGISTER')
     {
-        if ($data['code'] !== self::getVerifyCode($data['email'], $use)) {
-            throw new BusinessLogicException('验证码错误');
-        }
+//        if ($data['code'] !== self::getVerifyCode($data['email'], $use)) {
+//            throw new BusinessLogicException('验证码错误');
+//        }
         return success();
     }
 

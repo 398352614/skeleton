@@ -148,7 +148,7 @@ class Paypal
      * @param $data
      * @return void
      */
-    public function Callback($data)
+    public function callback($data)
     {
         $success = trim($data['success']);
         if ($success == 'false' && !isset($data['paymentId']) && !isset($data['PayerID'])) {
