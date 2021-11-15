@@ -44,8 +44,9 @@ class RegisterService extends BaseService
         if (!empty($data['name']) && $this->query->where('name', $data['name'])->count()) {
             throw new BusinessLogicException('名称已注册，请直接登录');
         }
-        $company = $this->getCompanyCustomizeService()->getInfo(['consumer_url' => $data['url']], ['*'], false);
-        if (empty($company)) {
+        if(!empty($data['consumer_url'])){
+            $company = $this->getCompanyCustomizeService()->getInfo(['consumer_url' => $data['url']], ['*'], false);
+        }else{
             $company['id'] = config('tms.default_company_id') ?? null;
         }
         $merchant = parent::create([
