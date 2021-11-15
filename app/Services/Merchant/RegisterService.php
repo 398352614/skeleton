@@ -134,9 +134,9 @@ class RegisterService extends BaseService
      */
     public function verifyCode($data, $use = 'REGISTER')
     {
-//        if ($data['code'] !== self::getVerifyCode($data['email'], $use)) {
-//            throw new BusinessLogicException('验证码错误');
-//        }
+        if ($data['code'] !== self::getVerifyCode($data['email'], $use)) {
+            throw new BusinessLogicException('验证码错误');
+        }
         return success();
     }
 
