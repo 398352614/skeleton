@@ -34,7 +34,7 @@ class BillVerifyController extends BaseController
      */
     public function store()
     {
-        return $this->service->autoStore($this->data);
+        return $this->service->store($this->data);
     }
 
     /**
