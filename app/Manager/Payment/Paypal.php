@@ -142,7 +142,7 @@ class Paypal
 
         //生成地址
         $approvalUrl = $payment->getApprovalLink();
-        Log::channel('api')->info(__CLASS__ .'.'. __FUNCTION__ .'.'. 'approvalUrl', $approvalUrl);
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'approvalUrl', ['url' => $approvalUrl]);
         //跳转
         header("location:" . $approvalUrl);
     }
