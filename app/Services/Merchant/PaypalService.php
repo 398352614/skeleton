@@ -9,6 +9,7 @@
 namespace App\Services\Merchant;
 
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Merchant\AddressResource;
 use App\Manager\Payment\Paypal;
 use App\Models\Bill;
@@ -35,10 +36,14 @@ class PaypalService extends BaseService
 
     /**
      * @param $data
+     * @throws BusinessLogicException
      */
     public function store($data)
     {
         $bill = $this->getBillService()->getInfo(['object_no' => $data['order_no']], ['*'], false);
+        if(empty($bill)){
+            throw new BusinessLogicException('数据不存在');
+        }
         $billVerify = $this->getBillVerifyService()->getInfo(['verify_no' => $bill['verify_no']], ['*'],false);
         if (!empty($billVerify)) {
             (new Paypal())->store($data['order_no'], $billVerify);
