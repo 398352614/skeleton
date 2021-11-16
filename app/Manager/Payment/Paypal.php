@@ -44,7 +44,7 @@ class Paypal
         $this->PayPal->setConfig(
             [
                 'mode' => config('tms.paypal_sandbox_mode'),
-                'cache.enabled' => true
+                'cache.enabled' => false
             ]
         );
     }
