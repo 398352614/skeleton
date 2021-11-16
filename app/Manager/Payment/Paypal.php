@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Package;
 use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
+use AWS\CRT\Log;
 use PayPal\Api\Amount;
 use PayPal\Api\Details;
 use PayPal\Api\Item;
@@ -141,6 +142,7 @@ class Paypal
 
         //生成地址
         $approvalUrl = $payment->getApprovalLink();
+        Log::channel('api')->info(__CLASS__ .'.'. __FUNCTION__ .'.'. 'approvalUrl', $approvalUrl);
         //跳转
         header("location:" . $approvalUrl);
     }
