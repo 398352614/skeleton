@@ -3,6 +3,7 @@
 namespace App\Manager\Payment;
 
 
+use App\Exceptions\BusinessLogicException;
 use App\Models\CompanyConfig;
 use App\Models\Order;
 use App\Models\Package;
@@ -128,8 +129,8 @@ class Paypal
          * success=false  取消支付
          */
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl(config('tms.paypal_success_url').'success=true')
-            ->setCancelUrl(config('tms.paypal_cancel_url').'success=true');
+        $redirectUrls->setReturnUrl(config('tms.paypal_callback_url') . 'success=true')
+            ->setCancelUrl(config('tms.paypal_callback_url') . 'success=false');
 
 
         $payment = new Payment();
@@ -151,6 +152,7 @@ class Paypal
      * 回调
      * @param $data
      * @return Payment
+     * @throws BusinessLogicException
      */
     public function pay($data)
     {
@@ -180,16 +182,12 @@ class Paypal
             $execution->addTransaction($transaction);
 
             try {
-                // Execute the payment
-                $result = $payment->execute($execution, $this->payPal);
-                echo "支付成功";
+                return $payment->execute($execution, $this->payPal);
             } catch (\Exception $ex) {
-                echo "支付失败";
-                exit(1);
+                throw new BusinessLogicException('支付失败');
             }
-            return $result;
         } else {
-            echo "PayPal返回回调地址参数错误";
+            throw new BusinessLogicException('支付失败');
         }
     }
 }
