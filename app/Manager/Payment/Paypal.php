@@ -137,7 +137,6 @@ class Paypal
             ->setRedirectUrls($redirectUrls)
             ->setTransactions(array($transaction));
         //创建支付
-        dd($payment);
         $payment->create($this->PayPal);
 
         //生成地址
