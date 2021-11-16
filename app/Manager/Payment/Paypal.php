@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Managner\Payment;
+namespace App\Manager\Payment;
 
 
+use App\Exceptions\BusinessLogicException;
 use App\Models\CompanyConfig;
 use App\Models\Order;
 use App\Models\Package;
 use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
+use mysql_xdevapi\Exception;
 use PayPal\Api\Amount;
 use PayPal\Api\Details;
 use PayPal\Api\Item;
@@ -26,13 +28,13 @@ class Paypal
     /**
      * @var ApiContext
      */
-    private $PayPal;
+    public $PayPal;
 
     public function __construct()
     {
         // 下面为申请app获得的clientId和clientSecret，必填项，否则无法生成token。
-        $clientId = config('tms.paypal_client_secret');
-        $clientSecret = config('tms.paypal_client_id');
+        $clientId = config('tms.paypal_client_id');
+        $clientSecret = config('tms.paypal_client_secret');
         $this->PayPal = new ApiContext(
             new OAuthTokenCredential(
                 $clientId,
@@ -90,10 +92,11 @@ class Paypal
             $country = $order['place_country'];
         }
         $address = new ShippingAddress();
-        $address->setRecipientName($billVerify['payer_name'])
-            ->setLine1("$street")
-            ->setLine2("$houseNumber")
-            ->setCity("$city")
+        $address
+//            ->setRecipientName($billVerify['payer_name'])
+            ->setLine1($street)
+            ->setLine2($houseNumber)
+            ->setCity($city)
 //            ->setState("省份")
             ->setPhone($phone) //收货电话
             ->setPostalCode($postcode) //邮编
@@ -110,15 +113,15 @@ class Paypal
         // 同上，金额要相等
         $amount = new Amount();
         $amount->setCurrency($currencyUnitShort)
-            ->setTotal($order['settlement_amount'])
-            ->setDetails($details);
+            ->setTotal($order['settlement_amount']);
+//            ->setDetails($details);
 
 
-        $transaction = new Transaction();
-        $transaction->setAmount($amount)
-            ->setItemList($newItemList)
-            ->setDescription("描述")
-            ->setInvoiceNumber(uniqid());
+//        $transaction = new Transaction();
+//        $transaction->setAmount($amount)
+//            ->setItemList($newItemList)
+//            ->setDescription("描述")
+//            ->setInvoiceNumber(uniqid());
         /**
          * 回调
          * 当支付成功或者取消支付的时候调用的地址
@@ -133,12 +136,14 @@ class Paypal
         $payment = new Payment();
         $payment->setIntent("sale")
             ->setPayer($payer)
-            ->setRedirectUrls($redirectUrls)
-            ->setTransactions(array($transaction));
+            ->setRedirectUrls($redirectUrls);
+//            ->setTransactions(array($transaction));
         //创建支付
-        $payment->create($this->PayPal);
+            $payment->create($this->PayPal);
+
         //生成地址
         $approvalUrl = $payment->getApprovalLink();
+        dd($approvalUrl);
         //跳转
         header("location:" . $approvalUrl);
     }
@@ -148,8 +153,10 @@ class Paypal
      * @param $data
      * @return void
      */
-    public function callback($data)
+    public function pay($data)
     {
+        dd(1);
+        set_time_limit(3600);
         $success = trim($data['success']);
         if ($success == 'false' && !isset($data['paymentId']) && !isset($data['PayerID'])) {
             echo '取消付款';

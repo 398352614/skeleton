@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Models\BillVerify;
+use App\Services\Admin\BillVerifyService;
 use App\Services\Admin\CompanyCustomizeService;
 use App\Services\Merchant\AddressService;
 use App\Services\Merchant\BaseLineService;
@@ -122,6 +124,14 @@ Trait MerchantServiceTrait
     public function getBillService()
     {
         return self::getInstance(BillService::class);
+    }
+
+    /**
+     * @return BillVerifyService
+     */
+    public function getBillVerifyService()
+    {
+        return self::getInstance(BillVerifyService::class);
     }
 
     /**

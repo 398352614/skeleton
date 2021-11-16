@@ -66,5 +66,6 @@ return [
     'paypal_client_secret' => env('PAYPAL_CLIENT_SECRET'),
     'paypal_client_id' => env('PAYPAL_CLIENT_ID'),
     'paypal_success_url'=>env('PAYPAL_SUCCESS_URL'),
-    'paypal_cancel_url'=>env('PAYPAL_CANCEL_URL')
+    'paypal_cancel_url'=>env('PAYPAL_CANCEL_URL'),
+    'paypal_sandbox_mode'=>env('paypal_sandbox_mode')
 ];
