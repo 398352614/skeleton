@@ -27,20 +27,20 @@ class Paypal
     /**
      * @var ApiContext
      */
-    public $PayPal;
+    public $payPal;
 
     public function __construct()
     {
         // 下面为申请app获得的clientId和clientSecret，必填项，否则无法生成token。
         $clientId = config('tms.paypal_client_id');
         $clientSecret = config('tms.paypal_client_secret');
-        $this->PayPal = new ApiContext(
+        $this->payPal = new ApiContext(
             new OAuthTokenCredential(
                 $clientId,
                 $clientSecret
             )
         );
-        $this->PayPal->setConfig(
+        $this->payPal->setConfig(
             [
                 'mode' => config('tms.paypal_sandbox_mode'),
                 'cache.enabled' => false
@@ -128,8 +128,8 @@ class Paypal
          * success=false  取消支付
          */
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl(config('tms.paypal_success_url'))
-            ->setCancelUrl(config('tms.paypal_cancel_url'));
+        $redirectUrls->setReturnUrl(config('tms.paypal_success_url').'success=true')
+            ->setCancelUrl(config('tms.paypal_cancel_url').'success=true');
 
 
         $payment = new Payment();
@@ -138,7 +138,7 @@ class Paypal
             ->setRedirectUrls($redirectUrls)
             ->setTransactions(array($transaction));
         //创建支付
-        $payment->create($this->PayPal);
+        $payment->create($this->payPal);
 
         //生成地址
         $approvalUrl = $payment->getApprovalLink();
@@ -150,47 +150,47 @@ class Paypal
     /**
      * 回调
      * @param $data
-     * @return void
+     * @return Payment
      */
     public function pay($data)
     {
-        set_time_limit(3600);
-        $success = trim($data['success']);
-        if ($success == 'false' && !isset($data['paymentId']) && !isset($data['PayerID'])) {
-            echo '取消付款';
-            return;
+        if (isset($data['success']) && $data['success'] == 'true') {
+
+
+            $paymentId = $_GET['paymentId'];
+            $payment = Payment::get($paymentId, $this->payPal);
+
+            $execution = new PaymentExecution();
+            $execution->setPayerId($_GET['PayerID']);
+
+            $transaction = new Transaction();
+            $amount = new Amount();
+//            $details = new Details();
+//
+//            $details->setShipping(5)
+//                ->setTax(10)
+//                ->setSubtotal(70);
+
+            $amount->setCurrency('USD');
+            $amount->setTotal(3);
+//            $amount->setDetails($details);
+            $transaction->setAmount($amount);
+
+            // Add the above transaction object inside our Execution object.
+            $execution->addTransaction($transaction);
+
+            try {
+                // Execute the payment
+                $result = $payment->execute($execution, $this->payPal);
+                echo "支付成功";
+            } catch (\Exception $ex) {
+                echo "支付失败";
+                exit(1);
+            }
+            return $result;
+        } else {
+            echo "PayPal返回回调地址参数错误";
         }
-
-        $paymentId = trim($data['paymentId']);
-        $PayerID = trim($data['PayerID']);
-
-        if (!isset($success, $paymentId, $PayerID)) {
-            echo '支付失败';
-            //todo 记录失败
-            return;
-        }
-
-        if ((bool)$data['success'] === 'false') {
-            $log = '支付失败，支付ID【' . $paymentId . '】,支付人ID【' . $PayerID . '】';
-            echo $log;
-            return;
-        }
-
-        $payment = Payment::get($paymentId, $this->PayPal);
-
-        $execute = new PaymentExecution();
-
-        $execute->setPayerId($PayerID);
-
-        try {
-            $payment->execute($execute, $this->PayPal);
-        } catch (\Exception $e) {
-            $log = '支付失败，支付ID【' . $paymentId . '】,支付人ID【' . $PayerID . '】';
-            echo $log;
-            return;
-        }
-        $log = '支付成功，支付ID【' . $paymentId . '】,支付人ID【' . $PayerID . '】';
-        echo $log;
     }
 }
 
