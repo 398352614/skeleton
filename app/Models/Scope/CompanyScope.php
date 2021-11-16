@@ -9,6 +9,7 @@ namespace App\Models\Scope;
 use App\Models\AdditionalPackage;
 use App\Models\AddressTemplate;
 use App\Models\ApiTimes;
+use App\Models\Article;
 use App\Models\Bag;
 use App\Models\Batch;
 use App\Models\BatchException;
@@ -17,6 +18,7 @@ use App\Models\BillVerify;
 use App\Models\Car;
 use App\Models\CarBrand;
 use App\Models\CarModel;
+use App\Models\Carousel;
 use App\Models\Company;
 use App\Models\CompanyConfig;
 use App\Models\Country;
@@ -49,6 +51,7 @@ use App\Models\PackageNoRule;
 use App\Models\Permission;
 use App\Models\Recharge;
 use App\Models\RouteTracking;
+use App\Models\ServiceAgreement;
 use App\Models\Shift;
 use App\Models\SpecialTimeCharging;
 use App\Models\Stock;
@@ -173,6 +176,9 @@ class CompanyScope implements Scope
                 && !($model instanceof Stock)
                 && !($model instanceof Bill)
                 && !($model instanceof Fee)
+                && !($model instanceof ServiceAgreement)
+                && !($model instanceof Article)
+                && !($model instanceof Carousel)
                 && !($model instanceof MerchantGroupLine)
                 && !($model instanceof Tour)
                 && !($model instanceof OrderAmount)
