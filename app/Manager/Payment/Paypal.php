@@ -141,7 +141,6 @@ class Paypal
 
         //生成地址
         $approvalUrl = $payment->getApprovalLink();
-        dd($approvalUrl);
         //跳转
         header("location:" . $approvalUrl);
     }
@@ -153,7 +152,6 @@ class Paypal
      */
     public function pay($data)
     {
-        dd(1);
         set_time_limit(3600);
         $success = trim($data['success']);
         if ($success == 'false' && !isset($data['paymentId']) && !isset($data['PayerID'])) {

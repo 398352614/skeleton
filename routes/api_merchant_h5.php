@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Route;
 //支付管理
 Route::prefix('payment-paypal')->group(function () {
     //列表查询
-    Route::get('/', 'PaypalController@store')->name('paypal.pay');
+    Route::post('/', 'PaypalController@store')->name('paypal.pay');
     //详情
-    Route::post('/', 'PaypalController@pay')->name('paypal.pay');
+    Route::get('/', 'PaypalController@pay')->name('paypal.pay');
 });
 
 //公共接口
