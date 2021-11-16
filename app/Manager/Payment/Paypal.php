@@ -3,13 +3,11 @@
 namespace App\Manager\Payment;
 
 
-use App\Exceptions\BusinessLogicException;
 use App\Models\CompanyConfig;
 use App\Models\Order;
 use App\Models\Package;
 use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
-use mysql_xdevapi\Exception;
 use PayPal\Api\Amount;
 use PayPal\Api\Details;
 use PayPal\Api\Item;
@@ -117,11 +115,11 @@ class Paypal
 //            ->setDetails($details);
 
 
-//        $transaction = new Transaction();
-//        $transaction->setAmount($amount)
+        $transaction = new Transaction();
+        $transaction->setAmount($amount)
 //            ->setItemList($newItemList)
-//            ->setDescription("描述")
-//            ->setInvoiceNumber(uniqid());
+            ->setDescription("描述")
+            ->setInvoiceNumber(uniqid());
         /**
          * 回调
          * 当支付成功或者取消支付的时候调用的地址
@@ -136,10 +134,11 @@ class Paypal
         $payment = new Payment();
         $payment->setIntent("sale")
             ->setPayer($payer)
-            ->setRedirectUrls($redirectUrls);
-//            ->setTransactions(array($transaction));
+            ->setRedirectUrls($redirectUrls)
+            ->setTransactions(array($transaction));
         //创建支付
-            $payment->create($this->PayPal);
+        dd($payment);
+        $payment->create($this->PayPal);
 
         //生成地址
         $approvalUrl = $payment->getApprovalLink();
