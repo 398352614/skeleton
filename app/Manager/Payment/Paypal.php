@@ -129,8 +129,8 @@ class Paypal
          * success=false  取消支付
          */
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl(config('tms.paypal_callback_url') . 'success=true')
-            ->setCancelUrl(config('tms.paypal_callback_url') . 'success=false');
+        $redirectUrls->setReturnUrl(config('tms.paypal_callback_url') . '?success=true&')
+            ->setCancelUrl(config('tms.paypal_callback_url') . '?success=false&');
 
 
         $payment = new Payment();
