@@ -49,7 +49,7 @@ class Paypal
         );
     }
 
-    public function store($orderNo, $billVerify)
+    public function store($orderNo)
     {
         $payer = new Payer();
         $payer->setPaymentMethod("paypal");
@@ -129,8 +129,8 @@ class Paypal
          * success=false  取消支付
          */
         $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl(config('tms.paypal_callback_url') . '?success=true&')
-            ->setCancelUrl(config('tms.paypal_callback_url') . '?success=false&');
+        $redirectUrls->setReturnUrl(config('tms.paypal_callback_url') . '?status=' . BaseConstService::PAYPAL_STATUS_2 . '&')
+            ->setCancelUrl(config('tms.paypal_callback_url') . '?status=' . BaseConstService::PAYPAL_STATUS_2 . '&');
 
 
         $payment = new Payment();
@@ -139,13 +139,12 @@ class Paypal
             ->setRedirectUrls($redirectUrls)
             ->setTransactions(array($transaction));
         //创建支付
-        $payment->create($this->payPal);
-
+        $data['id'] = $payment->create($this->payPal)->getId();
         //生成地址
-        $approvalUrl = $payment->getApprovalLink();
-        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'approvalUrl', ['url' => $approvalUrl]);
+        $data['approvalUrl'] = $payment->getApprovalLink();
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'data', $data);
         //跳转
-        header("location:" . $approvalUrl);
+        return $data;
     }
 
     /**
@@ -159,11 +158,11 @@ class Paypal
         if (isset($data['success']) && $data['success'] == 'true') {
 
 
-            $paymentId = $_GET['paymentId'];
+            $paymentId = $data['paymentId'];
             $payment = Payment::get($paymentId, $this->payPal);
 
             $execution = new PaymentExecution();
-            $execution->setPayerId($_GET['PayerID']);
+            $execution->setPayerId($data['PayerID']);
 
             $transaction = new Transaction();
             $amount = new Amount();

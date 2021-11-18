@@ -3523,7 +3523,7 @@
     },
     {
         "id": 382,
-        "parent_id": 379,
+        "parent_id": 381,
         "name": "查看",
         "route": "",
         "route_as": "carousel.index",
@@ -3534,7 +3534,7 @@
     },
     {
         "id": 383,
-        "parent_id": 379,
+        "parent_id": 381,
         "name": "新增",
         "route": "",
         "route_as": "carousel.store",
@@ -3545,7 +3545,7 @@
     },
     {
         "id": 384,
-        "parent_id": 379,
+        "parent_id": 381,
         "name": "修改",
         "route": "",
         "route_as": "carousel.update",
@@ -3556,7 +3556,7 @@
     },
     {
         "id": 385,
-        "parent_id": 379,
+        "parent_id": 381,
         "name": "删除",
         "route": "",
         "route_as": "carousel.destroy",
@@ -3567,7 +3567,7 @@
     },
     {
         "id": 386,
-        "parent_id": 379,
+        "parent_id": 381,
         "name": "排序",
         "route": "",
         "route_as": "carousel.sort",
@@ -3589,7 +3589,7 @@
     },
     {
         "id": 388,
-        "parent_id": 385,
+        "parent_id": 387,
         "name": "查看",
         "route": "",
         "route_as": "article.index",
@@ -3600,7 +3600,7 @@
     },
     {
         "id": 389,
-        "parent_id": 385,
+        "parent_id": 387,
         "name": "新增",
         "route": "",
         "route_as": "article.store",
@@ -3611,7 +3611,7 @@
     },
     {
         "id": 390,
-        "parent_id": 385,
+        "parent_id": 387,
         "name": "修改",
         "route": "",
         "route_as": "article.update",
@@ -3622,7 +3622,7 @@
     },
     {
         "id": 391,
-        "parent_id": 385,
+        "parent_id": 387,
         "name": "删除",
         "route": "",
         "route_as": "article.destroy",
@@ -3644,7 +3644,7 @@
     },
     {
         "id": 393,
-        "parent_id": 390,
+        "parent_id": 392,
         "name": "查看",
         "route": "",
         "route_as": "service-agreement.index",
@@ -3655,7 +3655,7 @@
     },
     {
         "id": 394,
-        "parent_id": 390,
+        "parent_id": 392,
         "name": "新增",
         "route": "",
         "route_as": "service-agreement.store",
@@ -3666,7 +3666,7 @@
     },
     {
         "id": 395,
-        "parent_id": 390,
+        "parent_id": 392,
         "name": "修改",
         "route": "",
         "route_as": "service-agreement.update",
@@ -3677,7 +3677,7 @@
     },
     {
         "id": 396,
-        "parent_id": 390,
+        "parent_id": 392,
         "name": "删除",
         "route": "",
         "route_as": "service-agreement.destroy",

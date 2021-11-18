@@ -25,6 +25,10 @@ class CreateCarouselTable extends Migration
             $table->tinyInteger('inside_jump_type')->default(null)->nullable()->comment('内部跳转类型');
             $table->string('outside_jump_url')->default('')->nullable()->comment('外部跳转链接');
             $table->timestamps();
+
+            $table->index('company_id', 'company_id');
+            $table->index('sort_id', 'sort_id');
+            $table->index('status', 'status');
         });
     }
 

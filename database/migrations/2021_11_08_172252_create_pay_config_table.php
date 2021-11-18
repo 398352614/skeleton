@@ -22,6 +22,9 @@ class CreatePayConfigTable extends Migration
             $table->string('paypal_client_secret')->default('')->nullable()->comment('paypal应用秘钥');
             $table->tinyInteger('paypal_status')->default(null)->nullable()->comment('paypal状态1-启用2-禁用');
             $table->timestamps();
+
+            $table->index('company_id', 'company_id');
+            $table->index('paypal_sandbox_mode', 'paypal_sandbox_mode');
         });
     }
 

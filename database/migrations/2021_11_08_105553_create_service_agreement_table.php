@@ -18,10 +18,13 @@ class CreateServiceAgreementTable extends Migration
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
             $table->tinyInteger('type')->default(1)->nullable()->comment('类型');
             $table->text('text')->default('')->nullable()->comment('图片地址');
-            $table->string('tittle')->default('')->nullable()->comment('排序ID');
+            $table->string('tittle')->default('')->nullable()->comment('标题');
             $table->integer('operator_id')->default(null)->nullable()->comment('操作人ID');
             $table->string('operator_name')->default('')->nullable()->comment('操作人名称');
             $table->timestamps();
+
+            $table->index('company_id', 'company_id');
+            $table->index('type', 'type');
         });
     }
 

@@ -181,7 +181,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/', 'OrderDefaultConfigController@update')->name('order-default-config.update');
     });
 
-    //订单默认配置
+    //支付配置
     Route::prefix('pay-config')->group(function () {
         //获取配置
         Route::get('/', 'PayConfigController@show')->name('pay-config.index');

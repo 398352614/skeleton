@@ -979,6 +979,12 @@ class BaseConstService
     const ROLLING_TIME_5 = 5;
 
     //是否开启沙盒模式1-开启2-关闭
-    const PAYPAL_SANDBOX_MODE_1=1;
-    const PAYPAL_SANDBOX_MODE_2=2;
+    const PAYPAL_SANDBOX_MODE_1 = 1;
+    const PAYPAL_SANDBOX_MODE_2 = 2;
+
+    //支付状态
+    const PAYPAL_STATUS_1 = 1;
+    const PAYPAL_STATUS_2 = 2;
+    const PAYPAL_STATUS_3 = 3;
+
 }

@@ -153,9 +153,16 @@ use Illuminate\Support\Facades\App;
  * @method static paypalSandboxModeList($args = null)
  * @method static articleTypeList($args = null)
  * @method static currencyUnitTypeShortList($args = null)
+ * @method static paypalStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
+    public static $paypalStatusList = [
+        BaseConstService::PAYPAL_STATUS_1 => '已创建',
+        BaseConstService::PAYPAL_STATUS_2 => '已支付',
+        BaseConstService::PAYPAL_STATUS_3 => '支付失败',
+    ];
+
     public static $paypalSandboxModeList = [
         BaseConstService::PAYPAL_SANDBOX_MODE_1 => '开启',
         BaseConstService::PAYPAL_SANDBOX_MODE_2 => '关闭',
@@ -1064,7 +1071,7 @@ trait ConstTranslateTrait
     ];
 
     //货币单位缩写
-    public static $currencyUnitTypeShortList=[
+    public static $currencyUnitTypeShortList = [
         BaseConstService::CURRENCY_UNIT_TYPE_1 => 'CNY',
         BaseConstService::CURRENCY_UNIT_TYPE_2 => 'USD',
         BaseConstService::CURRENCY_UNIT_TYPE_3 => 'EUR',

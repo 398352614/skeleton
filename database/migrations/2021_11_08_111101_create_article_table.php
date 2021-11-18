@@ -22,6 +22,9 @@ class CreateArticleTable extends Migration
             $table->integer('operator_id')->default(null)->nullable()->comment('操作人ID');
             $table->string('operator_name')->default('')->nullable()->comment('操作人名称');
             $table->timestamps();
+
+            $table->index('company_id', 'company_id');
+            $table->index('type', 'type');
         });
     }
 
