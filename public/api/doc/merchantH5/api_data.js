@@ -8356,7 +8356,7 @@ define({ "api": [
       ]
     },
     "filename": "public/api/routes/merchantH5/12ledger.php",
-    "groupTitle": "财务管理",
+    "groupTitle": "充值管理",
     "sampleRequest": [
       {
         "url": "https://api.rrtms.com/api/admin/ledger"
@@ -8392,7 +8392,7 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/merchant_h5/bill-recharge",
+    "url": "/merchant_h5/bill/recharge",
     "title": "充值记录查询",
     "name": "账单查询",
     "group": "11recharge",
@@ -8669,10 +8669,10 @@ define({ "api": [
       ]
     },
     "filename": "public/api/routes/merchantH5/11recharge.php",
-    "groupTitle": "财务管理",
+    "groupTitle": "充值管理",
     "sampleRequest": [
       {
-        "url": "https://api.rrtms.com/api/merchant_h5/bill-recharge"
+        "url": "https://api.rrtms.com/api/merchant_h5/bill/recharge"
       }
     ],
     "header": {
@@ -8705,7 +8705,7 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/merchant_h5/bill-recharge/{id}",
+    "url": "/merchant_h5/bill/recharge/{id}",
     "title": "充值记录详情",
     "name": "账单详情",
     "group": "11recharge",
@@ -8905,10 +8905,10 @@ define({ "api": [
       ]
     },
     "filename": "public/api/routes/merchantH5/11recharge.php",
-    "groupTitle": "财务管理",
+    "groupTitle": "充值管理",
     "sampleRequest": [
       {
-        "url": "https://api.rrtms.com/api/merchant_h5/bill-recharge/{id}"
+        "url": "https://api.rrtms.com/api/merchant_h5/bill/recharge/{id}"
       }
     ],
     "header": {
@@ -8941,7 +8941,7 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "/merchant_h5/bill/merchant-recharge",
+    "url": "/merchant_h5/bill/recharge",
     "title": "充值",
     "name": "货主充值开单",
     "group": "11recharge",
@@ -9022,10 +9022,10 @@ define({ "api": [
       ]
     },
     "filename": "public/api/routes/merchantH5/11recharge.php",
-    "groupTitle": "财务管理",
+    "groupTitle": "充值管理",
     "sampleRequest": [
       {
-        "url": "https://api.rrtms.com/api/merchant_h5/bill/merchant-recharge"
+        "url": "https://api.rrtms.com/api/merchant_h5/bill/recharge"
       }
     ],
     "header": {
@@ -9061,7 +9061,7 @@ define({ "api": [
     "url": "/admin/carousel",
     "title": "轮播图查询",
     "name": "轮播图查询",
-    "group": "13",
+    "group": "13carousel",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -9255,7 +9255,7 @@ define({ "api": [
     "url": "/admin/article",
     "title": "文章查询",
     "name": "文章查询",
-    "group": "14",
+    "group": "14article",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -9414,7 +9414,7 @@ define({ "api": [
     "url": "/admin/article/{id}",
     "title": "文章详情",
     "name": "文章详情",
-    "group": "14",
+    "group": "14article",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -9573,7 +9573,7 @@ define({ "api": [
     "url": "/admin/service-agreement",
     "title": "条款查询",
     "name": "条款查询",
-    "group": "15",
+    "group": "15serviceAgreement",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -9732,7 +9732,7 @@ define({ "api": [
     "url": "/admin/service-agreement/{id}",
     "title": "条款详情",
     "name": "条款详情",
-    "group": "15",
+    "group": "15serviceAgreement",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -9856,6 +9856,298 @@ define({ "api": [
     "sampleRequest": [
       {
         "url": "https://api.rrtms.com/api/admin/service-agreement/{id}"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          },
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/merchant_h5/paypal",
+    "title": "余额查询",
+    "name": "余额查询",
+    "group": "16paypal",
+    "version": "1.0.0",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "msg",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.user_name",
+            "description": "<p>货主名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.code",
+            "description": "<p>货主编号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.credit",
+            "description": "<p>信用额度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.balance",
+            "description": "<p>账户余额</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.status",
+            "description": "<p>状态1-限制2-不限制</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.phone",
+            "description": "<p>手机号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.email",
+            "description": "<p>邮箱</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.create_date",
+            "description": "<p>注册日期</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.merchant_group_id",
+            "description": "<p>货主组ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.merchant_group_name",
+            "description": "<p>货主组名称</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\"code\": 200,\n\"data\": {\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantH5/16paypal.php",
+    "groupTitle": "paypal支付",
+    "sampleRequest": [
+      {
+        "url": "https://api.rrtms.com/api/merchant_h5/paypal"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          },
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/merchant_h5/paypal",
+    "title": "余额查询",
+    "name": "余额查询",
+    "group": "16paypal",
+    "version": "1.0.0",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "msg",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.user_name",
+            "description": "<p>货主名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.code",
+            "description": "<p>货主编号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.credit",
+            "description": "<p>信用额度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.balance",
+            "description": "<p>账户余额</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.status",
+            "description": "<p>状态1-限制2-不限制</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.phone",
+            "description": "<p>手机号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.email",
+            "description": "<p>邮箱</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.create_date",
+            "description": "<p>注册日期</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.merchant_group_id",
+            "description": "<p>货主组ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.merchant_group_name",
+            "description": "<p>货主组名称</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\"code\": 200,\n\"data\": {\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantH5/16paypal.php",
+    "groupTitle": "paypal支付",
+    "sampleRequest": [
+      {
+        "url": "https://api.rrtms.com/api/merchant_h5/paypal"
       }
     ],
     "header": {
