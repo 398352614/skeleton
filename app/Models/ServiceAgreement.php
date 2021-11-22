@@ -62,6 +62,7 @@ class ServiceAgreement extends BaseModel
     protected $appends = [
         'status_name',
         'type_name',
+        'location_name'
     ];
 
     /**
@@ -81,4 +82,8 @@ class ServiceAgreement extends BaseModel
         return empty($this->type) ? null : ConstTranslateTrait::serviceAgreementTypeList($this->type);
     }
 
+    public function getLocationNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::serviceAgreementLocationList($this->type);
+    }
 }

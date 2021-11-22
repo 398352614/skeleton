@@ -21,7 +21,7 @@ class ServiceAgreementService extends BaseService
     }
 
     public $filterRules = [
-
+        'type' => ['=', 'type']
     ];
 
     public $orderBy = [

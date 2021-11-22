@@ -154,9 +154,15 @@ use Illuminate\Support\Facades\App;
  * @method static articleTypeList($args = null)
  * @method static currencyUnitTypeShortList($args = null)
  * @method static paypalStatusList($args = null)
+ * @method static serviceAgreementLocationList($args = null)
  */
 trait ConstTranslateTrait
 {
+    public static $serviceAgreementLocationList = [
+        BaseConstService::SERVICE_AGREEMENT_LOCATION_1 => '登录页',
+        BaseConstService::SERVICE_AGREEMENT_LOCATION_1 => '下单页',
+    ];
+
     public static $paypalStatusList = [
         BaseConstService::PAYPAL_STATUS_1 => '已创建',
         BaseConstService::PAYPAL_STATUS_2 => '已支付',
@@ -1052,13 +1058,13 @@ trait ConstTranslateTrait
 
 
     //重量单位
-    publiC static $weightUnitTypeList = [
+    public static $weightUnitTypeList = [
         BaseConstService::WEIGHT_UNIT_TYPE_1 => '千克',
         BaseConstService::WEIGHT_UNIT_TYPE_2 => '磅',
     ];
 
     //重量单位符号
-    publiC static $weightUnitTypeSymbol = [
+    public static $weightUnitTypeSymbol = [
         BaseConstService::WEIGHT_UNIT_TYPE_1 => 'kg',
         BaseConstService::WEIGHT_UNIT_TYPE_2 => 'lb',
     ];

@@ -45,6 +45,7 @@ class Article extends BaseModel
         'company_id',
         'type',
         'tittle',
+        'picture_url',
         'text',
         'operator_name',
         'operator_id',

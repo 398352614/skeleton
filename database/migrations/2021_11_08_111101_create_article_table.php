@@ -19,6 +19,7 @@ class CreateArticleTable extends Migration
             $table->tinyInteger('type')->default(1)->nullable()->comment('类型');
             $table->text('text')->default('')->nullable()->comment('正文');
             $table->string('tittle')->default('')->nullable()->comment('标题');
+            $table->string('picture_url')->default('')->nullable()->comment('图片地址');
             $table->integer('operator_id')->default(null)->nullable()->comment('操作人ID');
             $table->string('operator_name')->default('')->nullable()->comment('操作人名称');
             $table->timestamps();

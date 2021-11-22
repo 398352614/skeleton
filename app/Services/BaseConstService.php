@@ -987,4 +987,6 @@ class BaseConstService
     const PAYPAL_STATUS_2 = 2;
     const PAYPAL_STATUS_3 = 3;
 
+    const SERVICE_AGREEMENT_LOCATION_1=1;
+    const SERVICE_AGREEMENT_LOCATION_2=2;
 }

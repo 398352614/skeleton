@@ -10,10 +10,9 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\CarouselResource;
-use App\Http\Resources\Api\Merchant\AddressInfoResource;
-use App\Http\Resources\Api\Merchant\AddressResource;
-use App\Models\Address;
 use App\Models\Carousel;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 
 class CarouselService extends BaseService
@@ -34,7 +33,7 @@ class CarouselService extends BaseService
     /**
      * 获取详情
      * @param $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
     public function show($id)
@@ -54,11 +53,16 @@ class CarouselService extends BaseService
      */
     public function store($params)
     {
-        if($this->count() > 9){
-            throw new BusinessLogicException('最多不得超过9张');
+        unset($params['rolling_time']);
+        if ($this->count() > 6) {
+            throw new BusinessLogicException('最多不得超过6张');
+        }
+        $dbData=parent::getInfo(['company_id'=>auth()->user()->company_id],['*'],false);
+        if(!empty($dbData)){
+            $params['rolling_time']=$dbData['rolling_time'];
         }
         $rowCount = parent::create($params);
-        if ($rowCount === false) {
+        if ($rowCount == false) {
             throw new BusinessLogicException('新增失败，请重新操作');
         }
     }
@@ -67,17 +71,18 @@ class CarouselService extends BaseService
      * 通过ID 修改
      * @param $id
      * @param $data
-     * @return bool|int|void
+     * @return void
      * @throws BusinessLogicException
      */
     public function updateById($id, $data)
     {
+        unset($data['rolling_time']);
         $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
         $rowCount = parent::updateById($id, $data);
-        if ($rowCount === false) {
+        if ($rowCount == false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }
     }
@@ -90,7 +95,7 @@ class CarouselService extends BaseService
     public function destroy($id)
     {
         $rowCount = parent::delete(['id' => $id]);
-        if ($rowCount === false) {
+        if ($rowCount == false) {
             throw new BusinessLogicException('删除失败，请重新操作');
         }
     }
@@ -98,12 +103,17 @@ class CarouselService extends BaseService
     /**
      * 排序
      * @param $data
+     * @throws BusinessLogicException
      */
     public function updateSort($data)
     {
         $ids = explode_id_string($data['id_list']);
         foreach ($ids as $k => $v) {
             parent::updateById($v, ['sort_id' => $k]);
+        }
+        $row = parent::update(['company_id' => auth()->user()->company_id], ['rolling_time' => $data['rolling_time']]);
+        if ($row == false) {
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
     }
 

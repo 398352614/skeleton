@@ -12,6 +12,7 @@ class ArticleResource extends JsonResource
             'id' => $this->id,
             'company_id' => $this->company_id,
             'tittle' => $this->tittle,
+            'picture_url' => $this->picture_url,
             'text' => $this->text,
             'type' => $this->type,
             'type_name' => $this->type_name,

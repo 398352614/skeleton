@@ -14,6 +14,7 @@ class ServiceAgreementResource extends JsonResource
             'tittle' => $this->tittle,
             'text' => $this->text,
             'type' => $this->type,
+            'location_name' => $this->location_name,
             'type_name' => $this->type_name,
             'operator_name' => $this->operator_name,
             'operator_id' => $this->operator_id,

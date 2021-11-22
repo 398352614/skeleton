@@ -23,7 +23,7 @@ class ArticleService extends BaseService
     }
 
     public $filterRules = [
-
+        'type' => ['=', 'type']
     ];
 
     public $orderBy = [
@@ -54,7 +54,7 @@ class ArticleService extends BaseService
     public function store($params)
     {
         $params['operator_id'] = auth()->user()->id;
-        $params['operator_name'] = UserTrait::get(auth()->user()->id,BaseConstService::USER_ADMIN)['name'];
+        $params['operator_name'] = UserTrait::get(auth()->user()->id, BaseConstService::USER_ADMIN)['name'];
         $rowCount = parent::create($params);
         if ($rowCount === false) {
             throw new BusinessLogicException('新增失败，请重新操作');
@@ -71,7 +71,7 @@ class ArticleService extends BaseService
     public function updateById($id, $data)
     {
         $data['operator_id'] = auth()->user()->id;
-        $data['operator_name'] = UserTrait::get(auth()->user()->id,BaseConstService::USER_ADMIN)['name'];
+        $data['operator_name'] = UserTrait::get(auth()->user()->id, BaseConstService::USER_ADMIN)['name'];
         $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
@@ -109,7 +109,7 @@ class ArticleService extends BaseService
 
     public function index()
     {
-        $data= parent::getPageList();
+        $data = parent::getPageList();
         return $data;
     }
 

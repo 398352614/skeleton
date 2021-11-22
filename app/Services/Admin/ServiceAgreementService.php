@@ -25,7 +25,7 @@ class ServiceAgreementService extends BaseService
     }
 
     public $filterRules = [
-
+        'type' => ['=', 'type']
     ];
 
     public $orderBy = [
@@ -58,7 +58,7 @@ class ServiceAgreementService extends BaseService
         $params['operator_id'] = auth()->user()->id;
         $params['operator_name'] = UserTrait::get(auth()->user()->id,BaseConstService::USER_ADMIN)['name'];
         $rowCount = parent::create($params);
-        if ($rowCount === false) {
+        if ($rowCount == false) {
             throw new BusinessLogicException('新增失败，请重新操作');
         }
     }
