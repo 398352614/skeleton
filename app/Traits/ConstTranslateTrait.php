@@ -155,12 +155,14 @@ use Illuminate\Support\Facades\App;
  * @method static currencyUnitTypeShortList($args = null)
  * @method static paypalStatusList($args = null)
  * @method static serviceAgreementLocationList($args = null)
+ * @method static onlinePayTypeList($args = null)
+ * @method static payModeList($args = null)
  */
 trait ConstTranslateTrait
 {
     public static $serviceAgreementLocationList = [
         BaseConstService::SERVICE_AGREEMENT_LOCATION_1 => '登录页',
-        BaseConstService::SERVICE_AGREEMENT_LOCATION_1 => '下单页',
+        BaseConstService::SERVICE_AGREEMENT_LOCATION_2 => '下单页',
     ];
 
     public static $paypalStatusList = [
@@ -1204,6 +1206,16 @@ trait ConstTranslateTrait
         BaseConstService::PAY_TYPE_2 => '支票',
         BaseConstService::PAY_TYPE_3 => '现金',
         BaseConstService::PAY_TYPE_4 => '余额',
+    ];
+
+    //在线支付方式1-paypal
+    public static $onlinePayTypeList = [
+        BaseConstService::ONLINE_PAY_TYPE_1 => 'paypal',
+    ];
+
+    public static $payModeList = [
+        BaseConstService::PAY_MODE_1 => '线下支付',
+        BaseConstService::PAY_MODE_2 => '线上支付',
     ];
 
     //充值支付方式1-银行转账2-支票3-现金4-余额

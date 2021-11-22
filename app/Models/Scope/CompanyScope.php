@@ -176,6 +176,7 @@ class CompanyScope implements Scope
                 && !($model instanceof Stock)
                 && !($model instanceof Bill)
                 && !($model instanceof Fee)
+                && !($model instanceof Ledger)
                 && !($model instanceof ServiceAgreement)
                 && !($model instanceof Article)
                 && !($model instanceof Carousel)

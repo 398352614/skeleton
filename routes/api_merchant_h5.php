@@ -132,14 +132,6 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         Route::post('/location', 'AddressController@showByApi');
     });
 
-    //账单
-    Route::prefix('bill')->group(function () {
-        //列表
-        Route::get('/', 'BillController@index')->name('bill.index');
-        //列表
-        Route::get('/{id}', 'BillController@show')->name('bill.show');
-    });
-
     //费用管理
     Route::prefix('fee')->group(function () {
         //列表查询
@@ -172,19 +164,23 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         Route::get('/{id}', 'ServiceAgreementController@show')->name('service-agreement.index');
     });
 
-    //支付管理
-    Route::prefix('payment')->group(function () {
-        //列表查询
-        Route::get('/', 'PaymentController@index')->name('payment.index');
-        //详情
-        Route::get('/{id}', 'PaymentController@show')->name('payment.index');
-        //新增
-        Route::post('/', 'PaymentController@store')->name('payment.store');
-        //支付
-        Route::post('/{id}', 'PaymentController@pay')->name('payment.pay');
-        //取消
-        Route::put('/{id}', 'PaymentController@cancel')->name('payment.cancel');
+    //账单
+    Route::prefix('bill')->group(function () {
+        //充值列表
+        Route::get('/recharge', 'BillController@index')->name('bill.merchant-index');
+        //充值详情
+        Route::get('/recharge/{id}', 'BillController@show')->name('bill.merchant-index');
+        //充值
+        Route::post('/recharge', 'BillController@merchantRecharge')->name('bill.merchant-recharge');
+//        //充值完成
+//        Route::put('/recharge/pay', 'BillController@pay')->name('bill.pay');
     });
 
-
+    //账目
+    Route::prefix('ledger')->group(function () {
+        //列表
+        Route::get('/', 'LedgerController@show')->name('ledger.index');
+//        //修改
+//        Route::post('/{id}', 'LedgerController@update')->name('ledger.update');
+    });
 });

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 
 /**
@@ -54,6 +55,7 @@ class Bill extends BaseModel
         'remark',
         'picture_list',
         'pay_type',//
+        'pay_mode',
         'mode',//
         'type',//
         'create_date',
@@ -92,6 +94,7 @@ class Bill extends BaseModel
         'mode_name',
         'create_timing_name',
         'pay_timing_name',
+        'pay_mode_name',
         'object_type_name',
         'pay_type_name',
         'payer_type_name',
@@ -120,7 +123,11 @@ class Bill extends BaseModel
 
     public function getPayTypeNameAttribute()
     {
-        return empty($this->pay_type) ? null : ConstTranslateTrait::payTypeList($this->pay_type);
+        if($this->pay_mode == BaseConstService::PAY_MODE_1){
+            return empty($this->pay_type) ? null : ConstTranslateTrait::payTypeList($this->pay_type);
+        }else{
+            return empty($this->pay_type) ? null : ConstTranslateTrait::onlinePayTypeList($this->pay_type);
+        }
     }
 
     public function getVerifyStatusNameAttribute()
@@ -169,5 +176,10 @@ class Bill extends BaseModel
     public function getPayTimingNameAttribute()
     {
         return empty($this->pay_timing) ? null : ConstTranslateTrait::billPayTimingList($this->pay_timing);
+    }
+
+    public function getPayModeNameAttribute()
+    {
+        return empty($this->pay_mode) ? null : ConstTranslateTrait::payModeList($this->pay_mode);
     }
 }

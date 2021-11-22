@@ -1,12 +1,12 @@
 <?php
 /**
- * @apiDefine 13 轮播图配置
+ * @apiDefine 13carousel 轮播图配置
  */
 
 /**
  * @api {get} /admin/carousel 轮播图查询
  * @apiName 轮播图查询
- * @apiGroup 13
+ * @apiGroup 13carousel
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} id 地址ID

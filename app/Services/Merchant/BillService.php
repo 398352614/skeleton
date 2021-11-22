@@ -54,12 +54,13 @@ class BillService extends BaseService
         $params['bill_no'] = $this->getOrderNoRuleService()->createBillNo();
         $params['create_date'] = today()->format('Y-m-d');
         $bill = parent::create($params);
-        if ($bill === false) {
+        if ($bill == false) {
             throw new BusinessLogicException('订单新增失败');
         }
         if ($params['pay_timing'] == BaseConstService::FEE_PAY_TYPE_1) {
             $this->getJournalService()->record($params);
         }
+        return $bill;
     }
 
     /**
@@ -69,35 +70,11 @@ class BillService extends BaseService
      */
     public function getPageList()
     {
-        if ((!empty($this->formData['user_type']) && $this->formData['user_type'] == BaseConstService::USER_MERCHANT) || empty($this->formData['user_type'])) {
-            $where = [];
-            if (!empty($this->formData['code'])) {
-                $where['code'] = $this->formData['code'];
-            }
-            if (!empty($this->formData['merchant_group_id'])) {
-                $where ['merchant_group_id'] = $this->formData['merchant_group_id'];
-            }
-            if (!empty($where)) {
-                $merchantList = $this->getMerchantService()->getList($where, ['*'], false);
-                $this->query->whereIn('payer_id', $merchantList->pluck('id')->toArray());
-                $this->query->orderByDesc('id');
-                $data = parent::getPageList();
-
-            } else {
-                $data = parent::getPageList();
-                $merchantList = $this->getMerchantService()->getList(['id' => ['in', $data->pluck('payer_id')->toArray()]], ['*'], false);
-            }
-            $merchantGroupList = $this->getMerchantGroupService()->getList(['id' => ['in', $merchantList->pluck('merchant_group_id')->toArray()]], ['*'], false);
-            foreach ($data as $k => $v) {
-                $merchant = $merchantList->where('id', $v['payer_id'])->first();
-                if (!empty($merchant)) {
-                    $data[$k]['code'] = $merchant['code'];
-                    $data[$k]['merchant_group_name'] = $merchantGroupList->where('id', $merchant['merchant_group_id'])->first()['name'];
-                }
-            }
-        } else {
-            $data = parent::getPageList();
-        }
+        $this->query
+            ->where('payer_id', auth()->user()->id)
+            ->where('payer_type', BaseConstService::USER_MERCHANT)
+            ->where('mode', BaseConstService::BILL_MODE_1);
+        $data = parent::getPageList();
         return $data;
     }
 
@@ -108,10 +85,11 @@ class BillService extends BaseService
     public function storeByRecharge(array $data)
     {
         $data['mode'] = BaseConstService::BILL_MODE_1;
+        $data['pay_mode'] = BaseConstService::PAY_MODE_2;
         $data['create_Date'] = today()->format('Y-m-d');
         $data['actual_amount'] = 0;
         $data['payer_type'] = BaseConstService::USER_MERCHANT;
-        $data['payer_id'] = $data['merchant_id'];
+        $data['payer_id'] = auth()->user()->id;
         $data['payer_name'] = UserTrait::get($data['payer_id'], BaseConstService::USER_MERCHANT)['name'];
         $data['payee_id'] = auth()->user()->company_id;
         $data['payee_type'] = BaseConstService::USER_COMPANY;
@@ -121,8 +99,9 @@ class BillService extends BaseService
         $data['operator_name'] = auth()->user()->username;
         $data['create_timing'] = BaseConstService::BILL_CREATE_TIMING_2;
         $data['pay_timing'] = BaseConstService::BILL_PAY_TIMING_1;
-        $data['status'] = BaseConstService::BILL_STATUS_2;
-        self::store($data);
+        $data['status'] = BaseConstService::BILL_STATUS_1;
+        $data = self::store($data);
+        return $data;
     }
 
     /**
@@ -151,9 +130,9 @@ class BillService extends BaseService
         if ($data['payer_type'] == BaseConstService::USER_MERCHANT) {
             $data['payer_id'] = $order['merchant_id'];
             $data['payer_name'] = UserTrait::get($data['payer_id'], BaseConstService::USER_MERCHANT)['name'];
-        }elseif ($data['payer_type'] == BaseConstService::USER_RECEIVER && $order['type'] == BaseConstService::ORDER_TYPE_3){
+        } elseif ($data['payer_type'] == BaseConstService::USER_RECEIVER && $order['type'] == BaseConstService::ORDER_TYPE_3) {
             $data['payer_name'] = $order['second_place_fullname'];
-        }elseif ($data['payer_type'] == BaseConstService::USER_SENDER || $data['payer_type'] == BaseConstService::USER_RECEIVER){
+        } elseif ($data['payer_type'] == BaseConstService::USER_SENDER || $data['payer_type'] == BaseConstService::USER_RECEIVER) {
             $data['payer_name'] = $order['place_fullname'];
         }
         //填充收款方
@@ -173,6 +152,7 @@ class BillService extends BaseService
         $data['operator_type'] = BaseConstService::USER_ADMIN;
         $data['operator_name'] = auth()->user()->username;
         $data['status'] = $status;
+        $data['pay_mode'] = BaseConstService::PAY_MODE_2;
         self::store($data);
     }
 
@@ -182,8 +162,9 @@ class BillService extends BaseService
      * @throws BusinessLogicException
      * pay_type,actual_amount,status
      */
-    public function pay($data, $user)
+    public function pay($data)
     {
+        $user = UserTrait::get(auth()->user()->id, BaseConstService::USER_MERCHANT);
         $dbData = parent::getInfoLock(['bill_no' => $data['bill_no']], ['*'], false);
         if (empty($dbData)) {
             throw new BusinessLogicException('数据不存在');
@@ -200,7 +181,7 @@ class BillService extends BaseService
             'operator_type' => $user['user_type'],
             'operator_id' => $user['id'],
             'operator_name' => $user['name'],
-            'pay_type' => $data['pay_type']
+            'pay_type' => $data['pay_type'],
         ]);
         if ($row == false) {
             throw new BusinessLogicException('支付失败');
@@ -265,14 +246,14 @@ class BillService extends BaseService
             throw new BusinessLogicException('账单已拒绝，无法再次审核');
         }
         if ($data['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_2) {
-            if (empty($data['actual_amount'])) {
-                throw new BusinessLogicException('实际金额不能为空');
-            }
-            if ($data['actual_amount'] > $dbData['expect_amount']) {
-                throw new BusinessLogicException('实际金额不能大于预计金额');
-            }
+//            if (empty($data['actual_amount'])) {
+//                throw new BusinessLogicException('实际金额不能为空');
+//            }
+//            if ($data['actual_amount'] > $dbData['expect_amount']) {
+//                throw new BusinessLogicException('实际金额不能大于预计金额');
+//            }
             $row = parent::update(['id' => $id], [
-                'actual_amount' => $data['actual_amount'] ?? 0,
+                'actual_amount' => $dbData['expect_amount'] ?? 0,
                 'verify_status' => $data['verify_status'],
                 'verify_time' => now()
             ]);

@@ -78,11 +78,22 @@ class PaypalService extends BaseService
     public function pay($data)
     {
         (new Paypal())->pay($data);
-        parent::update(['payment_id' => $data['payment_id']], [
-            'payer_id' => $data['payer_id'],
-            'payment_id' => $data['payment_id'],
-            'status' => $data['success']
-        ]);
+        $dbData=parent::getInfo(['payment_id'=>$data['payment_id']],['*'],false);
+        if(!empty($dbData)){
+            parent::update(['payment_id' => $data['payment_id']], [
+                'payer_id' => $data['payer_id'],
+                'payment_id' => $data['payment_id'],
+                'status' => $data['success']
+            ]);
+            //更新对账单
+            $params=[
+                'pay_type'=>BaseConstService::PAY_TYPE_1,
+                'actual_amount'=>$dbData['amount'],
+                'status'=>$data['status']
+            ];
+            $this->getBillService()->pay($params);
+        }
+
     }
 
     /**

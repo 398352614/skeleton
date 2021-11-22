@@ -1,12 +1,12 @@
 <?php
 /**
- * @apiDefine 15 条款配置
+ * @apiDefine 15serviceAgreement 条款配置
  */
 
 /**
  * @api {get} /admin/service-agreement 条款查询
  * @apiName 条款查询
- * @apiGroup 15
+ * @apiGroup 15serviceAgreement
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} id 地址ID
@@ -88,7 +88,7 @@
 /**
  * @api {get} /admin/service-agreement/{id} 条款详情
  * @apiName 条款详情
- * @apiGroup 15
+ * @apiGroup 15serviceAgreement
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} id 地址ID

@@ -156,7 +156,7 @@ class Paypal
     public function pay($data)
     {
         if (isset($data['success']) && $data['success'] == 'true') {
-
+            $dbData=\App\Models\Paypal::query()->where('payment_id',$data['paymentId']);
 
             $paymentId = $data['paymentId'];
             $payment = Payment::get($paymentId, $this->payPal);
@@ -172,8 +172,8 @@ class Paypal
 //                ->setTax(10)
 //                ->setSubtotal(70);
 
-            $amount->setCurrency('USD');
-            $amount->setTotal(3);
+            $amount->setCurrency($dbData['currency_unit_type']);
+            $amount->setTotal($dbData['amount']);
 //            $amount->setDetails($details);
             $transaction->setAmount($amount);
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 
 /**
@@ -49,7 +50,9 @@ class BillVerify extends BaseModel
         'company_id',
         'verify_no',
         'status',
+        'pay_status',
         'pay_type',
+        'pay_mode',
         'expect_amount',
         'actual_amount',
         'remark',
@@ -74,6 +77,7 @@ class BillVerify extends BaseModel
 
     protected $appends = [
         'pay_type_name',
+        'pay_mode_name',
         'operator_type_name',
         'status_name',
         'rest_amount',
@@ -91,7 +95,11 @@ class BillVerify extends BaseModel
 
     public function getPayTypeNameAttribute()
     {
-        return empty($this->pay_type) ? null : ConstTranslateTrait::payTypeList($this->pay_type);
+        if($this->pay_mode == BaseConstService::PAY_MODE_1){
+            return empty($this->pay_type) ? null : ConstTranslateTrait::payTypeList($this->pay_type);
+        }else{
+            return empty($this->pay_type) ? null : ConstTranslateTrait::onlinePayTypeList($this->pay_type);
+        }
     }
 
 
@@ -100,4 +108,13 @@ class BillVerify extends BaseModel
         return empty($this->operator_type) ? null : ConstTranslateTrait::userTypeList($this->operator_type);
     }
 
+    public function getPayStatusNameAttribute()
+    {
+        return empty($this->pay_status) ? null : ConstTranslateTrait::userTypeList($this->pay_status);
+    }
+
+    public function getPayModeNameAttribute()
+    {
+        return empty($this->pay_mode) ? null : ConstTranslateTrait::payModeList($this->pay_mode);
+    }
 }

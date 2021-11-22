@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 /**
- * @api {get} /merchant_h5/bill-recharge 充值记录查询
+ * @api {get} /merchant_h5/bill/recharge 充值记录查询
  * @apiName 账单查询
  * @apiGroup 11recharge
  * @apiVersion 1.0.0
@@ -74,7 +74,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 /**
- * @api {get} /merchant_h5/bill-recharge/{id} 充值记录详情
+ * @api {get} /merchant_h5/bill/recharge/{id} 充值记录详情
  * @apiName 账单详情
  * @apiGroup 11recharge
  * @apiVersion 1.0.0
@@ -112,7 +112,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 /**
- * @api {post} /merchant_h5/bill/merchant-recharge 充值
+ * @api {post} /merchant_h5/bill/recharge 充值
  * @apiName 货主充值开单
  * @apiGroup 11recharge
  * @apiVersion 1.0.0

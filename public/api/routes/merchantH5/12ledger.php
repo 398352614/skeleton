@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 /**
- * @apiDefine 11recharge 财务管理
+ * @apiDefine 12ledger 财务管理
  */
 
 /**

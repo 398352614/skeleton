@@ -1,0 +1,12 @@
+{
+    "url": "https://api.rrtms.com/api",
+    "sampleUrl": "https://api.rrtms.com/api",
+    "title": "红兔TMS 接口文档",
+    "name": "红兔TMS API文档",
+    "version": "1.0.0",
+    "description": "本文档提供TMS接口文档供开发人员作为参考，文档使用RESTful风格，如有疑问请联系开发者",
+    "apidoc": {
+        "title": "TMSAPI文档",
+        "url" : "http://api.rrtms.com/api-doc"
+    }
+}

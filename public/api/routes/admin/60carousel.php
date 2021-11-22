@@ -317,7 +317,7 @@
  */
 
 /**
- * @api {put} /admin/address/sort 轮播图排序
+ * @api {put} /admin/carousel/sort 轮播图排序
  * @apiName 轮播图排序
  * @apiGroup 60
  * @apiVersion 1.0.0

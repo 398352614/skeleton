@@ -23,7 +23,7 @@ class LedgerService extends BaseService
         'user_type' => ['=', 'user_type'],
     ];
 
-    public $orderBy = ['id'=>'desc'];
+    public $orderBy = ['id' => 'desc'];
 
     /**
      * AddressService constructor.
@@ -41,9 +41,9 @@ class LedgerService extends BaseService
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function show($id)
+    public function show()
     {
-        $info = parent::getInfo(['id' => $id], ['*'], false);
+        $info = parent::getInfo(['user_type' => BaseConstService::USER_MERCHANT, 'user_id' => auth()->user()->id], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -79,7 +79,7 @@ class LedgerService extends BaseService
         } else {
             $dbData = $dbData->toArray();
         }
-        $data = Arr::only($data, ['credit','status']);
+        $data = Arr::only($data, ['credit', 'status']);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');

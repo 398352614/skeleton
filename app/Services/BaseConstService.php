@@ -919,6 +919,13 @@ class BaseConstService
     const PAY_TYPE_3 = 3;
     const PAY_TYPE_4 = 4;
 
+    //第三方支付方式
+    const ONLINE_PAY_TYPE_1 = 1;
+
+    //支付模式1-线上2-线下
+    const PAY_MODE_1=1;
+    const PAY_MODE_2=2;
+
     //账目审核方式1-自动审核2-手动审核
     const LEDGER_VERIFY_TYPE_1 = 1;
     const LEDGER_VERIFY_TYPE_2 = 2;
@@ -987,6 +994,6 @@ class BaseConstService
     const PAYPAL_STATUS_2 = 2;
     const PAYPAL_STATUS_3 = 3;
 
-    const SERVICE_AGREEMENT_LOCATION_1=1;
-    const SERVICE_AGREEMENT_LOCATION_2=2;
+    const SERVICE_AGREEMENT_LOCATION_1 = 1;
+    const SERVICE_AGREEMENT_LOCATION_2 = 2;
 }

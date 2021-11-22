@@ -1,12 +1,12 @@
 <?php
 /**
- * @apiDefine 14 文章配置
+ * @apiDefine 14article 文章配置
  */
 
 /**
  * @api {get} /admin/article 文章查询
  * @apiName 文章查询
- * @apiGroup 14
+ * @apiGroup 14article
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} id 地址ID
@@ -88,7 +88,7 @@
 /**
  * @api {get} /admin/article/{id} 文章详情
  * @apiName 文章详情
- * @apiGroup 14
+ * @apiGroup 14article
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} id 地址ID

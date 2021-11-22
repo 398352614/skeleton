@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Merchant\BillService;
 
@@ -26,7 +27,7 @@ class BillController extends BaseController
 
     /**
      * @return \Illuminate\Database\Eloquent\Collection
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function index()
     {
@@ -35,27 +36,27 @@ class BillController extends BaseController
 
     /**
      * 充值
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function merchantRecharge()
     {
         return $this->service->storeByRecharge($this->data);
     }
 
-//    /**
-//     * @param $id
-//     * @return int|void
-//     * @throws \App\Exceptions\BusinessLogicException
-//     */
-//    public function update($id)
-//    {
-//        return $this->service->update($id,$this->data);
-//    }
+    /**
+     * @param $id
+     * @return void
+     * @throws BusinessLogicException
+     */
+    public function pay()
+    {
+        return $this->service->pay($this->data);
+    }
 
     /**
      * 审核
      * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function verify($id)
     {
