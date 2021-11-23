@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * @api {get} /admin/ledger 财务详情
  * @apiName 分户账簿查询
- * @apiGroup 11recharge
+ * @apiGroup 12ledger
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} begin_date 起始时间

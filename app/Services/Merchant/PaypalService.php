@@ -57,6 +57,7 @@ class PaypalService extends BaseService
                 'merchant_id' => $bill['merchant_id'],
                 'merchant_name' => $merchant['name'],
                 'amount' => $bill['expect_amount'],
+                'bill_no'=>$data['bill_no'],
                 'currency_unit_type' => CompanyTrait::getCompany()['currency_unit'],
                 'object_no' => $bill['object_no'],
                 'payment_id'=>$payment['id']
