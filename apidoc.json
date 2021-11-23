@@ -7,6 +7,6 @@
     "description": "本文档提供TMS接口文档供开发人员作为参考，文档使用RESTful风格，如有疑问请联系开发者",
     "apidoc": {
         "title": "TMSAPI文档",
-        "url" : "http://api.rrtms.com/api-doc"
+        "url" : "http://api.rrtms.com/api"
     }
 }
