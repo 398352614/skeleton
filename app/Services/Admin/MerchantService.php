@@ -9,7 +9,7 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Controllers\Api\Admin\RegisterController;
+use App\Http\Controllers\Api\Merchant\Api\Merchant\Api\Admin\RegisterController;
 use App\Http\Resources\Api\Admin\MerchantResource;
 use App\Models\Merchant;
 use App\Models\MerchantGroup;

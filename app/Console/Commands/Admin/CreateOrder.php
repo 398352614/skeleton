@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Console\Command\Admin;
+namespace App\Console\Commands\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Controllers\Api\Admin\OrderController;
+use App\Http\Controllers\Api\Merchant\Api\Admin\OrderController;
 use App\Models\Address;
 use App\Models\Merchant;
 use Carbon\Carbon;

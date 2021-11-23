@@ -9,8 +9,6 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 use App\Http\Controllers\BaseController;
-use App\Managner\Payment\Paypal;
-use App\Services\Merchant\AddressService;
 use App\Services\Merchant\PaypalService;
 
 /**
@@ -44,9 +42,9 @@ class PaypalController extends BaseController
      * @return bool|int|void
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function callBack()
+    public function store()
     {
-        return $this->service->callback($this->data);
+        return $this->service->store($this->data);
     }
 
 }

@@ -54,6 +54,7 @@ class Paypal extends BaseModel
         'amount',
         'currency_unit_type',
         'verify_no',
+        'bill_no',
         'object_no',
     ];
 

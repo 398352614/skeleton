@@ -4,50 +4,42 @@
  */
 
 /**
- * @api {get} /merchant_h5/paypal 余额查询
- * @apiName 余额查询
+ * @api {post} /merchant_h5/paypal 发起支付
+ * @apiName 发起支付
  * @apiGroup 16paypal
  * @apiVersion 1.0.0
  * @apiUse auth
+ * @apiParam {string} bill_no 发起支付
  * @apiSuccess {string} code
  * @apiSuccess {string} msg
  * @apiSuccess {string} data
- * @apiSuccess {string} data.user_name 货主名称
- * @apiSuccess {string} data.code 货主编号
- * @apiSuccess {string} data.credit 信用额度
- * @apiSuccess {string} data.balance 账户余额
- * @apiSuccess {string} data.status 状态1-限制2-不限制
- * @apiSuccess {string} data.phone 手机号
- * @apiSuccess {string} data.email 邮箱
- * @apiSuccess {string} data.create_date 注册日期
- * @apiSuccess {string} data.merchant_group_id 货主组ID
- * @apiSuccess {string} data.merchant_group_name 货主组名称
+ * @apiSuccess {string} data.id 支付单id
+ * @apiSuccess {string} data.approvalUrl 支付链接
  * @apiSuccessExample {json} Success-Response:
  * {
  * "code": 200,
  * "data": {
+ * "id": "PAYID-MGOF25Q3WC32184TD472071G",
+ * "approvalUrl": "https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=EC-4M742043RG2316106"
+ * },
+ * "msg": "successful"
  * }
  */
 
 /**
- * @api {get} /merchant_h5/paypal 余额查询
- * @apiName 余额查询
+ * @api {put} /merchant_h5/paypal 完成支付
+ * @apiName 完成支付
  * @apiGroup 16paypal
  * @apiVersion 1.0.0
  * @apiUse auth
+ * @apiParam {string} payment_id 支付单id
+ * @apiParam {string} payer_id 支付方id
+ * @apiParam {string} status 状态2成功3失败
+ * @apiParam {string} amount 金额
+
  * @apiSuccess {string} code
  * @apiSuccess {string} msg
  * @apiSuccess {string} data
- * @apiSuccess {string} data.user_name 货主名称
- * @apiSuccess {string} data.code 货主编号
- * @apiSuccess {string} data.credit 信用额度
- * @apiSuccess {string} data.balance 账户余额
- * @apiSuccess {string} data.status 状态1-限制2-不限制
- * @apiSuccess {string} data.phone 手机号
- * @apiSuccess {string} data.email 邮箱
- * @apiSuccess {string} data.create_date 注册日期
- * @apiSuccess {string} data.merchant_group_id 货主组ID
- * @apiSuccess {string} data.merchant_group_name 货主组名称
  * @apiSuccessExample {json} Success-Response:
  * {
  * "code": 200,

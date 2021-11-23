@@ -44,22 +44,20 @@ class PaypalService extends BaseService
      */
     public function store($data)
     {
-        $bill = $this->getBillService()->getInfo(['object_no' => $data['order_no']], ['*'], false);
+        $bill = $this->getBillService()->getInfo(['bill_no' => $data['bill_no']], ['*'], false);
         if (empty($bill)) {
             throw new BusinessLogicException('数据不存在');
         }
         $merchant = $this->getMerchantService()->getInfo(['id' => $bill['merchant_id']], ['*'], false);
-        $billVerify = $this->getBillVerifyService()->getInfo(['verify_no' => $bill['verify_no']], ['*'], false);
-        if (!empty($billVerify)) {
-            $this->check($billVerify['verify_no']);
-            $payment=(new Paypal())->store($data['order_no']);
+        if (!empty($bill)) {
+            $this->check($bill['verify_no']);
+            $payment=(new Paypal())->store($data['bill_no'],$bill['expect_amount']);
             //记录
             $row = parent::create([
                 'merchant_id' => $bill['merchant_id'],
                 'merchant_name' => $merchant['name'],
-                'amount' => $data['amount'],
+                'amount' => $bill['expect_amount'],
                 'currency_unit_type' => CompanyTrait::getCompany()['currency_unit'],
-                'verify_no' => $billVerify['verify_no'],
                 'object_no' => $bill['object_no'],
                 'payment_id'=>$payment['id']
             ]);
@@ -100,14 +98,12 @@ class PaypalService extends BaseService
      * @param $verifyNo
      * @throws BusinessLogicException
      */
-    public function check($verifyNo)
+    public function check($billNo)
     {
-        $data = parent::getInfo(['verify_no' => $verifyNo, 'status' => BaseConstService::PAYPAL_STATUS_1], ['*'], false);
+        $data = parent::getInfo(['bill_no' => $billNo, 'status' => BaseConstService::PAYPAL_STATUS_1], ['*'], false);
         if (!empty($data)) {
-            if ($data['status'] == BaseConstService::PAY_TYPE_1) {
-                throw new BusinessLogicException('支付中，请勿重复支付');
-            }
-            if ($data['status'] == BaseConstService::PAY_TYPE_2) {
+
+            if ($data['status'] == BaseConstService::BILL_STATUS_2) {
                 throw new BusinessLogicException('支付完成，请勿重复支付');
             }
         }

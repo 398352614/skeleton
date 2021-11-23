@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\Data;
 
-use App\Http\Controllers\Api\Admin\RegisterController;
+use App\Http\Controllers\Api\Merchant\Api\Merchant\Api\Admin\RegisterController;
 use App\Models\Company;
 use App\Models\Ledger;
 use App\Models\Merchant;

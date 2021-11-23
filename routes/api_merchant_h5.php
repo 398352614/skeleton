@@ -12,13 +12,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-//支付管理
-Route::prefix('payment-paypal')->group(function () {
-    //列表查询
-    Route::post('/', 'PaypalController@store')->name('paypal.pay');
-    //详情
-    Route::get('/', 'PaypalController@pay')->name('paypal.pay');
-});
+
 
 //公共接口
 Route::namespace('Api\Merchant')->group(function () {
@@ -182,5 +176,13 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         Route::get('/', 'LedgerController@show')->name('ledger.index');
 //        //修改
 //        Route::post('/{id}', 'LedgerController@update')->name('ledger.update');
+    });
+
+    //支付管理
+    Route::prefix('payment')->group(function () {
+        //列表查询
+        Route::post('/paypal', 'PaypalController@store')->name('paypal.pay');
+        //详情
+        Route::put('/paypal', 'PaypalController@pay')->name('paypal.pay');
     });
 });

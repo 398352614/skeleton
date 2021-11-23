@@ -24,6 +24,7 @@ class CreatePaypalTable extends Migration
             $table->tinyInteger('status')->default(1)->nullable()->comment('状态1-已创建2-已支付3-支付失败');
             $table->decimal('amount')->default(0)->nullable()->comment('数额');
             $table->tinyInteger('currency_unit_type')->default(null)->nullable()->comment('货币单位');
+            $table->string('bill_no')->default(null)->nullable()->comment('账单号');
             $table->string('verify_no')->default(null)->nullable()->comment('对账单号');
             $table->string('object_no')->default(null)->nullable()->comment('系统编号');
             $table->timestamps();
