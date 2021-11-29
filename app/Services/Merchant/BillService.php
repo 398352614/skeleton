@@ -93,7 +93,7 @@ class BillService extends BaseService
         $data['payer_name'] = UserTrait::get($data['payer_id'], BaseConstService::USER_MERCHANT)['name'];
         $data['payee_id'] = auth()->user()->company_id;
         $data['payee_type'] = BaseConstService::USER_COMPANY;
-        $data['payee_name'] = $this->getCompanyService()->getInfo(['id' => auth()->user()->id], ['*'], false)->toArray()['name'] ?? '';
+        $data['payee_name'] = $this->getCompanyService()->getInfo(['id' => auth()->user()->id], ['*'], false)['name'] ?? '';
         $data['operator_id'] = auth()->user()->id;
         $data['operator_type'] = BaseConstService::USER_ADMIN;
         $data['operator_name'] = auth()->user()->username;
