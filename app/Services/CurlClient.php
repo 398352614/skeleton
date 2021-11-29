@@ -19,7 +19,7 @@ class CurlClient
 
     public function __construct()
     {
-        $this->http = new Client(['headers' => ['Language' => 'en'], 'verify' => false]);
+        $this->http = new Client(['headers' => ['Language' => 'en','Content-Type'=>'application/x-www-form-urlencode'], 'verify' => false]);
     }
 
     public function setMethod($url, $params, $method)
@@ -68,6 +68,7 @@ class CurlClient
             } else {
                 $response = $this->http->post($url, ['form_params' => $params]);
             }
+            Log::info('data',collect($this->http)->toArray());
         } catch (\Exception $e) {
             if ($next >= 2) {
                 Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '多次请求出错，不再请求');
