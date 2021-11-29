@@ -4,7 +4,7 @@
  */
 
 /**
- * @api {post} /merchant_h5/paypal 发起支付
+ * @api {post} /merchant_h5/payment/paypal 发起支付
  * @apiName 发起支付
  * @apiGroup 16paypal
  * @apiVersion 1.0.0
@@ -27,7 +27,7 @@
  */
 
 /**
- * @api {put} /merchant_h5/paypal 完成支付
+ * @api {put} /merchant_h5/payment/paypal 完成支付
  * @apiName 完成支付
  * @apiGroup 16paypal
  * @apiVersion 1.0.0
