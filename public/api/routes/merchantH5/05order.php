@@ -71,6 +71,7 @@ Route::prefix('order')->group(function () {
      * @apiUse page
      * @apiParam {String} type 类型1-取件2-派件3-取派
      * @apiParam {String} status 状态:1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站
+     * @apiParam {String} pay_status 支付状态1-未支付2-已支付
      * @apiParam {String} begin_date 起始时间
      * @apiParam {String} end_date 终止时间
      * @apiParam {String} source 来源

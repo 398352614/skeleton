@@ -57,6 +57,7 @@ class OrderService extends BaseService
         'out_order_no' => ['like', 'out_order_no'],
         'out_group_order_no' => ['like', 'out_group_order_no'],
         'order_no' => ['like', 'order_no'],
+        'pay_status'=>['=','pay_status']
     ];
 
     public $headings = [
