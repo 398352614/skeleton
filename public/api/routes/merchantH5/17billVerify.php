@@ -6,7 +6,7 @@
 /**
  * @api {get} /merchant_h5/bill-verify 对账单查询
  * @apiName 对账单查询
- * @apiGroup 55
+ * @apiGroup 17billVerify
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} begin_date 起始时间
@@ -49,7 +49,7 @@
 /**
  * @api {get} /merchant_h5/bill-verify/{id} 对账单详情
  * @apiName 对账单详情
- * @apiGroup 55
+ * @apiGroup 17billVerify
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} id 对账单ID
