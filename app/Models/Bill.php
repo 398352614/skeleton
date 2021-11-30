@@ -123,7 +123,7 @@ class Bill extends BaseModel
 
     public function getPayTypeNameAttribute()
     {
-        if($this->pay_mode == BaseConstService::PAY_MODE_1){
+        if($this->pay_mode == BaseConstService::PAY_MODE_1 || $this->pay_mode == null){
             return empty($this->pay_type) ? null : ConstTranslateTrait::payTypeList($this->pay_type);
         }else{
             return empty($this->pay_type) ? null : ConstTranslateTrait::onlinePayTypeList($this->pay_type);
