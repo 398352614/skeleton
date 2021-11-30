@@ -156,7 +156,8 @@ use Illuminate\Support\Facades\App;
  * @method static paypalStatusList($args = null)
  * @method static serviceAgreementLocationList($args = null)
  * @method static onlinePayTypeList($args = null)
- * @method static payModeList($args = null)
+ * @method static orderPayStatusList($args = null)
+ *
  */
 trait ConstTranslateTrait
 {
@@ -169,6 +170,11 @@ trait ConstTranslateTrait
         BaseConstService::PAYPAL_STATUS_1 => '已创建',
         BaseConstService::PAYPAL_STATUS_2 => '已支付',
         BaseConstService::PAYPAL_STATUS_3 => '支付失败',
+    ];
+
+    public static $orderPayStatusList = [
+        BaseConstService::ORDER_PAY_STATUS_1 => '未支付',
+        BaseConstService::ORDER_PAY_STATUS_2 => '已支付',
     ];
 
     public static $paypalSandboxModeList = [

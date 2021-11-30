@@ -186,6 +186,10 @@ class BillService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('支付失败');
         }
+        $row = $this->getOrderService()->update(['order_no' => $dbData['object_no']], ['pay_status' => $data - 1]);
+        if ($row == false) {
+            throw new BusinessLogicException('支付失败');
+        }
     }
 
     /**

@@ -97,6 +97,8 @@ Route::prefix('order')->group(function () {
      * @apiSuccess {String} data.data.express_second_no
      * @apiSuccess {String} data.data.status
      * @apiSuccess {String} data.data.status_name
+     * @apiSuccess {String} data.data.pay_status 支付状态1-已支付2-未支付
+     * @apiSuccess {String} data.data.pay_status_name 支付状态名称
      * @apiSuccess {String} data.data.out_status
      * @apiSuccess {String} data.data.out_status_name
      * @apiSuccess {String} data.data.execution_date
@@ -148,6 +150,8 @@ Route::prefix('order')->group(function () {
      * @apiSuccess {String} data.execution_date 取派日期
      * @apiSuccess {String} data.create_date 开单日期
      * @apiSuccess {String} data.out_order_no 外部订单号
+     * @apiSuccess {String} data.pay_status 支付状态1-已支付2-未支付
+     * @apiSuccess {String} data.pay_status_name 支付状态名称
      * @apiSuccess {String} data.mask_code 掩码
      * @apiSuccess {String} data.source 来源
      * @apiSuccess {String} data.source_name 来源名称

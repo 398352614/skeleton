@@ -112,6 +112,7 @@ class Order extends BaseModel
         'receipt_count',
         'create_date',
         'transport_mode',
+        'pay_status'
     ];
 
     /**
@@ -136,7 +137,9 @@ class Order extends BaseModel
         'settlement_type_name',
         'source_name',
         'transport_price_type_name',
-        'receipt_type_name'
+        'receipt_type_name',
+        'pay_status_name'
+
     ];
 
     /**
@@ -160,6 +163,11 @@ class Order extends BaseModel
     public function getStatusNameAttribute()
     {
         return (empty($this->status) || ($this->status >= 6)) ? null : ConstTranslateTrait::orderStatusList($this->status);
+    }
+
+    public function getPayStatusNameAttribute()
+    {
+        return empty($this->pay_status)  ? null : ConstTranslateTrait::orderPayStatusList($this->pay_status);
     }
 
     public function getOutStatusNameAttribute()

@@ -37,6 +37,8 @@ class OrderInfoResource extends JsonResource
             'count_settlement_amount'=>$this->count_settlement_amount,
             'replace_amount' => $this->replace_amount,
             'status' => $this->status,
+            'pay_status' => $this->pay_status,
+            'pay_status_name' => $this->pay_status_name,
             'second_place_fullname' => $this->second_place_fullname,
             'second_place_phone' => $this->second_place_phone,
             'second_place_country' => $this->second_place_country,

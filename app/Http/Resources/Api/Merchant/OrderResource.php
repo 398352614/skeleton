@@ -31,6 +31,8 @@ class OrderResource extends JsonResource
             'out_user_id' => $this->out_user_id,
             'status' => $this->status,
             'status_name' => $this->status_name,
+            'pay_status' => $this->pay_status,
+            'pay_status_name' => $this->pay_status_name,
             'out_status' => $this->out_status,
             'control_mode'=> $this->control_mode,
             'control_mode_name'=> $this->control_mode_name,
