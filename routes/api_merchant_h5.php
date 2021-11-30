@@ -185,4 +185,12 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         //详情
         Route::put('/paypal', 'PaypalController@pay')->name('paypal.pay');
     });
+
+    //支付管理
+    Route::prefix('bill-verify')->group(function () {
+        //列表查询
+        Route::get('/', 'BillVerifyController@index')->name('bill-verify.index');
+        //详情
+        Route::get('/{id}', 'BillVerifyController@show')->name('bill-verify.index');
+    });
 });
