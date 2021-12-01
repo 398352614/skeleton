@@ -168,9 +168,10 @@ Route::prefix('address')->group(function () {
     /**
      * @api {put} /merchant_h5/address/{id}/default 设置默认地址
      * @apiName 设置默认地址
-     * @apiGroup 地址删除
+     * @apiGroup 08address
      * @apiVersion 1.0.0
      * @apiUse auth
+     * @apiParam {String} id 地址ID
      * @apiSuccess {string} code
      * @apiSuccess {string} data
      * @apiSuccess {string} msg
