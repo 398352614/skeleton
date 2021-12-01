@@ -806,5 +806,21 @@ Route::prefix('order')->group(function () {
      */
     //运价估算
     Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
+
+    /**
+     * @api {post} /order/pay 订单支付
+     * @apiName 订单支付
+     * @apiGroup 05order
+     * @apiVersion 1.0.0
+     * @apiUse auth
+     *
+     * @apiParam {String} order_no 订单号
+     *
+     * @apiSuccess {Number} code    状态码，200：请求成功
+     * @apiSuccess {String} msg   提示信息
+     * @apiSuccess {Object} data    订单量，以订单状态排序
+     * @apiSuccessExample {json} Success-Response:
+     * {"code":200,"data":[15,2,0,7,2,4],"msg":"successful"}
+     */
 });
 
