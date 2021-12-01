@@ -808,7 +808,7 @@ Route::prefix('order')->group(function () {
     Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
 
     /**
-     * @api {post} /order/pay 订单支付
+     * @api {post} /merchant_h5/order/pay 订单支付
      * @apiName 订单支付
      * @apiGroup 05order
      * @apiVersion 1.0.0
