@@ -341,4 +341,8 @@ class OrderController extends OrderBaseController
         return $this->service->orderExcelExport();
     }
 
+    public function pay()
+    {
+        return $this->service->pay($this->data);
+    }
 }

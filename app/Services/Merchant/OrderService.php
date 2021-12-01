@@ -57,7 +57,7 @@ class OrderService extends BaseService
         'out_order_no' => ['like', 'out_order_no'],
         'out_group_order_no' => ['like', 'out_group_order_no'],
         'order_no' => ['like', 'order_no'],
-        'pay_status'=>['=','pay_status']
+        'pay_status' => ['=', 'pay_status']
     ];
 
     public $headings = [
@@ -1810,6 +1810,40 @@ class OrderService extends BaseService
         $dir = 'orderOut';
         $name = date('YmdHis') . auth()->user()->id;
         return $this->excelExport($name, $this->headings, $cellData, $dir);
+    }
+
+    /**
+     * @param $data
+     * @throws BusinessLogicException
+     */
+    public function pay($data)
+    {
+        if(empty($data['order_no'])){
+            throw new BusinessLogicException('参数错误');
+        }
+        $order = parent::getInfo(['order_no' => $data['order_no']], ['*'], false);
+        if (empty($order)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        //更改订单支付状态
+        parent::update(['order_no' => $data['order_no']], [
+            'pay_status' => BaseConstService::ORDER_PAY_STATUS_2
+        ]);
+        //更改对账单支付状态
+        $billList = $this->getBillService()->getList(['object_no' => $data['order_no'], 'object_type' => BaseConstService::BILL_OBJECT_TYPE_1], ['*'], false);
+        if (!empty($billList)) {
+            foreach ($billList as $v) {
+                $v=collect($v)->toArray();
+                $this->getBillService()->update(['object_no' => $data['order_no'], 'object_type' => BaseConstService::BILL_OBJECT_TYPE_1], [
+                    'status' => BaseConstService::BILL_STATUS_2,
+                    'actual_amount' => $v['expect_amount']
+                ]);
+                //扣除余额
+                $this->getLedgerService()->deduct($v['payer_type'], $v['payer_id'], $v['expect_amount']);
+                //记录流水
+                $this->getJournalService()->record($v);
+            }
+        }
     }
 
 }

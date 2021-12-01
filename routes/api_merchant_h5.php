@@ -89,6 +89,8 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         Route::get('/{id}/trail', 'OrderTrailController@show')->name('order-trail.index');
         //运价估算
         Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
+        //支付
+        Route::post('pay','OrderController@pay');
     });
 
     //地址管理
