@@ -36,6 +36,8 @@ Route::prefix('address')->group(function () {
      * @apiParam {String} place_post_code 邮编
      * @apiParam {String} place_phone 电话
      * @apiParam {String} place_fullname 姓名
+     * @apiParam {String} keyword 模糊查询
+     * @apiParam {String} is_default 是否默认1是2否
      * @apiUse page
      * @apiSuccess {Number} code    状态码，200：请求成功
      * @apiSuccess {String} msg   提示信息
@@ -162,6 +164,23 @@ Route::prefix('address')->group(function () {
      * {"code":200,"data":[],"msg":"successful"}
      */
     Route::delete('/{id}', 'AddressController@destroy');
+
+    /**
+     * @api {put} /merchant_h5/address/{id}/default 设置默认地址
+     * @apiName 设置默认地址
+     * @apiGroup 地址删除
+     * @apiVersion 1.0.0
+     * @apiUse auth
+     * @apiSuccess {string} code
+     * @apiSuccess {string} data
+     * @apiSuccess {string} msg
+     * @apiSuccessExample {json} Success-Response:
+     * {
+     * "code": 200,
+     * "data": "",
+     * "msg": "successful"
+     * }
+     */
 });
 
 

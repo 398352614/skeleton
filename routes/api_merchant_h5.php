@@ -105,6 +105,8 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         Route::put('/{id}', 'AddressController@update');
         //删除
         Route::delete('/{id}', 'AddressController@destroy');
+        //设置默认
+        Route::put('/{id}/default', 'AddressController@changeDefault');
     });
 
 

@@ -12,6 +12,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Merchant\AddressInfoResource;
 use App\Http\Resources\Api\Merchant\AddressResource;
 use App\Models\Address;
+use App\Services\BaseConstService;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
 use App\Traits\LocationTrait;
@@ -29,6 +30,8 @@ class AddressService extends BaseService
         'place_post_code' => ['like', 'place_post_code'],
         'place_phone' => ['like', 'place_phone'],
         'type' => ['=', 'type'],
+        'place_fullname,place_phone,place_address' => ['like', 'keyword'],
+        'is_default' => ['=', 'is_default']
     ];
 
     public $orderBy = [
@@ -231,6 +234,27 @@ class AddressService extends BaseService
         }
         $address = Arr::only($address, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code', 'place_province', 'place_district', 'place_lon', 'place_lat']);
         return $address;
+    }
+
+    /**
+     * 设置默认
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function changeDefault($id)
+    {
+        $address=parent::getInfo(['id'=>$id],['*'],false);
+        if(empty($address)){
+            throw new BusinessLogicException('数据不存在');
+        }
+        $row = parent::updateById($id, ['is_default' => BaseConstService::ORDER_TEMPLATE_IS_DEFAULT_1]);
+        if ($row == false) {
+            throw new BusinessLogicException('修改失败');
+        }
+        $row = parent::update(['id' => ['<>', $id],'type'=>$address['type']], ['is_default' => BaseConstService::ORDER_TEMPLATE_IS_DEFAULT_2]);
+        if ($row == false) {
+            throw new BusinessLogicException('修改失败');
+        }
     }
 
 }

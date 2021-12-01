@@ -80,4 +80,13 @@ class AddressController extends BaseController
         return $this->service->showByApi($this->data);
     }
 
+    /**
+     * 设置默认
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function changeDefault($id)
+    {
+        return $this->service->changeDefault($id);
+    }
+
 }

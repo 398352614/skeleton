@@ -31,6 +31,7 @@ class AddressResource extends JsonResource
             'place_street' => $this->place_street,
             'place_lon' => $this->place_lon,
             'place_lat' => $this->place_lat,
+            'is_default'=>$this->is_default,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];

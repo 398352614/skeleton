@@ -63,6 +63,7 @@ class Address extends BaseModel
         'created_at',
         'updated_at',
         'unique_code',
+        'is_default',
         'type'
     ];
 
@@ -77,6 +78,7 @@ class Address extends BaseModel
 
     protected $appends = [
         'merchant_id_name',
+        'is_default_name',
         'short',
         'type_name',
         'place_country_name',
@@ -108,5 +110,10 @@ class Address extends BaseModel
     public function getShortAttribute()
     {
         return empty($this->place_country) ? null : $this->getOriginal('place_country');
+    }
+
+    public function getIsDefaultNameAttribute()
+    {
+        return empty($this->is_default) ? null : ConstTranslateTrait::orderTemplateIsDefaultList($this->is_default);
     }
 }
