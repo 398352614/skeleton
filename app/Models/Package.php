@@ -77,7 +77,8 @@ class Package extends BaseModel
         'auth_birth_date',
         'stage_name',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'picture_list'
     ];
 
     /**
