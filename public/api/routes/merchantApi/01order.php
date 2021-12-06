@@ -88,7 +88,7 @@ use Illuminate\Support\Facades\Route;
  * @apiParam {String} receipt_type 回单要求
  * @apiParam {String} receipt_type_name 回单要求名称
  * @apiParam {String} receipt_count 回单数量
- * @apiParam {Object} package_list 包裹列表
+ * @apiParam {Object} package_list 包裹列表（包裹列表和材料列表两者至少有一个就行，相关必填项是：如果该列表有数据，则该项必填）
  * @apiParam {String} package_list.expiration_date 有效日期
  * @apiParam {String} package_list.name 包裹名称
  * @apiParam {String} package_list.express_first_no[必填] 快递单号
