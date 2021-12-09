@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 
 class InitBasePermission extends Command
 {
-    protected $signature = 'init:base-permission {--id= : company id}';
+    protected $signature = 'init:base-permission {--id= : company_id}';
 
     protected $description = 'Base permission init';
 

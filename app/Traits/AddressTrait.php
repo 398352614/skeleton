@@ -95,7 +95,7 @@ Trait AddressTrait
      * @param array $to
      * @return mixed
      */
-    public static function secondPlaceToPlace($from, $to = [])
+    public static function secondPlaceToPlace($from, array $to = [])
     {
         if ($to == []) {
             $data = $from;

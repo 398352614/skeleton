@@ -19,6 +19,7 @@ use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
 use App\Services\PackageTrailService;
 use App\Services\TrackingOrderTrailService;
+use App\Traits\AddressTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
@@ -593,23 +594,21 @@ class TrackingOrderService extends BaseService
     public function storeAgain($dbOrder, $order, $trackingOrderType)
     {
         if (in_array($dbOrder['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
-            $address = Arr::only($order, ['place_country', 'place_fullname', 'place_phone', 'place_province', 'place_post_code', 'place_house_number', 'place_city', 'place_district', 'place_street', 'place_address', 'place_lat', 'place_lon']);
+            //取件
+            $address = Arr::only(AddressTrait::$place, $order);
+        } elseif ($dbOrder['type'] == BaseConstService::ORDER_TYPE_1) {
+            //派件
+            $address = AddressTrait::secondPlaceToPlace($order);
+        } elseif ($trackingOrderType == BaseConstService::TRACKING_ORDER_TYPE_1) {
+            //取派订单，取件
+            $address = Arr::only(AddressTrait::$place, $order);
         } else {
-            if ($trackingOrderType == BaseConstService::TRACKING_ORDER_TYPE_1) {
-                $address = Arr::only($order, ['place_country', 'place_fullname', 'place_phone', 'place_province', 'place_post_code', 'place_house_number', 'place_city', 'place_district', 'place_address', 'place_lat', 'place_lon']);
-            } else {
-                $address = [
-                    'place_country' => $order['second_place_country'], 'place_fullname' => $order['second_place_fullname'],
-                    'place_province' => $order['second_place_province'], 'place_district' => $order['second_place_district'],
-                    'place_phone' => $order['second_place_phone'], 'place_post_code' => $order['second_place_post_code'],
-                    'place_house_number' => $order['second_place_house_number'], 'place_city' => $order['second_place_city'],
-                    'place_street' => $order['second_place_street'], 'place_address' => $order['second_place_address'],
-                    'place_lat' => $order['second_place_lat'], 'place_lon' => $order['second_place_lon']
-                ];
-            }
+            //取派订单，派件
+            $address = AddressTrait::secondPlaceToPlace($order);
         }
-        $trackingOrder = array_merge($address, ['type' => $trackingOrderType, 'execution_date' => $order['execution_date']]);
-        $trackingOrder = array_merge(Arr::only($dbOrder, $this->tOrderAndOrderSameFields), $trackingOrder);
+        $address['type'] = $trackingOrderType;
+        $address['execution_date'] = $order['execution_date'];
+        $trackingOrder = array_merge(Arr::only($dbOrder, $this->tOrderAndOrderSameFields), $address);
         return $this->store($trackingOrder, $dbOrder);
     }
 

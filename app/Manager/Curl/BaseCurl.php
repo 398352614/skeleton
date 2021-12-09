@@ -7,7 +7,7 @@
  * Time: 10:34
  */
 
-namespace App\Services;
+namespace App\Manager\Curl;
 
 use App\Exceptions\BusinessLogicException;
 use GuzzleHttp\Client;
