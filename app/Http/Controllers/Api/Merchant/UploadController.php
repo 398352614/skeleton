@@ -10,7 +10,7 @@ namespace App\Http\Controllers\Api\Merchant;
 
 
 use App\Http\Controllers\Controller;
-use App\Services\Admin\UploadService;
+use App\Services\Merchant\UploadService;
 
 /**
  * Class UploadController
