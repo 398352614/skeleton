@@ -66,7 +66,7 @@ class UploadService
      * @param $file
      * @return string
      */
-    private function makeRuleName(UploadedFile $file)
+    private function makeRuleName($file)
     {
         return date('YmdHis') . uniqid() . '.' . $file->getClientOriginalExtension();
     }
@@ -90,6 +90,9 @@ class UploadService
     public function imageUpload($params)
     {
         $subPath = $this->getImageDir($params['dir']);
+        if (is_array($params)) {
+            $params['name'] = $this->makeRuleName(json_encode($params['image']));
+        }
         $params['name'] = $this->makeRuleName($params['image']);
         try {
             $rowCount = $this->imageDisk->putFileAs($subPath, $params['image'], $params['name']);
@@ -126,16 +129,16 @@ class UploadService
     {
         $subPath = $this->getFileDir($params['dir']);
         $params['name'] = $this->makeRuleName($params['file']);
-        if($params['dir']==='package') {
-            $params['name'] =date('YmdHis') . '.apk';
+        if ($params['dir'] === 'package') {
+            $params['name'] = date('YmdHis') . '.apk';
         }
-        if($params['dir']==='template') {
-            $params['name'] ='templateTips.docx';
+        if ($params['dir'] === 'template') {
+            $params['name'] = 'templateTips.docx';
         }
         try {
             $rowCount = $this->fileDisk->putFileAs($subPath, $params['file'], $params['name']);
         } catch (\Exception $ex) {
-            throw new BusinessLogicException('文件上传失败，请重新操作'.$ex->getMessage());
+            throw new BusinessLogicException('文件上传失败，请重新操作' . $ex->getMessage());
         }
         if ($rowCount === false) {
             throw new BusinessLogicException('文件上传失败，请重新操作');
