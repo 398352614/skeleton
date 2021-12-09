@@ -24,7 +24,8 @@ Route::namespace('Api\Merchant')->group(function () {
     Route::post('register', 'RegisterController@register');
     //注册验证码
     Route::post('register/apply', 'RegisterController@applyOfRegister');
-
+    // 获取定制化界面
+    Route::get('/customize', 'CompanyCustomizeController@showByUrl');
 });
 
 //认证

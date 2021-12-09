@@ -28,6 +28,8 @@ Route::namespace('Api\Merchant')->group(function () {
     Route::post('register/apply', 'RegisterController@applyOfRegister');
     //重置验证码
     Route::put('password-reset/verify', 'RegisterController@verifyResetCode');
+    // 获取定制化界面
+    Route::get('/customize', 'CompanyCustomizeController@showByUrl');
 });
 
 //认证
@@ -197,4 +199,33 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         //详情
         Route::get('/{id}', 'BillVerifyController@show')->name('bill-verify.index');
     });
+
+    //公共接口
+    Route::prefix('common')->group(function () {
+        //获取具体地址经纬度
+        Route::get('/location', 'CommonController@getLocation');
+        //获取所有国家列表
+        Route::get('/country', 'CommonController@getCountryList');
+        //获取邮编信息
+        Route::get('/postcode', 'CommonController@getPostcode');
+        //字典
+        Route::get('/dictionary', 'CommonController@dictionary');
+        //获取具体地址经纬度
+        Route::post('/location', 'AddressController@showByApi');
+    });
+
+    //上传接口
+    Route::prefix('upload')->group(function () {
+        //获取可上传的图片目录列表
+        Route::get('image-dir', 'UploadController@getImageDirList');
+        //图片上传
+        Route::post('image', 'UploadController@imageUpload');
+        //获取可上传的文件目录列表
+        Route::get('file-dir', 'UploadController@getFileDirList');
+        //下载
+        Route::post('file-download', 'UploadController@fileDownload');
+        //文件上传
+        Route::post('file', 'UploadController@fileUpload');
+    });
+
 });
