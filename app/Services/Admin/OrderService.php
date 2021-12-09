@@ -450,6 +450,9 @@ class OrderService extends BaseService
         $dbOrder['tracking_order_type'] = $trackingOrderType;
         $dbOrder['tracking_order_type_name'] = ConstTranslateTrait::trackingOrderTypeList($trackingOrderType);
         $dbOrder['tracking_order_id'] = empty($dbTrackingOrder) ? -1 * intval($dbOrder['id']) : $dbTrackingOrder->id;
+        if ($dbOrder['type'] == BaseConstService::ORDER_TYPE_2) {
+            $dbOrder = AddressTrait::changePlaceAndSecondPlace($dbOrder);
+        }
         $resource = OrderAgainResource::make($dbOrder)->resolve();
         return $resource;
     }
@@ -1374,10 +1377,10 @@ class OrderService extends BaseService
         $idList = explode_id_string($idList);
         $orderList = parent::getList(['id' => ['in', $idList]], ['*'], false)->toArray();
         $orderNoList = array_column($orderList, 'order_no');
-        foreach ($orderNoList as $v){
-            if(empty(OrderRedisLockTrait::getOrderLock($v))){
+        foreach ($orderNoList as $v) {
+            if (empty(OrderRedisLockTrait::getOrderLock($v))) {
                 OrderRedisLockTrait::setOrderLock($v);
-            }else{
+            } else {
                 throw new BusinessLogicException('同步任务正在进行中，请稍后重试');
             }
         }
