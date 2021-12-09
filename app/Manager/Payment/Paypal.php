@@ -22,7 +22,7 @@ use PayPal\Api\PaymentExecution;
 use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
 use Illuminate\Support\Facades\Log;
-
+use Paypal\Exception\PayPalConnectionException;
 class Paypal
 {
     /**
@@ -49,7 +49,10 @@ class Paypal
         );
     }
 
-    public function store($billNo,$expectAmount)
+    /**
+     * @throws BusinessLogicException
+     */
+    public function store($billNo, $expectAmount)
     {
         $payer = new Payer();
         $payer->setPaymentMethod("paypal");
@@ -135,10 +138,18 @@ class Paypal
             ->setRedirectUrls($redirectUrls)
             ->setTransactions(array($transaction));
         //创建支付
-        $data['id'] = $payment->create($this->payPal)->getId();
+        try {
+            $data['id'] = $payment->create($this->payPal)->getId();
+        }catch ( \Exception $e) {
+            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
+            throw new BusinessLogicException('支付失败');
+        }
         //生成地址
         $data['approvalUrl'] = $payment->getApprovalLink();
-        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'data', $data);
         //跳转
         return $data;
     }
