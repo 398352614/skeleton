@@ -89,6 +89,9 @@ class UploadService
      */
     public function imageUpload($params)
     {
+        if(empty($params['dir'])){
+            $params['dir'] = 'merchant';
+        }
         $subPath = $this->getImageDir($params['dir']);
         if (is_array($params)) {
             $params['name'] = $this->makeRuleName(json_encode($params['image']));
