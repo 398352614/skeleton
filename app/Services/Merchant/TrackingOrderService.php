@@ -593,10 +593,10 @@ class TrackingOrderService extends BaseService
      */
     public function storeAgain($dbOrder, $order, $trackingOrderType)
     {
-        if (in_array($dbOrder['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
+        if ($dbOrder['type'] == BaseConstService::ORDER_TYPE_1) {
             //取件
             $address = Arr::only(AddressTrait::$place, $order);
-        } elseif ($dbOrder['type'] == BaseConstService::ORDER_TYPE_1) {
+        } elseif ($dbOrder['type'] == BaseConstService::ORDER_TYPE_2) {
             //派件
             $address = AddressTrait::secondPlaceToPlace($order);
         } elseif ($trackingOrderType == BaseConstService::TRACKING_ORDER_TYPE_1) {
