@@ -52,7 +52,7 @@ class Paypal
     /**
      * @throws BusinessLogicException
      */
-    public function store($billNo, $expectAmount)
+    public function store($billNo, $expectAmount): array
     {
         $payer = new Payer();
         $payer->setPaymentMethod("paypal");
@@ -138,6 +138,7 @@ class Paypal
             ->setRedirectUrls($redirectUrls)
             ->setTransactions(array($transaction));
         //创建支付
+        dd($this->payPal);
         try {
             $data['id'] = $payment->create($this->payPal)->getId();
         }catch ( \Exception $e) {
