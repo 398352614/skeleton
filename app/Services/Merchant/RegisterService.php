@@ -46,7 +46,8 @@ class RegisterService extends BaseService
         }
         if(!empty($data['url'])){
             $company = $this->getCompanyCustomizeService()->getInfo(['consumer_url' => $data['url']], ['*'], false);
-        }else{
+        }
+        if(empty($company)){
             $company['id'] = config('tms.default_company_id') ?? null;
         }
         $merchant = parent::create([
