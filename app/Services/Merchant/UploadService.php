@@ -93,9 +93,6 @@ class UploadService
             $params['dir'] = 'merchant';
         }
         $subPath = $this->getImageDir($params['dir']);
-        if (is_array($params)) {
-            $params['name'] = $this->makeRuleName(json_encode($params['image']));
-        }
         $params['name'] = $this->makeRuleName($params['image']);
         try {
             $rowCount = $this->imageDisk->putFileAs($subPath, $params['image'], $params['name']);
