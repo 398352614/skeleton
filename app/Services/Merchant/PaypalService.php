@@ -51,16 +51,19 @@ class PaypalService extends BaseService
         $merchant = $this->getMerchantService()->getInfo(['id' => $bill['merchant_id']], ['*'], false);
         if (!empty($bill)) {
             $this->check($bill['verify_no']);
-            $payment=(new Paypal())->store($data['bill_no'],$bill['expect_amount']);
+            if ($bill['expect_amount'] == 0) {
+                throw new BusinessLogicException('金额为0，无法创建支付单');
+            }
+            $payment = (new Paypal())->store($data['bill_no'], $bill['expect_amount']);
             //记录
             $row = parent::create([
                 'merchant_id' => $bill['merchant_id'],
                 'merchant_name' => $merchant['name'],
                 'amount' => $bill['expect_amount'],
-                'bill_no'=>$data['bill_no'],
+                'bill_no' => $data['bill_no'],
                 'currency_unit_type' => CompanyTrait::getCompany()['currency_unit'],
                 'object_no' => $bill['object_no'],
-                'payment_id'=>$payment['id']
+                'payment_id' => $payment['id']
             ]);
             if ($row == false) {
                 throw new BusinessLogicException('支付失败');
@@ -77,18 +80,18 @@ class PaypalService extends BaseService
     public function pay($data)
     {
         (new Paypal())->pay($data);
-        $dbData=parent::getInfo(['payment_id'=>$data['payment_id']],['*'],false);
-        if(!empty($dbData)){
+        $dbData = parent::getInfo(['payment_id' => $data['payment_id']], ['*'], false);
+        if (!empty($dbData)) {
             parent::update(['payment_id' => $data['payment_id']], [
                 'payer_id' => $data['payer_id'],
                 'payment_id' => $data['payment_id'],
                 'status' => $data['success']
             ]);
             //更新对账单
-            $params=[
-                'pay_type'=>BaseConstService::PAY_TYPE_1,
-                'actual_amount'=>$dbData['amount'],
-                'status'=>$data['status']
+            $params = [
+                'pay_type' => BaseConstService::PAY_TYPE_1,
+                'actual_amount' => $dbData['amount'],
+                'status' => $data['status']
             ];
             $this->getBillService()->pay($params);
         }
