@@ -61,6 +61,7 @@ class Paypal
 //        $packageList = Package::query()->where('order_no', $orderNo)->where('status', BaseConstService::PACKAGE_STATUS_1)->get();
         $currencyUnit = CompanyConfig::query()->where('company_id', auth()->user()->company_id)->first()['currency_unit'];
         $currencyUnitShort = ConstTranslateTrait::currencyUnitTypeShortList($currencyUnit);
+        dd($currencyUnitShort);
         $newItemList = [];
 //        if (!empty($packageList)) {
 //            $itemList = [];
