@@ -12,7 +12,7 @@ use Psr\Container\ContainerInterface;
  * @Command
  */
 #[Command]
-class FooCommond extends HyperfCommand
+class FooCommand extends HyperfCommand
 {
     /**
      * @var ContainerInterface

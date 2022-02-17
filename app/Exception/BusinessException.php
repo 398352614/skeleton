@@ -9,20 +9,37 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace App\Exception;
 
 use App\Constants\ErrorCode;
+use App\Log;
 use Hyperf\Server\Exception\ServerException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
 class BusinessException extends ServerException
 {
-    public function __construct(int $code = 0, string $message = null, Throwable $previous = null)
+    /**
+     * @var array|mixed
+     */
+    public mixed $replace;
+
+    /**
+     * @var mixed|string
+     */
+    public mixed $data;
+
+    public function __construct(string $message = null, int $code = 5000, $replace = [], $data = '', Throwable $previous = null)
     {
+        $this->replace = $replace;
+        $this->data = $data;
         if (is_null($message)) {
             $message = ErrorCode::getMessage($code);
         }
-
         parent::__construct($message, $code, $previous);
     }
+
 }

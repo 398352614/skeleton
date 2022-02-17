@@ -9,15 +9,14 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
-use App\Middleware\AuthMiddleware;
-use App\Middleware\ResponseMiddleware;
-use App\Middleware\ValidateMiddleware;
+use Hyperf\Watcher\Driver\ScanFileDriver;
 
 return [
-    'http' => [
-        AuthMiddleware::class,
-        ValidateMiddleware::class,
-        ResponseMiddleware::class,
+    'driver' => ScanFileDriver::class,
+    'bin' => 'php',
+    'watch' => [
+        'dir' => ['app', 'config'],
+        'file' => ['.env'],
+        'scan_interval' => 2000,
     ],
 ];
