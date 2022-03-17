@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "48002cb3e486add9aad1f71304408f2d",
+    "content-hash": "54cf45c0bb007123158b03273716e2f9",
     "packages": [
         {
             "name": "96qbhy/hyperf-auth",
@@ -4295,6 +4295,118 @@
                 "source": "https://github.com/hyperf/view-engine/tree/v2.2.23"
             },
             "time": "2022-01-14T05:27:13+00:00"
+        },
+        {
+            "name": "hyperf/websocket-client",
+            "version": "v2.2.14",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hyperf/websocket-client.git",
+                "reference": "fc58eb560836997ec183c9626369e57f061d0139"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hyperf/websocket-client/zipball/fc58eb560836997ec183c9626369e57f061d0139",
+                "reference": "fc58eb560836997ec183c9626369e57f061d0139",
+                "shasum": ""
+            },
+            "require": {
+                "hyperf/contract": "~2.2.0",
+                "hyperf/http-message": "~2.2.0",
+                "hyperf/utils": "~2.2.0",
+                "php": ">=7.2",
+                "psr/container": "^1.0|^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev"
+                },
+                "hyperf": {
+                    "config": "Hyperf\\WebSocketClient\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hyperf\\WebSocketClient\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A websocket client library for Hyperf.",
+            "homepage": "https://hyperf.io",
+            "keywords": [
+                "hyperf",
+                "php",
+                "swoole",
+                "websocket"
+            ],
+            "support": {
+                "docs": "https://hyperf.wiki",
+                "issues": "https://github.com/hyperf/hyperf/issues",
+                "pull-request": "https://github.com/hyperf/hyperf/pulls",
+                "source": "https://github.com/hyperf/hyperf"
+            },
+            "time": "2021-10-28T10:13:44+00:00"
+        },
+        {
+            "name": "hyperf/websocket-server",
+            "version": "v2.2.26",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hyperf/websocket-server.git",
+                "reference": "618c693c03171259fe9d6fd5f89d8b951e6a0bfc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hyperf/websocket-server/zipball/618c693c03171259fe9d6fd5f89d8b951e6a0bfc",
+                "reference": "618c693c03171259fe9d6fd5f89d8b951e6a0bfc",
+                "shasum": ""
+            },
+            "require": {
+                "hyperf/contract": "~2.2.0",
+                "hyperf/exception-handler": "~2.2.0",
+                "hyperf/http-server": "~2.2.0",
+                "hyperf/utils": "~2.2.0",
+                "php": ">=7.2",
+                "psr/container": "^1.0|^2.0",
+                "psr/event-dispatcher": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev"
+                },
+                "hyperf": {
+                    "config": "Hyperf\\WebSocketServer\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hyperf\\WebSocketServer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A websocket server library for Hyperf.",
+            "homepage": "https://hyperf.io",
+            "keywords": [
+                "hyperf",
+                "php",
+                "swoole",
+                "websocket"
+            ],
+            "support": {
+                "docs": "https://hyperf.wiki",
+                "issues": "https://github.com/hyperf/hyperf/issues",
+                "pull-request": "https://github.com/hyperf/hyperf/pulls",
+                "source": "https://github.com/hyperf/hyperf"
+            },
+            "time": "2022-02-11T09:45:53+00:00"
         },
         {
             "name": "jcchavezs/zipkin-opentracing",

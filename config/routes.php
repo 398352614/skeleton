@@ -43,3 +43,7 @@ Router::addGroup('/auth', function () {
     //测试
     Router::get('/test', 'App\Controller\AuthController@test');
 });
+
+Router::addServer('ws', function () {
+    Router::get('/', 'App\Controller\WebSocketController');
+});
